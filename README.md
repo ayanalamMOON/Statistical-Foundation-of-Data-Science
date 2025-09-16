@@ -216,7 +216,7 @@ This is an academic repository for coursework. While external contributions are 
 
 **Md Ayan Alam**
 Roll Number: GF202342645
-Email: [your.email@institution.edu]
+Email: [mdalam@shooliniuniversity.com]
 GitHub: [@ayanalamMOON](https://github.com/ayanalamMOON)
 
 ---
