@@ -27,14 +27,16 @@ Statistical-Foundation-of-Data-Science/
 ├── requirements.txt                    # Python dependencies
 ├── .gitignore                         # Git ignore rules
 ├── LICENSE                            # Repository license
+├── .venv/                             # Virtual environment (in root)
 │
 ├── Practical Assignments/             # Hands-on coding assignments
-│   ├── stats_analysis.ipynb          # Statistical Analysis & Array Operations
-│   ├── generate_data.py               # Synthetic data generation
-│   ├── synthetic_data.csv             # Generated dataset
-│   ├── age_bin_statistics.csv         # Processed statistics
-│   ├── Problems.txt                   # Assignment specifications
-│   └── .venv/                         # Virtual environment
+│   ├── Assignment 1/                  # First assignment - Statistical Analysis
+│   │   ├── stats_analysis.ipynb      # Statistical Analysis & Array Operations
+│   │   ├── generate_data.py           # Synthetic data generation
+│   │   ├── synthetic_data.csv         # Generated dataset
+│   │   ├── age_bin_statistics.csv     # Processed statistics
+│   │   └── Problems.txt               # Assignment specifications
+│   └── [Future assignments will be added here]
 │
 ├── Project/                           # Major course projects
 │   └── [Future project implementations]
@@ -64,7 +66,7 @@ Statistical-Foundation-of-Data-Science/
 ### Completed Assignments
 
 #### Assignment 1: Statistical Analysis and Array Operations
-- **File**: `Practical Assignments/stats_analysis.ipynb`
+- **File**: `Practical Assignments/Assignment 1/stats_analysis.ipynb`
 - **Status**: Completed
 - **Completion Date**: September 16, 2025
 - **Topics Covered**:
