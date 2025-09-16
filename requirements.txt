@@ -1,0 +1,67 @@
+# Statistical Foundation of Data Science - Requirements
+# Author: Md Ayan Alam (GF202342645)
+# Last Updated: September 16, 2025
+
+# Core Data Science Stack
+pandas>=2.3.0
+numpy>=2.3.0
+scipy>=1.16.0
+scikit-learn>=1.7.0
+statsmodels>=0.14.0
+
+# Visualization Libraries
+matplotlib>=3.10.0
+seaborn>=0.13.0
+plotly>=6.0.0
+
+# Jupyter Ecosystem
+jupyter>=1.1.0
+jupyterlab>=4.4.0
+ipykernel>=6.30.0
+notebook>=7.4.0
+ipywidgets>=8.1.0
+
+# Statistical Computing
+sympy>=1.14.0
+numba>=0.61.0
+
+# Development and Testing
+black>=25.0.0
+flake8>=7.0.0
+pytest>=8.0.0
+mypy>=1.0.0
+
+# Data Processing
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+pyarrow>=21.0.0
+
+# Advanced Analytics (for future assignments)
+# Uncomment as needed for specific assignments
+
+# Time Series Analysis
+# prophet>=1.1.0
+# arch>=6.0.0
+
+# Bayesian Statistics
+# pymc>=5.0.0
+# arviz>=0.15.0
+
+# Deep Learning (optional)
+# torch>=2.0.0
+# tensorflow>=2.15.0
+
+# Natural Language Processing (optional)
+# nltk>=3.8.0
+# spacy>=3.7.0
+# textblob>=0.17.0
+
+# Web Scraping (optional)
+# requests>=2.32.0
+# beautifulsoup4>=4.13.0
+# selenium>=4.15.0
+
+# Database Connectivity (optional)
+# sqlalchemy>=2.0.0
+# psycopg2-binary>=2.9.0
+# pymongo>=4.6.0
