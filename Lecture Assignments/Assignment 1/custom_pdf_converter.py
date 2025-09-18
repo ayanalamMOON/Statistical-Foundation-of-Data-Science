@@ -47,7 +47,7 @@ def convert_notebook_to_pdf(notebook_path):
             tex_file
         ]
 
-        result = subprocess.run(latex_compile_cmd, capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(tex_file)) or ".")
+        result = subprocess.run(latex_compile_cmd, capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(tex_file)) or ".", encoding='utf-8', errors='ignore')
 
         # Check for critical errors (but continue with warnings)
         if result.returncode != 0 and "major issue" not in result.stderr:

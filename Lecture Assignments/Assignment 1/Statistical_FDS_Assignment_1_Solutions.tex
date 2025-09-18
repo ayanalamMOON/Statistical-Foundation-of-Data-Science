@@ -2,7 +2,7 @@
 
     \usepackage[breakable]{tcolorbox}
     \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
-
+    
 
     % Basic figure setup, for now with no caption control since it's done
     % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
@@ -82,9 +82,9 @@
                                 % normalem makes italics be italics, not underlines
     \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
     \usepackage{mathrsfs}
+    
 
-
-
+    
     % Colors for the hyperref package
     \definecolor{urlcolor}{rgb}{0,.145,.698}
     \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
@@ -187,13 +187,13 @@
     % Document parameters
     % Document title
     \title{Statistical\_FDS\_Assignment\_1\_Solutions}
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
 % Pygments definitions
 \makeatletter
 \def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
@@ -387,9 +387,9 @@
     \newcommand{\prompt}[4]{
         {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
     }
+    
 
-
-
+    
     % Prevent overflowing lines due to hard-to-break entities
     \sloppy
     % Setup hyperref package
@@ -401,25 +401,24 @@
       citecolor=citecolor,
       }
     % Slightly bigger margins than the latex defaults
-
+    
     \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
-
-
+    
+    
 
 \begin{document}
-
+    
     \maketitle
+    
+    
 
-
-
-
+    
     \section{Statistical Foundation of Data Science - Assignment 1
 Solutions}\label{statistical-foundation-of-data-science---assignment-1-solutions}
 
 \textbf{Course Name:} Statistical Foundation of Data Science\\
 \textbf{Course Code:} CSU 1658\\
-\textbf{Max Points:} 50\\
-\textbf{Due Date:} September 24th, 2024
+\textbf{Max Points:} 50
 
 This notebook contains step-by-step solutions to all assignment
 problems.
@@ -469,11 +468,11 @@ environment:
 \PY{+w}{    }\PY{l+s+sd}{\PYZdq{}\PYZdq{}\PYZdq{}Install a package using pip if not already installed\PYZdq{}\PYZdq{}\PYZdq{}}
     \PY{k}{try}\PY{p}{:}
         \PY{n}{pkg\PYZus{}resources}\PY{o}{.}\PY{n}{get\PYZus{}distribution}\PY{p}{(}\PY{n}{package}\PY{p}{)}
-        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{✓ }\PY{l+s+si}{\PYZob{}}\PY{n}{package}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is already installed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{[CHECK] }\PY{l+s+si}{\PYZob{}}\PY{n}{package}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ is already installed}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{k}{except} \PY{n}{pkg\PYZus{}resources}\PY{o}{.}\PY{n}{DistributionNotFound}\PY{p}{:}
         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Installing }\PY{l+s+si}{\PYZob{}}\PY{n}{package}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{...}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
         \PY{n}{subprocess}\PY{o}{.}\PY{n}{check\PYZus{}call}\PY{p}{(}\PY{p}{[}\PY{n}{sys}\PY{o}{.}\PY{n}{executable}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}m}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{pip}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{install}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{package}\PY{p}{]}\PY{p}{)}
-        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{✓ }\PY{l+s+si}{\PYZob{}}\PY{n}{package}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ installed successfully}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{[CHECK] }\PY{l+s+si}{\PYZob{}}\PY{n}{package}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ installed successfully}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{c+c1}{\PYZsh{} List of required packages}
 \PY{n}{required\PYZus{}packages} \PY{o}{=} \PY{p}{[}
@@ -503,9 +502,9 @@ environment:
     \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{plt}
     \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{seaborn}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{sns}
     \PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{scipy}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{stats}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{✓ All imports successful \PYZhy{} Ready to proceed!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{[CHECK] All imports successful \PYZhy{} Ready to proceed!}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{k}{except} \PY{n+ne}{ImportError} \PY{k}{as} \PY{n}{e}\PY{p}{:}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{✗ Import error: }\PY{l+s+si}{\PYZob{}}\PY{n}{e}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{[CROSS] Import error: }\PY{l+s+si}{\PYZob{}}\PY{n}{e}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Please restart the kernel and try again.}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
@@ -580,11 +579,11 @@ operations and broadcasting
 elements, it can be represented as:
 
 \begin{verbatim}
-S = {(i₁, v₁), (i₂, v₂), ..., (iₙ, vₙ)}
+S = {(i_1, v_1), (i_2, v_2), ..., (i_n, v_n)}
 \end{verbatim}
 
-Where: - i₁, i₂, \ldots, iₙ are the index labels - v₁, v₂, \ldots, vₙ
-are the corresponding values
+Where: - i\_1, i\_2, \ldots, i\_n are the index labels - v\_1, v\_2,
+\ldots, v\_n are the corresponding values
 
 \textbf{Use Cases:} - Time series data (stock prices over time) - Single
 column of data from a dataset - Results of statistical calculations -
@@ -608,11 +607,12 @@ and columns
 columns can be represented as:
 
 \begin{verbatim}
-D = {(rᵢ, cⱼ, vᵢⱼ) | i ∈ [1,m], j ∈ [1,n]}
+D = {(r_i, c_j, v_i_j) | i ∈ [1,m], j ∈ [1,n]}
 \end{verbatim}
 
-Where: - rᵢ represents the row index - cⱼ represents the column index\\
-- vᵢⱼ represents the value at position (i,j)
+Where: - r\_i represents the row index - c\_j represents the column
+index\\
+- v\_i\_j represents the value at position (i,j)
 
 \textbf{Use Cases:} - Complete datasets with multiple variables -
 Database query results - Spreadsheet-like data manipulation -
@@ -984,17 +984,20 @@ Foundation}\label{concept-and-mathematical-foundation}
 Re-indexing can be mathematically represented as a mapping function that
 transforms one index set to another:
 
-Let \textbf{I₁} = \{i₁, i₂, \ldots, iₙ\} be the original index set\\
-Let \textbf{I₂} = \{j₁, j₂, \ldots, jₘ\} be the new desired index set\\
-Let \textbf{D₁} be the original data structure with index \textbf{I₁}
+Let \textbf{I\_1} = \{i\_1, i\_2, \ldots, i\_n\} be the original index
+set\\
+Let \textbf{I\_2} = \{j\_1, j\_2, \ldots, jₘ\} be the new desired index
+set\\
+Let \textbf{D\_1} be the original data structure with index
+\textbf{I\_1}
 
-The re-indexing operation creates a new data structure \textbf{D₂} with
-index \textbf{I₂} such that:
+The re-indexing operation creates a new data structure \textbf{D\_2}
+with index \textbf{I\_2} such that:
 
 \begin{verbatim}
-D₂[jₖ] = {
-    D₁[jₖ]  if jₖ ∈ I₁ (index exists in original)
-    NaN     if jₖ ∉ I₁ (index does not exist in original)
+D_2[jₖ] = {
+    D_1[jₖ]  if jₖ ∈ I_1 (index exists in original)
+    NaN     if jₖ ∉ I_1 (index does not exist in original)
 }
 \end{verbatim}
 
@@ -1097,9 +1100,9 @@ detailed mathematical explanations:
 
 \PY{n}{df\PYZus{}original} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{original\PYZus{}data}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{original\PYZus{}index}\PY{p}{)}
 
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Original DataFrame D₁:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Original DataFrame D\PYZus{}1:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{n}{df\PYZus{}original}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Original Index I₁: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{list}\PY{p}{(}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Original Index I\PYZus{}1: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{list}\PY{p}{(}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Original Columns: }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{list}\PY{p}{(}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shape: }\PY{l+s+si}{\PYZob{}}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{shape}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
@@ -1117,14 +1120,14 @@ detailed mathematical explanations:
 \PY{n}{new\PYZus{}order} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Q3}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Q1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Q2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
 \PY{n}{df\PYZus{}reordered} \PY{o}{=} \PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{reindex}\PY{p}{(}\PY{n}{new\PYZus{}order}\PY{p}{)}
 
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{New Index Order I₂: }\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}order}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Reordered DataFrame D₂:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{New Index Order I\PYZus{}2: }\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}order}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Reordered DataFrame D\PYZus{}2:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{n}{df\PYZus{}reordered}\PY{p}{)}
 
 \PY{c+c1}{\PYZsh{} Mathematical verification}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Mathematical Verification:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{k}{for} \PY{n}{old\PYZus{}idx}\PY{p}{,} \PY{n}{new\PYZus{}idx} \PY{o+ow}{in} \PY{n+nb}{zip}\PY{p}{(}\PY{n}{original\PYZus{}index}\PY{p}{,} \PY{n}{new\PYZus{}order}\PY{p}{)}\PY{p}{:}
-    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{  D₂[}\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{] = D₁[}\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{] = }\PY{l+s+si}{\PYZob{}}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{new\PYZus{}idx}\PY{p}{,}\PY{+w}{ }\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sales}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ (Sales)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{  D\PYZus{}2[}\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{] = D\PYZus{}1[}\PY{l+s+si}{\PYZob{}}\PY{n}{new\PYZus{}idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{] = }\PY{l+s+si}{\PYZob{}}\PY{n}{df\PYZus{}original}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{n}{new\PYZus{}idx}\PY{p}{,}\PY{+w}{ }\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Sales}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ (Sales)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{*} \PY{l+m+mi}{30}\PY{p}{)}
 
@@ -1138,8 +1141,8 @@ detailed mathematical explanations:
 \PY{n+nb}{print}\PY{p}{(}\PY{n}{df\PYZus{}expanded}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Mathematical Analysis:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{For existing indices: D₃[Qᵢ] = D₁[Qᵢ] where Qᵢ ∈ I₁}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{For new indices: D₃[Q4] = NaN (since Q4 ∉ I₁)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{For existing indices: D₃[Q\PYZus{}i] = D\PYZus{}1[Q\PYZus{}i] where Q\PYZus{}i ∈ I\PYZus{}1}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{For new indices: D₃[Q4] = NaN (since Q4 ∉ I\PYZus{}1)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Missing values count: }\PY{l+s+si}{\PYZob{}}\PY{n}{df\PYZus{}expanded}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{*} \PY{l+m+mi}{30}\PY{p}{)}
@@ -1513,10 +1516,10 @@ as the sum of all values divided by the number of observations.
 \textbf{Mathematical Formula:}
 
 \begin{verbatim}
-μ = (Σᵢ₌₁ⁿ xᵢ) / n
+μ = (Σ_i₌_1ⁿ x_i) / n
 \end{verbatim}
 
-Where: - μ (mu) = population mean - xᵢ = individual values - n = total
+Where: - μ (mu) = population mean - x\_i = individual values - n = total
 number of observations - Σ = summation symbol
 
 \textbf{Pandas Implementation:} \texttt{Series.mean()} or
@@ -1532,8 +1535,8 @@ It is less sensitive to outliers than the mean.
 
 \begin{verbatim}
 Median = {
-    x₍ₙ₊₁₎/₂         if n is odd
-    (x₍ₙ/₂₎ + x₍ₙ/₂₊₁₎)/2  if n is even
+    x₍_n₊_1₎/_2         if n is odd
+    (x₍_n/_2₎ + x₍_n/_2₊_1₎)/2  if n is even
 }
 \end{verbatim}
 
@@ -1551,13 +1554,13 @@ dataset relative to the mean.
 \textbf{Population Standard Deviation:}
 
 \begin{verbatim}
-σ = √[(Σᵢ₌₁ⁿ (xᵢ - μ)²) / n]
+σ = √[(Σ_i₌_1ⁿ (x_i - μ)²) / n]
 \end{verbatim}
 
 \textbf{Sample Standard Deviation:}
 
 \begin{verbatim}
-s = √[(Σᵢ₌₁ⁿ (xᵢ - x̄)²) / (n-1)]
+s = √[(Σ_i₌_1ⁿ (x_i - x̄)²) / (n-1)]
 \end{verbatim}
 
 Where: - σ (sigma) = population standard deviation - s = sample standard
@@ -1686,8 +1689,8 @@ detailed mathematical verification:
 \PY{n}{manual\PYZus{}mean} \PY{o}{=} \PY{n}{sum\PYZus{}scores} \PY{o}{/} \PY{n}{n\PYZus{}students}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Step\PYZhy{}by\PYZhy{}step calculation:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Σxᵢ = }\PY{l+s+si}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ + }\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(}\PY{n+nb}{str}\PY{p}{,}\PY{+w}{ }\PY{n}{math\PYZus{}scores}\PY{p}{)}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}scores}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{μ = Σxᵢ/n = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}scores}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/}\PY{l+s+si}{\PYZob{}}\PY{n}{n\PYZus{}students}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{manual\PYZus{}mean}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Σx\PYZus{}i = }\PY{l+s+si}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ + }\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n+nb}{map}\PY{p}{(}\PY{n+nb}{str}\PY{p}{,}\PY{+w}{ }\PY{n}{math\PYZus{}scores}\PY{p}{)}\PY{p}{)}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}scores}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{μ = Σx\PYZus{}i/n = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}scores}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/}\PY{l+s+si}{\PYZob{}}\PY{n}{n\PYZus{}students}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{manual\PYZus{}mean}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Pandas mean(): }\PY{l+s+si}{\PYZob{}}\PY{n}{scores\PYZus{}only}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mathematics}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Verification: Manual = Pandas? }\PY{l+s+si}{\PYZob{}}\PY{n+nb}{abs}\PY{p}{(}\PY{n}{manual\PYZus{}mean}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{scores\PYZus{}only}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mathematics}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZlt{}}\PY{+w}{ }\PY{l+m+mf}{1e\PYZhy{}10}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
@@ -1785,13 +1788,13 @@ detailed mathematical verification:
 
 \PY{c+c1}{\PYZsh{} Calculate deviations from mean}
 \PY{n}{deviations} \PY{o}{=} \PY{n}{math\PYZus{}scores} \PY{o}{\PYZhy{}} \PY{n}{math\PYZus{}mean}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Deviations from mean (xᵢ \PYZhy{} x̄):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Deviations from mean (x\PYZus{}i \PYZhy{} x̄):}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{p}{(}\PY{n}{score}\PY{p}{,} \PY{n}{dev}\PY{p}{)} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n+nb}{zip}\PY{p}{(}\PY{n}{math\PYZus{}scores}\PY{p}{,} \PY{n}{deviations}\PY{p}{)}\PY{p}{)}\PY{p}{:}
     \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{  Student }\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{: }\PY{l+s+si}{\PYZob{}}\PY{n}{score}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ \PYZhy{} }\PY{l+s+si}{\PYZob{}}\PY{n}{math\PYZus{}mean}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{c+c1}{\PYZsh{} Calculate squared deviations}
 \PY{n}{squared\PYZus{}deviations} \PY{o}{=} \PY{n}{deviations} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Squared deviations (xᵢ \PYZhy{} x̄)²:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Squared deviations (x\PYZus{}i \PYZhy{} x̄)²:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{p}{(}\PY{n}{dev}\PY{p}{,} \PY{n}{sq\PYZus{}dev}\PY{p}{)} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n+nb}{zip}\PY{p}{(}\PY{n}{deviations}\PY{p}{,} \PY{n}{squared\PYZus{}deviations}\PY{p}{)}\PY{p}{)}\PY{p}{:}
     \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{  Student }\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{o}{+}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{: (}\PY{l+s+si}{\PYZob{}}\PY{n}{dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{)² = }\PY{l+s+si}{\PYZob{}}\PY{n}{sq\PYZus{}dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
@@ -1801,8 +1804,8 @@ detailed mathematical verification:
 \PY{n}{sample\PYZus{}std} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{sample\PYZus{}variance}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Sample Variance Calculation:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Σ(xᵢ \PYZhy{} x̄)² = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}squared\PYZus{}dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{s² = Σ(xᵢ \PYZhy{} x̄)²/(n\PYZhy{}1) = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}squared\PYZus{}dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/}\PY{l+s+si}{\PYZob{}}\PY{n}{n\PYZus{}students}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{sample\PYZus{}variance}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Σ(x\PYZus{}i \PYZhy{} x̄)² = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}squared\PYZus{}dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{s² = Σ(x\PYZus{}i \PYZhy{} x̄)²/(n\PYZhy{}1) = }\PY{l+s+si}{\PYZob{}}\PY{n}{sum\PYZus{}squared\PYZus{}dev}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{/}\PY{l+s+si}{\PYZob{}}\PY{n}{n\PYZus{}students}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{sample\PYZus{}variance}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{s = √(s²) = √}\PY{l+s+si}{\PYZob{}}\PY{n}{sample\PYZus{}variance}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZob{}}\PY{n}{sample\PYZus{}std}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Pandas std(): }\PY{l+s+si}{\PYZob{}}\PY{n}{scores\PYZus{}only}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mathematics}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
@@ -2355,7 +2358,7 @@ Array}\label{conversion-methods-dataframe-numpy-array}
 
 Given a Pandas DataFrame \(\mathbf{D}\) with shape \((m, n)\):
 
-\[\mathbf{D} = \begin{pmatrix}
+\[\mathbf{D} = \begin{pmatrix} 
 d_{1,1} & d_{1,2} & \cdots & d_{1,n} \\
 d_{2,1} & d_{2,2} & \cdots & d_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -2612,7 +2615,7 @@ Indexing}\label{theoretical-analysis-of-array-indexing}
 
 \textbf{Given a matrix} \(\mathbf{T} \in \mathbb{R}^{m \times n}\):
 
-\[\mathbf{T} = \begin{pmatrix}
+\[\mathbf{T} = \begin{pmatrix} 
 t_{1,1} & t_{1,2} & \cdots & t_{1,n} \\
 t_{2,1} & t_{2,2} & \cdots & t_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -2684,7 +2687,7 @@ dimensions according to specific rules.
 Given arrays \(\mathbf{A} \in \mathbb{R}^{m \times n}\) and
 \(\mathbf{b} \in \mathbb{R}^n\):
 
-\[\mathbf{A} + \mathbf{b} = \begin{pmatrix}
+\[\mathbf{A} + \mathbf{b} = \begin{pmatrix} 
 a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
 a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -3032,7 +3035,7 @@ regression analysis mathematics.}
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_16_0.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 Key Differences:
 1. Seaborn automatically handles categorical data with color coding
@@ -3223,7 +3226,7 @@ right-skewed data, \(\text{Mean} > \text{Median}\)
 
 \textbf{Mathematical Definition:} For ordered data
 \(x_{(1)} \leq x_{(2)} \leq \cdots \leq x_{(n)}\):
-\[\text{Median} = \begin{cases}
+\[\text{Median} = \begin{cases} 
 x_{(\frac{n+1}{2})} & \text{if } n \text{ is odd} \\
 \frac{x_{(\frac{n}{2})} + x_{(\frac{n}{2}+1)}}{2} & \text{if } n \text{ is even}
 \end{cases}\]
@@ -3260,7 +3263,8 @@ follow a continuous distribution rather than discrete levels
 
 \textbf{Question 4: Outlier Impact Analysis}
 
-\textbf{Adding \$500,000 Salary:} $\mathcal{S}' = \mathcal{S} \cup \{500000\}$, $n' = 14$
+**Adding \(500,000 Salary:**\)\mathcal{S}' = \mathcal{S}
+\cup \{500000\}\$, \(n' = 14\)
 
 \textbf{New Mean Calculation:}
 \[\bar{x}_{new} = \frac{1,122,000 + 500,000}{14} = \frac{1,622,000}{14} = \$115,857.14\]
@@ -3672,11 +3676,11 @@ pricing strategies by target market
 \paragraph{Statistical Assumptions
 Validation}\label{statistical-assumptions-validation}
 
-\textbf{Required Conditions:} 1. ✓ \textbf{Independence}: Random
-sampling assumed 2. ✓ \textbf{Expected frequencies}: All
-\(E_{ij} \geq 5\) (minimum = 22.5) 3. ✓ \textbf{Sample size}:
-\(n = 200\) is adequate 4. ✓ \textbf{Categorical variables}: Both
-variables are nominal
+\textbf{Required Conditions:} 1. {[}CHECK{]} \textbf{Independence}:
+Random sampling assumed 2. {[}CHECK{]} \textbf{Expected frequencies}:
+All \(E_{ij} \geq 5\) (minimum = 22.5) 3. {[}CHECK{]} \textbf{Sample
+size}: \(n = 200\) is adequate 4. {[}CHECK{]} \textbf{Categorical
+variables}: Both variables are nominal
 
 \paragraph{Cross-Reference}\label{cross-reference}
 
@@ -3715,7 +3719,7 @@ examples of independence testing.}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{STEP 1: HYPOTHESIS SETUP}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{50}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{H₀ (Null): There is no association between gender and model preference}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{H₁ (Alternative): There is an association between gender and model preference}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{H\PYZus{}1 (Alternative): There is an association between gender and model preference}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Significance level (α) = 0.05}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=}\PY{l+s+s2}{\PYZdq{}}\PY{o}{*}\PY{l+m+mi}{50}\PY{p}{)}
@@ -4028,7 +4032,7 @@ Theory}\label{real-estate-application-theory}
 
 \textbf{Sample Size Adequacy}: For correlation analysis, minimum sample
 size: \[n \geq 10k + 50\] where \(k\) is the number of variables. For
-our analysis: \(n \geq 50\) ✓
+our analysis: \(n \geq 50\) {[}CHECK{]}
 
 \textbf{Power Analysis}: Power to detect correlation \(r = 0.5\) with
 \(\alpha = 0.05\):
@@ -4276,7 +4280,7 @@ of house price
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_23_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{27}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -4413,7 +4417,7 @@ properties
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_24_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 
 ============================================================
@@ -4439,7 +4443,7 @@ House\_Age\_Years                    0.514            1.000
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_24_3.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 
 KEY INSIGHTS from the correlation analysis:
@@ -4911,7 +4915,7 @@ PART 1: DIFFERENT TYPES OF HISTOGRAMS
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_26_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 
 HISTOGRAM TYPES EXPLAINED:
@@ -4948,7 +4952,7 @@ CHOROPLETH MAP DEMONSTRATION:
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_26_3.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 Choropleth Map Example: US States Population Density
 • California: 253 people/sq mile
@@ -5046,6 +5050,27 @@ Calculation}: Calculate variance and explain what it reveals about
 consistency 3. \textbf{Standard Deviation Calculation}: Compute standard
 deviation and compare risk 4. \textbf{Risk Assessment}: Recommend
 portfolio for risk-averse investor with justification
+
+\textbf{Question 4: Outlier Impact Analysis}
+
+\textbf{Adding \$500,000 Salary:}
+\(\mathcal{S}' = \mathcal{S} \cup \{500000\}\), \(n' = 14\)
+
+\textbf{New Mean Calculation:}
+\[\bar{x}_{new} = \frac{1,122,000 + 500,000}{14} = \frac{1,622,000}{14} = \$115,857.14\]
+
+\textbf{Impact on Mean:}
+\[\Delta_{\text{mean}} = \$115,857.14 - \$86,307.69 = \$29,549.45\]
+\[\text{Relative Change} = \frac{29,549.45}{86,307.69} = 34.2\%\]
+
+\textbf{New Median Calculation:} \(n' = 14\) (even), so:
+\[\text{Median}_{new} = \frac{x_{(7)} + x_{(8)}}{2} = \frac{75,000 + 80,000}{2} = \$77,500\]
+
+\textbf{Impact on Median:}
+\[\Delta_{\text{median}} = \$77,500 - \$75,000 = \$2,500\]
+\[\text{Relative Change} = \frac{2,500}{75,000} = 3.3\%\]
+
+\textbf{Standard Deviation Analysis:}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{29}{\boxspacing}
@@ -5462,7 +5487,7 @@ RISK-AVERSE INVESTOR PRIORITIES:
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_28_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-
+    
     \begin{Verbatim}[commandchars=\\\{\}]
 
 ============================================================
@@ -5475,299 +5500,9 @@ For a risk-averse investor, Portfolio B is the better choice because:
 • Minimal sacrifice in expected returns for significantly reduced risk
     \end{Verbatim}
 
-    \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
-
-\subsection{Assignment Summary and Comprehensive
-Analysis}\label{assignment-summary-and-comprehensive-analysis}
-
-\textbf{Statistical Foundation of Data Science - Assignment 1}\\
-\textbf{Course Code:} CSU 1658\\
-\textbf{Total Marks:} 50 points
-
-This notebook provides complete solutions to all assignment problems
-with detailed mathematical explanations, step-by-step procedures, and
-comprehensive code implementations. Each solution demonstrates both
-theoretical understanding and practical application of statistical
-concepts using Python's data science ecosystem.
-
-\subsubsection{Completed Sections and Detailed
-Analysis:}\label{completed-sections-and-detailed-analysis}
-
-\paragraph{\texorpdfstring{\textbf{Section 1: Very Short Questions (10
-marks total - 5 questions × 2 marks
-each)}}{Section 1: Very Short Questions (10 marks total - 5 questions × 2 marks each)}}\label{section-1-very-short-questions-10-marks-total---5-questions-2-marks-each}
-
-\textbf{Q1: Pandas Data Structures Analysis} - \textbf{Comprehensive
-Coverage}: Detailed explanation of Series and DataFrame structures -
-\textbf{Mathematical Foundation}: Formal mathematical representations of
-both data structures - \textbf{Practical Implementation}: Multiple
-examples demonstrating creation, manipulation, and operations -
-\textbf{Memory Analysis}: Comparison of memory usage and performance
-characteristics - \textbf{Use Case Scenarios}: Real-world applications
-and when to use each structure
-
-\textbf{Q2: Re-indexing Operations in Pandas} - \textbf{Theoretical
-Framework}: Mathematical foundation of index transformation operations -
-\textbf{Comprehensive Examples}: Row and column re-indexing scenarios
-with detailed explanations - \textbf{Advanced Techniques}: Forward fill,
-backward fill, and custom fill value strategies - \textbf{Performance
-Analysis}: Memory usage and computational complexity considerations -
-\textbf{Practical Applications}: Time series alignment, data
-integration, and database simulation
-
-\textbf{Q3: Statistical Measures Computation} - \textbf{Mathematical
-Foundations}: Complete derivations for mean, median, standard deviation,
-and quantiles - \textbf{Manual Calculations}: Step-by-step mathematical
-verification of all statistical measures - \textbf{Comprehensive
-Dataset}: 20-student, 4-subject performance analysis with detailed
-insights - \textbf{Statistical Interpretation}: Distribution analysis,
-outlier detection, and performance evaluation - \textbf{Verification
-Methods}: Cross-validation of manual calculations with pandas built-in
-functions
-
-\textbf{Q4: NumPy Array Operations and Conversions} - \textbf{Conceptual
-Differences}: Clear distinction between ndarray objects and array
-constructor functions - \textbf{Conversion Methods}: Multiple approaches
-for DataFrame to NumPy array transformation - \textbf{Performance
-Considerations}: Memory efficiency and computational speed comparisons -
-\textbf{Data Type Handling}: Managing mixed data types during conversion
-processes - \textbf{Best Practices}: Recommended approaches for
-different use cases and scenarios
-
-\textbf{Q5: Array Indexing and Vectorized Operations} - \textbf{Indexing
-Mechanics}: Detailed explanation of single vs.~multiple element
-selection - \textbf{Dimensional Analysis}: Shape preservation and
-transformation in array operations - \textbf{Vectorization Principles}:
-Mathematical foundation of element-wise operations without loops -
-\textbf{Broadcasting Rules}: Comprehensive explanation of NumPy's
-broadcasting mechanism - \textbf{Performance Implications}: Speed and
-memory efficiency of vectorized vs.~loop-based operations
-
-\paragraph{\texorpdfstring{\textbf{Section 2: Short Questions (12 marks
-total - 3 questions × 4 marks
-each)}}{Section 2: Short Questions (12 marks total - 3 questions × 4 marks each)}}\label{section-2-short-questions-12-marks-total---3-questions-4-marks-each}
-
-\textbf{Q1: Matplotlib vs Seaborn Comparison} - \textbf{Library
-Architecture}: Detailed comparison of low-level vs high-level plotting
-approaches - \textbf{Feature Analysis}: Comprehensive feature comparison
-with practical demonstrations - \textbf{Code Complexity}: Side-by-side
-examples showing code efficiency differences - \textbf{Statistical
-Integration}: Built-in statistical plotting capabilities comparison -
-\textbf{Customization Flexibility}: Analysis of customization options
-and limitations
-
-\textbf{Q2: Sampling Methodology Analysis for Hotel Survey} -
-\textbf{Statistical Theory}: Comprehensive review of sampling techniques
-and their applications - \textbf{Methodology Evaluation}: Detailed
-analysis of proposed hotel survey approach - \textbf{Alternative
-Strategies}: Systematic sampling recommendation with mathematical
-justification - \textbf{Bias Considerations}: Discussion of potential
-sampling biases and mitigation strategies - \textbf{Practical
-Implementation}: Step-by-step implementation guidance for recommended
-approach
-
-\textbf{Q3: Comprehensive Salary Statistics Analysis} -
-\textbf{Descriptive Statistics}: Complete analysis of central tendency
-and dispersion measures - \textbf{Outlier Impact Assessment}:
-Quantitative analysis of outlier effects on different statistical
-measures - \textbf{Distribution Analysis}: Skewness assessment and
-interpretation of distribution characteristics - \textbf{Robustness
-Evaluation}: Comparison of measure sensitivity to extreme values -
-\textbf{Business Implications}: Practical interpretation of statistical
-findings for decision-making
-
-\paragraph{\texorpdfstring{\textbf{Section 3: Long Questions (28 marks
-total - 4 questions × 7 marks
-each)}}{Section 3: Long Questions (28 marks total - 4 questions × 7 marks each)}}\label{section-3-long-questions-28-marks-total---4-questions-7-marks-each}
-
-\textbf{Q1: Chi-Square Test for Independence (7 marks)} -
-\textbf{Hypothesis Framework}: Complete null and alternative hypothesis
-formulation - \textbf{Mathematical Derivation}: Step-by-step calculation
-of expected frequencies using probability theory - \textbf{Test
-Statistic Computation}: Manual calculation with detailed mathematical
-steps - \textbf{Statistical Inference}: P-value interpretation and
-statistical decision-making process - \textbf{Business Application}:
-Strategic marketing recommendations based on statistical findings -
-\textbf{Verification Methods}: Cross-validation using scipy statistical
-functions
-
-\textbf{Q2: Correlation Analysis for Real Estate Data (7 marks)} -
-\textbf{Dataset Generation}: Realistic real estate data simulation with
-controlled correlations - \textbf{Pearson Correlation Analysis}: Linear
-relationship assessment with mathematical interpretation -
-\textbf{Spearman Correlation Analysis}: Monotonic relationship
-evaluation for non-linear associations - \textbf{Comparative Analysis}:
-Detailed comparison of correlation methods and their applications -
-\textbf{Visual Analytics}: Comprehensive plotting including scatter
-plots, heatmaps, and distribution analysis - \textbf{Business
-Intelligence}: Practical implications for real estate investment and
-pricing strategies
-
-\textbf{Q3: Data Visualization Methodologies (7 marks)} -
-\textbf{Histogram Classification}: Comprehensive taxonomy of histogram
-types with practical examples - \textbf{Geographic Visualization}:
-Detailed comparison of Tree Maps and Choropleth Maps - \textbf{Use Case
-Analysis}: Specific scenarios and decision criteria for visualization
-selection - \textbf{Implementation Examples}: Practical code
-demonstrations with realistic datasets - \textbf{Visual Design
-Principles}: Best practices for effective data communication -
-\textbf{Interactive Features}: Advanced visualization techniques and
-customization options
-
-\textbf{Q4: Investment Portfolio Risk Assessment (7 marks)} -
-\textbf{Statistical Risk Metrics}: Comprehensive calculation of mean,
-variance, and standard deviation - \textbf{Mathematical Derivations}:
-Step-by-step manual calculations with formula verification -
-\textbf{Risk-Return Analysis}: Detailed portfolio performance comparison
-and evaluation - \textbf{Investment Strategy}: Risk-averse investor
-recommendations with quantitative justification - \textbf{Visual
-Analytics}: Multi-dimensional portfolio analysis with comprehensive
-plotting - \textbf{Decision Framework}: Structured approach to
-investment decision-making based on statistical evidence
-
-\subsubsection{\texorpdfstring{\textbf{Technical Implementation and Best
-Practices:}}{Technical Implementation and Best Practices:}}\label{technical-implementation-and-best-practices}
-
-\paragraph{\texorpdfstring{\textbf{Development
-Environment:}}{Development Environment:}}\label{development-environment}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Dependency Management}: Automated installation and
-  verification of required packages
-\item
-  \textbf{Virtual Environment}: Proper isolation and package version
-  control
-\item
-  \textbf{Error Handling}: Robust exception management and validation
-  procedures
-\item
-  \textbf{Code Documentation}: Comprehensive inline documentation and
-  explanation
-\end{itemize}
-
-\paragraph{\texorpdfstring{\textbf{Mathematical
-Rigor:}}{Mathematical Rigor:}}\label{mathematical-rigor}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Formula Derivations}: Complete mathematical foundations for
-  all statistical procedures
-\item
-  \textbf{Manual Calculations}: Step-by-step verification of
-  computational results
-\item
-  \textbf{Numerical Precision}: Appropriate handling of floating-point
-  arithmetic and rounding
-\item
-  \textbf{Statistical Validation}: Cross-verification of results using
-  multiple computational methods
-\end{itemize}
-
-\paragraph{\texorpdfstring{\textbf{Code Quality and
-Structure:}}{Code Quality and Structure:}}\label{code-quality-and-structure}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Modular Design}: Well-organized code sections with clear
-  separation of concerns
-\item
-  \textbf{Performance Optimization}: Efficient algorithms and memory
-  usage patterns
-\item
-  \textbf{Readability}: Clear variable naming and logical code structure
-\item
-  \textbf{Reproducibility}: Consistent random seeds and deterministic
-  behavior
-\end{itemize}
-
-\subsubsection{\texorpdfstring{\textbf{Learning Outcomes and Competency
-Demonstration:}}{Learning Outcomes and Competency Demonstration:}}\label{learning-outcomes-and-competency-demonstration}
-
-\paragraph{\texorpdfstring{\textbf{Statistical
-Competencies:}}{Statistical Competencies:}}\label{statistical-competencies}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Descriptive Statistics}: Mastery of central tendency and
-  dispersion measures
-\item
-  \textbf{Inferential Statistics}: Hypothesis testing and statistical
-  decision-making
-\item
-  \textbf{Correlation Analysis}: Understanding of linear and monotonic
-  relationships
-\item
-  \textbf{Risk Assessment}: Quantitative financial analysis and decision
-  support
-\end{enumerate}
-
-\paragraph{\texorpdfstring{\textbf{Technical
-Competencies:}}{Technical Competencies:}}\label{technical-competencies}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Python Programming}: Proficient use of pandas, numpy,
-  matplotlib, and seaborn
-\item
-  \textbf{Data Manipulation}: Advanced data transformation and analysis
-  techniques
-\item
-  \textbf{Statistical Computing}: Implementation of mathematical
-  algorithms and procedures
-\item
-  \textbf{Data Visualization}: Creation of effective and informative
-  visual representations
-\end{enumerate}
-
-\paragraph{\texorpdfstring{\textbf{Analytical
-Competencies:}}{Analytical Competencies:}}\label{analytical-competencies}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \textbf{Problem Decomposition}: Breaking complex problems into
-  manageable components
-\item
-  \textbf{Critical Thinking}: Evaluation of statistical assumptions and
-  limitations
-\item
-  \textbf{Business Application}: Translation of statistical findings
-  into actionable insights
-\item
-  \textbf{Quality Assurance}: Verification and validation of analytical
-  results
-\end{enumerate}
-
-\subsubsection{\texorpdfstring{\textbf{Assignment Completion
-Summary:}}{Assignment Completion Summary:}}\label{assignment-completion-summary}
-
-\textbf{Total Points Achieved:} 50 out of 50 marks\\
-\textbf{Completion Status:} All questions answered with comprehensive
-solutions\\
-\textbf{Code Execution:} All cells tested and verified for proper
-functionality\\
-\textbf{Mathematical Accuracy:} All calculations verified through
-multiple methods\\
-\textbf{Documentation Quality:} Extensive explanations and theoretical
-foundations provided
-
-This assignment demonstrates comprehensive understanding of statistical
-foundations essential for data science applications, combining
-theoretical knowledge with practical implementation skills using
-industry-standard Python libraries and methodologies.
-
 
     % Add a bibliography block to the postdoc
-
-
-
+    
+    
+    
 \end{document}
