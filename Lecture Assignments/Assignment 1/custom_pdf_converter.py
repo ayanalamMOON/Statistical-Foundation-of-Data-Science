@@ -38,7 +38,7 @@ def convert_notebook_to_pdf(notebook_path):
     # Run XeLaTeX multiple times for proper cross-references
     pdf_file = f"{base_name}.pdf"
     all_passes_successful = True
-    
+
     for i in range(3):
         print(f"XeLaTeX pass {i+1}/3...")
         latex_compile_cmd = [
@@ -48,7 +48,7 @@ def convert_notebook_to_pdf(notebook_path):
         ]
 
         result = subprocess.run(latex_compile_cmd, capture_output=True, text=True, cwd=os.path.dirname(os.path.abspath(tex_file)) or ".")
-        
+
         # Check for critical errors (but continue with warnings)
         if result.returncode != 0 and "major issue" not in result.stderr:
             print(f"XeLaTeX pass {i+1} failed with critical error:")
@@ -57,15 +57,15 @@ def convert_notebook_to_pdf(notebook_path):
             break
         else:
             print(f"XeLaTeX pass {i+1} completed (warnings ignored)")
-    
+
     # Check if PDF was created after all passes
     if os.path.exists(pdf_file) and all_passes_successful:
         print(f"PDF successfully created: {pdf_file}")
-        
+
         # Get file size
         file_size = os.path.getsize(pdf_file)
         print(f"PDF file size: {file_size:,} bytes")
-        
+
         # Check log file for issues
         log_file = f"{base_name}.log"
         if os.path.exists(log_file):
@@ -76,7 +76,7 @@ def convert_notebook_to_pdf(notebook_path):
                     print("⚠️  Errors found in LaTeX log - PDF may be incomplete")
                 else:
                     print("✅ No critical errors in LaTeX log")
-        
+
         # Keep log file for debugging, only clean auxiliary files
         aux_extensions = ['.aux', '.out', '.toc', '.nav', '.snm', '.vrb']
         for ext in aux_extensions:
@@ -86,7 +86,7 @@ def convert_notebook_to_pdf(notebook_path):
                     os.remove(aux_file)
                 except:
                     pass
-        
+
         return True
     else:
         print("XeLaTeX compilation failed or PDF not created:")

@@ -2,7 +2,7 @@
 
     \usepackage[breakable]{tcolorbox}
     \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
-    
+
 
     % Basic figure setup, for now with no caption control since it's done
     % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
@@ -82,9 +82,9 @@
                                 % normalem makes italics be italics, not underlines
     \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
     \usepackage{mathrsfs}
-    
 
-    
+
+
     % Colors for the hyperref package
     \definecolor{urlcolor}{rgb}{0,.145,.698}
     \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
@@ -187,13 +187,13 @@
     % Document parameters
     % Document title
     \title{Statistical\_FDS\_Assignment\_1\_Solutions}
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 % Pygments definitions
 \makeatletter
 \def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
@@ -387,9 +387,9 @@
     \newcommand{\prompt}[4]{
         {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
     }
-    
 
-    
+
+
     % Prevent overflowing lines due to hard-to-break entities
     \sloppy
     % Setup hyperref package
@@ -401,18 +401,18 @@
       citecolor=citecolor,
       }
     % Slightly bigger margins than the latex defaults
-    
+
     \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
-    
-    
+
+
 
 \begin{document}
-    
-    \maketitle
-    
-    
 
-    
+    \maketitle
+
+
+
+
     \section{Statistical Foundation of Data Science - Assignment 1
 Solutions}\label{statistical-foundation-of-data-science---assignment-1-solutions}
 
@@ -2355,7 +2355,7 @@ Array}\label{conversion-methods-dataframe-numpy-array}
 
 Given a Pandas DataFrame \(\mathbf{D}\) with shape \((m, n)\):
 
-\[\mathbf{D} = \begin{pmatrix} 
+\[\mathbf{D} = \begin{pmatrix}
 d_{1,1} & d_{1,2} & \cdots & d_{1,n} \\
 d_{2,1} & d_{2,2} & \cdots & d_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -2612,7 +2612,7 @@ Indexing}\label{theoretical-analysis-of-array-indexing}
 
 \textbf{Given a matrix} \(\mathbf{T} \in \mathbb{R}^{m \times n}\):
 
-\[\mathbf{T} = \begin{pmatrix} 
+\[\mathbf{T} = \begin{pmatrix}
 t_{1,1} & t_{1,2} & \cdots & t_{1,n} \\
 t_{2,1} & t_{2,2} & \cdots & t_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -2684,7 +2684,7 @@ dimensions according to specific rules.
 Given arrays \(\mathbf{A} \in \mathbb{R}^{m \times n}\) and
 \(\mathbf{b} \in \mathbb{R}^n\):
 
-\[\mathbf{A} + \mathbf{b} = \begin{pmatrix} 
+\[\mathbf{A} + \mathbf{b} = \begin{pmatrix}
 a_{1,1} & a_{1,2} & \cdots & a_{1,n} \\
 a_{2,1} & a_{2,2} & \cdots & a_{2,n} \\
 \vdots & \vdots & \ddots & \vdots \\
@@ -3032,7 +3032,7 @@ regression analysis mathematics.}
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_16_0.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 Key Differences:
 1. Seaborn automatically handles categorical data with color coding
@@ -3223,7 +3223,7 @@ right-skewed data, \(\text{Mean} > \text{Median}\)
 
 \textbf{Mathematical Definition:} For ordered data
 \(x_{(1)} \leq x_{(2)} \leq \cdots \leq x_{(n)}\):
-\[\text{Median} = \begin{cases} 
+\[\text{Median} = \begin{cases}
 x_{(\frac{n+1}{2})} & \text{if } n \text{ is odd} \\
 \frac{x_{(\frac{n}{2})} + x_{(\frac{n}{2}+1)}}{2} & \text{if } n \text{ is even}
 \end{cases}\]
@@ -4276,7 +4276,7 @@ of house price
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_23_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 \prompt{In}{incolor}{27}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
@@ -4413,7 +4413,7 @@ properties
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_24_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 
 ============================================================
@@ -4439,7 +4439,7 @@ House\_Age\_Years                    0.514            1.000
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_24_3.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 
 KEY INSIGHTS from the correlation analysis:
@@ -4911,7 +4911,7 @@ PART 1: DIFFERENT TYPES OF HISTOGRAMS
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_26_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 
 HISTOGRAM TYPES EXPLAINED:
@@ -4948,7 +4948,7 @@ CHOROPLETH MAP DEMONSTRATION:
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_26_3.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 Choropleth Map Example: US States Population Density
 • California: 253 people/sq mile
@@ -5462,7 +5462,7 @@ RISK-AVERSE INVESTOR PRIORITIES:
     \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Statistical_FDS_Assignment_1_Solutions_files/Statistical_FDS_Assignment_1_Solutions_28_1.png}
     \end{center}
     { \hspace*{\fill} \\}
-    
+
     \begin{Verbatim}[commandchars=\\\{\}]
 
 ============================================================
@@ -5767,7 +5767,7 @@ industry-standard Python libraries and methodologies.
 
 
     % Add a bibliography block to the postdoc
-    
-    
-    
+
+
+
 \end{document}
