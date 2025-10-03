@@ -1,0 +1,22 @@
+Practical 2
+
+Statistical Foundation of Data Sciences
+
+Start Date 23rd Sep 2025, Tuesday 10:00 AM Due Date 10th Oct 2025 Time 5:00 PM
+Minimum Marks 0 Maximum Marks 24
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 24
+
+Use the rating dataset and answer the following:
+
+Q1. Can you identify whether teachers Rating Data is a time serires or cross sectional?
+Q2. Find the mean, median, minimum and maximum values for the students.
+Q3. Produce the descriptive statistics table.
+Q4. Create a histogram of the beauty variable and breifly comment on the distribution of the data.
+Q5. Does average beauty score differ by gender? Produce the means and standard deviations for both male and female instructors.
+Q6. Calculate the percentage of males and females that are tenured professors. Will you say that tenure status differ by gender?
+
+PS. Please read the questions carefully to understand which rating dataset to be used.
