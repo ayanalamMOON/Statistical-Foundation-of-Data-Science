@@ -7,13 +7,13 @@
 
 ## Student Information
 
-| Field | Details |
-|-------|---------|
-| **Name** | Md Ayan Alam |
-| **Roll Number** | GF202342645 |
-| **Course** | Statistical Foundation of Data Science |
-| **Institution** | Shoolini University of Biotechnology and Management Sciences |
-| **Academic Year** | 2025 |
+| Field             | Details                                                      |
+| ----------------- | ------------------------------------------------------------ |
+| **Name**          | Md Ayan Alam                                                 |
+| **Roll Number**   | GF202342645                                                  |
+| **Course**        | Statistical Foundation of Data Science                       |
+| **Institution**   | Shoolini University of Biotechnology and Management Sciences |
+| **Academic Year** | 2025                                                         |
 
 ## Repository Overview
 
@@ -205,10 +205,10 @@ pytest >= 8.0.0
 
 ### Assignment Completion Matrix
 
-| Assignment | Start Date | Due Date | Status | Grade | Notes |
-|------------|------------|----------|---------|-------|-------|
-| Assignment 1: Statistical Analysis & Array Ops | Sep 13, 2025 | Sep 16, 2025 | ✅ Completed | - | Comprehensive implementation |
-| Assignment 2: Teacher Rating Data Analysis | Sep 23, 2025 | Oct 10, 2025 | ✅ Completed | - | 6 questions with full statistical analysis |
+| Assignment                                     | Start Date   | Due Date     | Status      | Grade | Notes                                      |
+| ---------------------------------------------- | ------------ | ------------ | ----------- | ----- | ------------------------------------------ |
+| Assignment 1: Statistical Analysis & Array Ops | Sep 13, 2025 | Sep 16, 2025 | ✅ Completed | -     | Comprehensive implementation               |
+| Assignment 2: Teacher Rating Data Analysis     | Sep 23, 2025 | Oct 10, 2025 | ✅ Completed | -     | 6 questions with full statistical analysis |
 
 ### Skills Development Roadmap
 
