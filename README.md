@@ -32,18 +32,46 @@ Statistical-Foundation-of-Data-Science/
 ├── Practical Assignments/             # Hands-on coding assignments
 │   ├── Assignment 1/                  # First assignment - Statistical Analysis
 │   │   ├── stats_analysis.ipynb      # Statistical Analysis & Array Operations
+│   │   ├── Assignment_1.ipynb         # Complete assignment notebook
+│   │   ├── Assignment_1.pdf           # PDF export of assignment
 │   │   ├── generate_data.py           # Synthetic data generation
 │   │   ├── synthetic_data.csv         # Generated dataset
 │   │   ├── age_bin_statistics.csv     # Processed statistics
 │   │   └── Problems.txt               # Assignment specifications
+│   │
+│   ├── Assignment 2/                  # Second assignment - Teacher Rating Analysis
+│   │   ├── Assignment_2.ipynb         # Complete analysis notebook
+│   │   ├── Assignment_2.pdf           # PDF export of assignment
+│   │   ├── generate_rating_data.py    # Teacher rating data generator
+│   │   ├── teacher_ratings.csv        # Generated teacher dataset (500 records)
+│   │   └── Assignment_2_files/        # Supporting files and assets
+│   │
 │   └── [Future assignments will be added here]
 │
 ├── Project/                           # Major course projects
 │   └── [Future project implementations]
 │
+├── Lecture Assignments/               # Lecture-based theoretical assignments
+│   └── Assignment 1/                  # First lecture assignment
+│       ├── Statistical+FDS+-+Assignment+1.pdf
+│       ├── Statistical+FDS+-+Assignment+1.txt
+│       └── Screenshot 2025-09-18 225722.png
+│
 ├── Theory/                            # Theoretical foundations
 │   ├── notes/                         # Course notes
+│   │   ├── 00_study_guide.md
+│   │   ├── 01_descriptive_statistics_notes.md
+│   │   ├── 01_descriptive_statistics_interactive.ipynb
+│   │   ├── 02_probability_distributions_notes.md
+│   │   ├── 02_probability_distributions_interactive.ipynb
+│   │   ├── 03_hypothesis_testing_notes.md
+│   │   ├── 03_hypothesis_testing_interactive.ipynb
+│   │   ├── 04_regression_analysis_notes.md
+│   │   ├── 05_linear_algebra_notes.md
+│   │   ├── 06_bayesian_statistics_notes.md
+│   │   └── README.md
 │   ├── formulas/                      # Statistical formulas
+│   │   └── statistical_formulas_reference.ipynb
 │   └── references/                    # Academic references
 │
 ├── Data/                              # Datasets and data sources
@@ -87,6 +115,33 @@ Statistical-Foundation-of-Data-Science/
 - Tidy data principles implementation
 - Advanced linear algebra operations
 - Professional visualization standards
+
+#### Assignment 2: Teacher Rating Data Analysis
+- **File**: `Practical Assignments/Assignment 2/Assignment_2.ipynb`
+- **Status**: Completed
+- **Completion Date**: October 3, 2025
+- **Topics Covered**:
+  - Data type identification (Cross-sectional vs Time Series)
+  - Comprehensive descriptive statistics computation
+  - Distribution analysis and normality testing
+  - Gender-based comparative analysis
+  - Chi-square test of independence
+  - Effect size calculations (Cohen's d, Cramér's V)
+- **Key Technologies**: Pandas, NumPy, Matplotlib, Seaborn, SciPy
+- **Deliverables**:
+  - Jupyter notebook with 6 complete questions
+  - PDF export for submission
+  - Synthetic teacher rating dataset (500 teachers, 12 variables)
+  - Multiple statistical visualizations (histograms, box plots, Q-Q plots, violin plots)
+
+**Technical Achievements**:
+- Generated realistic synthetic dataset with correlations
+- Performed statistical hypothesis testing (t-tests, chi-square)
+- Created publication-quality multi-panel visualizations
+- Implemented normality tests (Shapiro-Wilk, D'Agostino)
+- Calculated effect sizes for practical significance
+- Cross-tabulation and contingency table analysis
+- Professional markdown documentation with interpretations
 
 ---
 
@@ -152,7 +207,8 @@ pytest >= 8.0.0
 
 | Assignment | Start Date | Due Date | Status | Grade | Notes |
 |------------|------------|----------|---------|-------|-------|
-| Statistical Analysis & Array Ops | Sep 13, 2025 | Sep 16, 2025 | Completed | - | Comprehensive implementation |
+| Assignment 1: Statistical Analysis & Array Ops | Sep 13, 2025 | Sep 16, 2025 | ✅ Completed | - | Comprehensive implementation |
+| Assignment 2: Teacher Rating Data Analysis | Sep 23, 2025 | Oct 10, 2025 | ✅ Completed | - | 6 questions with full statistical analysis |
 
 ### Skills Development Roadmap
 
@@ -187,6 +243,28 @@ graph TD
 - **Multivariate Analysis**: Handle complex multi-dimensional datasets
 - **Computational Statistics**: Use simulation and resampling methods
 - **Statistical Software**: Proficiency in R, Python, and specialized packages
+
+## Code Quality Standards
+
+### Formatting
+This repository uses **Black** code formatter for consistent Python code style:
+```bash
+# Format Python files
+black "path/to/file.py"
+
+# Format Jupyter notebooks
+black "path/to/notebook.ipynb"
+
+# Check formatting without changes
+black --check "path/to/file.py"
+```
+
+### Best Practices
+- All code follows PEP 8 style guidelines
+- Comprehensive docstrings for functions and classes
+- Type hints for function parameters and returns
+- Unit tests for utility functions
+- Git commits follow conventional commit format
 
 ## Resources and References
 
@@ -223,5 +301,23 @@ GitHub: [@ayanalamMOON](https://github.com/ayanalamMOON)
 
 ---
 
-*Last Updated: September 16, 2025*
+## Recent Updates
+
+### October 3, 2025
+- ✅ Completed Assignment 2: Teacher Rating Data Analysis
+- ✅ Added comprehensive statistical hypothesis testing
+- ✅ Generated PDF exports for both assignments
+- ✅ Implemented code formatting with Black
+- ✅ Enhanced repository with description and 19 topics for discoverability
+- ✅ Updated README with complete repository structure
+
+### September 16, 2025
+- ✅ Completed Assignment 1: Statistical Analysis and Array Operations
+- ✅ Set up initial repository structure
+- ✅ Created comprehensive theory notes and interactive notebooks
+- ✅ Established development environment with virtual environment
+
+---
+
+*Last Updated: October 3, 2025*
 *Repository maintained for academic purposes*
