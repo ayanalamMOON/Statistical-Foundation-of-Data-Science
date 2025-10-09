@@ -1,0 +1,19 @@
+Practical 3
+
+Statistical Foundation of Data Sciences
+
+Start Date 29th Sep 2025, Monday 10:55 AM Due Date 10th Oct 2025 Time 3:00 PM
+Minimum Marks 0 Maximum Marks 30
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 30
+
+Used the same dataset used in Practical 2:
+Question 1. Identify all duplicate cases using prof. Using all observations, find the average and standard deviation for age. Repeat the analysis by first filtering the dat
+a set to include one observation for each instructor with a total number of observations restricted to 94.
+Question 2. Using a bar chart, demonstrate if instructors teaching lower-division courses receive higher average teaching evaluations.
+Question 3. Plot the relationship between age and teaching evaluation scores.
+Question 4. Using gender-differentiated scatter plots, plot the relationship between age and teaching evaluation scores.
+Question 5. Create a scatterplot of age and evaluation scores, differentiated by gender and tenure.
