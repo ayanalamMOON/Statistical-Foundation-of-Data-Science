@@ -1,0 +1,477 @@
+# This file contains the remaining cells to be added to Assignment_4.ipynb
+# Questions 2 (visualization), 3, 4, 5 with mathematical formulations
+
+CELL TYPE: python
+---
+# Visualization for Question 2
+
+fig, axes = plt.subplots(2, 3, figsize=(18, 12))
+
+# 1. Box plot comparison
+bp = axes[0, 0].boxplot([non_tenured, tenured],
+                        labels=['Non-Tenured', 'Tenured'],
+                        patch_artist=True,
+                        notch=True,
+                        showmeans=True,
+                        meanprops=dict(marker='D', markerfacecolor='red', markersize=8))
+
+colors = ['#FF9999', '#66B2FF']
+for patch, color in zip(bp['boxes'], colors):
+    patch.set_facecolor(color)
+    patch.set_alpha(0.7)
+
+axes[0, 0].set_ylabel('Age (years)', fontsize=12, fontweight='bold')
+axes[0, 0].set_xlabel('Tenure Status', fontsize=12, fontweight='bold')
+axes[0, 0].set_title('Age Distribution by Tenure Status', fontsize=13, fontweight='bold')
+axes[0, 0].grid(True, alpha=0.3, axis='y')
+
+# Add statistics text
+axes[0, 0].text(1, non_tenured.mean(), f'μ={non_tenured.mean():.1f}',
+               ha='right', va='center', fontsize=9, bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+axes[0, 0].text(2, tenured.mean(), f'μ={tenured.mean():.1f}',
+               ha='left', va='center', fontsize=9, bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+# 2. Overlapping histograms
+axes[0, 1].hist(non_tenured, bins=15, alpha=0.6, label='Non-Tenured',
+               color='#FF9999', edgecolor='black', density=True)
+axes[0, 1].hist(tenured, bins=15, alpha=0.6, label='Tenured',
+               color='#66B2FF', edgecolor='black', density=True)
+
+axes[0, 1].axvline(non_tenured.mean(), color='red', linestyle='--', linewidth=2, alpha=0.8, label=f'Non-Tenured μ={non_tenured.mean():.1f}')
+axes[0, 1].axvline(tenured.mean(), color='blue', linestyle='--', linewidth=2, alpha=0.8, label=f'Tenured μ={tenured.mean():.1f}')
+
+axes[0, 1].set_xlabel('Age (years)', fontsize=12, fontweight='bold')
+axes[0, 1].set_ylabel('Density', fontsize=12, fontweight='bold')
+axes[0, 1].set_title('Age Distribution (Histogram)', fontsize=13, fontweight='bold')
+axes[0, 1].legend(fontsize=9)
+axes[0, 1].grid(True, alpha=0.3)
+
+# 3. Violin plot
+parts = axes[0, 2].violinplot([non_tenured, tenured],
+                              positions=[1, 2],
+                              showmeans=True,
+                              showmedians=True)
+
+for i, pc in enumerate(parts['bodies']):
+    pc.set_facecolor(colors[i])
+    pc.set_alpha(0.7)
+
+axes[0, 2].set_xticks([1, 2])
+axes[0, 2].set_xticklabels(['Non-Tenured', 'Tenured'])
+axes[0, 2].set_ylabel('Age (years)', fontsize=12, fontweight='bold')
+axes[0, 2].set_xlabel('Tenure Status', fontsize=12, fontweight='bold')
+axes[0, 2].set_title('Age Distribution (Violin Plot)', fontsize=13, fontweight='bold')
+axes[0, 2].grid(True, alpha=0.3, axis='y')
+
+# 4. Q-Q plots for normality check
+from scipy.stats import probplot
+
+probplot(non_tenured, dist="norm", plot=axes[1, 0])
+axes[1, 0].set_title('Q-Q Plot: Non-Tenured', fontsize=13, fontweight='bold')
+axes[1, 0].grid(True, alpha=0.3)
+
+probplot(tenured, dist="norm", plot=axes[1, 1])
+axes[1, 1].set_title('Q-Q Plot: Tenured', fontsize=13, fontweight='bold')
+axes[1, 1].grid(True, alpha=0.3)
+
+# 5. Summary statistics table
+axes[1, 2].axis('tight')
+axes[1, 2].axis('off')
+
+summary_data = [
+    ['Statistic', 'Non-Tenured', 'Tenured'],
+    ['Sample Size (n)', f'{len(non_tenured)}', f'{len(tenured)}'],
+    ['Mean (μ)', f'{non_tenured.mean():.2f}', f'{tenured.mean():.2f}'],
+    ['Std Dev (σ)', f'{non_tenured.std(ddof=1):.2f}', f'{tenured.std(ddof=1):.2f}'],
+    ['Median', f'{non_tenured.median():.2f}', f'{tenured.median():.2f}'],
+    ['Min', f'{non_tenured.min():.2f}', f'{tenured.min():.2f}'],
+    ['Max', f'{non_tenured.max():.2f}', f'{tenured.max():.2f}'],
+    ['', '', ''],
+    ['t-statistic', f'{t_stat:.4f}', ''],
+    ['p-value', f'{p_value:.4f}', ''],
+    ['Cohen\\'s d', f'{cohens_d:.4f}', f'({effect})'],
+    ['Significant?', 'Yes' if p_value < 0.05 else 'No', '(α=0.05)']
+]
+
+table = axes[1, 2].table(cellText=summary_data, cellLoc='center', loc='center',
+                        colWidths=[0.35, 0.3, 0.3])
+table.auto_set_font_size(False)
+table.set_fontsize(10)
+table.scale(1, 2.2)
+
+# Style header
+for i in range(3):
+    table[(0, i)].set_facecolor('#2C3E50')
+    table[(0, i)].set_text_props(weight='bold', color='white')
+
+# Color rows
+for i in range(1, len(summary_data)):
+    for j in range(3):
+        if i == 7:
+            table[(i, j)].set_facecolor('#ECF0F1')
+        elif i > 7:
+            table[(i, j)].set_facecolor('#FFF3CD')
+        elif i % 2 == 0:
+            table[(i, j)].set_facecolor('#F8F9FA')
+
+axes[1, 2].set_title('Statistical Summary', fontsize=13, fontweight='bold', pad=20)
+
+plt.tight_layout()
+plt.show()
+
+print("\nVisualization complete!")
+---
+
+CELL TYPE: markdown
+---
+## Question 2: Mathematical Formulations
+
+### Sample Mean
+
+$$\bar{x} = \frac{1}{n} \sum_{i=1}^{n} x_i$$
+
+### Sample Standard Deviation
+
+$$s = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (x_i - \bar{x})^2}$$
+
+### Standard Error of the Mean
+
+$$SE = \frac{s}{\sqrt{n}}$$
+
+### Independent Samples t-Test
+
+The t-statistic for comparing two independent means:
+
+$$t = \frac{\bar{x}_1 - \bar{x}_2}{SE_{diff}}$$
+
+where the standard error of the difference is:
+
+$$SE_{diff} = \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}$$
+
+### Pooled Standard Deviation
+
+$$s_p = \sqrt{\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1+n_2-2}}$$
+
+### Cohen's d Effect Size
+
+$$d = \frac{\bar{x}_1 - \bar{x}_2}{s_p}$$
+
+### Confidence Interval for Difference in Means
+
+$$CI = (\bar{x}_1 - \bar{x}_2) \pm t_{\alpha/2, df} \times SE_{diff}$$
+
+where $df = n_1 + n_2 - 2$ (degrees of freedom)
+
+### Coefficient of Variation
+
+$$CV = \frac{s}{\bar{x}} \times 100\%$$
+
+---
+
+CELL TYPE: markdown
+---
+## Question 3: Best Graph for Age Variable
+
+**Task (5 marks):** Which graph works better and plot that graph for the age variable?
+
+**Analysis Approach:**
+1. Evaluate different visualization options (histogram, KDE, boxplot, violin plot)
+2. Assess each graph based on:
+   - Data distribution visualization
+   - Outlier detection capability
+   - Central tendency and spread representation
+   - Ease of interpretation
+3. Recommend the best visualization
+4. Create comprehensive age visualization with multiple perspectives
+---
+
+CELL TYPE: python
+---
+# Question 3: Best Graph for Age Variable
+
+print("="*90)
+print("QUESTION 3: BEST GRAPH FOR AGE VARIABLE")
+print("="*90)
+
+# Step 1: Analyze age variable characteristics
+print("\n" + "="*90)
+print("STEP 1: AGE VARIABLE CHARACTERISTICS")
+print("="*90)
+
+age_data = df['age'].dropna()
+
+print(f"\nSample size: {len(age_data)}")
+print(f"Mean: {age_data.mean():.4f} years")
+print(f"Median: {age_data.median():.4f} years")
+print(f"Mode: {age_data.mode()[0]:.4f} years")
+print(f"Standard deviation: {age_data.std(ddof=1):.4f} years")
+print(f"Range: {age_data.min():.1f} - {age_data.max():.1f} years")
+print(f"IQR: {age_data.quantile(0.75) - age_data.quantile(0.25):.4f} years")
+print(f"Skewness: {age_data.skew():.4f}")
+print(f"Kurtosis: {age_data.kurtosis():.4f}")
+
+# Check for outliers using IQR method
+Q1 = age_data.quantile(0.25)
+Q3 = age_data.quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+outliers = age_data[(age_data < lower_bound) | (age_data > upper_bound)]
+print(f"\nOutliers detected (IQR method): {len(outliers)}")
+if len(outliers) > 0:
+    print(f"Outlier values: {sorted(outliers.values)}")
+
+# Step 2: Evaluate visualization options
+print("\n" + "="*90)
+print("STEP 2: VISUALIZATION EVALUATION")
+print("="*90)
+
+print("\n1. HISTOGRAM:")
+print("   Pros:")
+print("   + Shows frequency distribution clearly")
+print("   + Easy to identify mode and shape of distribution")
+print("   + Good for large datasets")
+print("   Cons:")
+print("   - Sensitive to bin width selection")
+print("   - Can hide individual data points")
+print("   - Less effective for small datasets")
+
+print("\n2. KERNEL DENSITY ESTIMATE (KDE):")
+print("   Pros:")
+print("   + Smooth representation of distribution")
+print("   + Not affected by binning")
+print("   + Good for comparing multiple distributions")
+print("   Cons:")
+print("   - Can be misleading with small samples")
+print("   - Doesn't show actual frequencies")
+print("   - Requires bandwidth parameter selection")
+
+print("\n3. BOX PLOT:")
+print("   Pros:")
+print("   + Shows quartiles, median, and outliers clearly")
+print("   + Compact visualization")
+print("   + Excellent for comparing groups")
+print("   + Robust to outliers")
+print("   Cons:")
+print("   - Hides distributional shape (e.g., bimodality)")
+print("   - Less informative for small datasets")
+print("   - Doesn't show actual data density")
+
+print("\n4. VIOLIN PLOT:")
+print("   Pros:")
+print("   + Combines box plot and KDE")
+print("   + Shows distribution shape and quartiles")
+print("   + Good for comparing groups")
+print("   Cons:")
+print("   - More complex to interpret")
+print("   - Can be cluttered with many groups")
+print("   - Requires moderate sample size")
+
+print("\n5. HISTOGRAM + KDE OVERLAY:")
+print("   Pros:")
+print("   + Combines benefits of both histogram and KDE")
+print("   + Shows both frequency and smooth distribution")
+print("   + Most informative single visualization")
+print("   Cons:")
+print("   - Can be visually busy")
+print("   - Requires proper scaling")
+
+# Step 3: Recommendation
+print("\n" + "="*90)
+print("STEP 3: RECOMMENDATION")
+print("="*90)
+
+print("\n✓ BEST VISUALIZATION: HISTOGRAM WITH KDE OVERLAY")
+print("\nRationale:")
+print("1. Shows actual frequency distribution (histogram bars)")
+print("2. Smooth probability density overlay (KDE curve)")
+print("3. Easy to identify central tendency, spread, and shape")
+print("4. Effective outlier visualization")
+print("5. Appropriate for our sample size (n = {})".format(len(age_data)))
+print("6. Provides both discrete and continuous perspectives")
+
+# Additional considerations
+if abs(age_data.skew()) > 0.5:
+    print(f"\n→ Age distribution shows skewness ({age_data.skew():.2f})")
+    print("  Histogram clearly reveals this asymmetry")
+
+if len(outliers) > 0:
+    print(f"\n→ {len(outliers)} outliers detected")
+    print("  Histogram + KDE shows their impact on the distribution")
+
+print("\n" + "="*90)
+---
+
+CELL TYPE: python
+---
+# Create comprehensive visualization for Question 3
+
+fig = plt.figure(figsize=(20, 12))
+gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
+
+age_data = df['age'].dropna()
+
+# 1. MAIN PLOT: Histogram with KDE overlay (recommended)
+ax_main = fig.add_subplot(gs[0:2, 0:2])
+
+# Histogram
+n, bins, patches = ax_main.hist(age_data, bins=30, density=True, alpha=0.7,
+                                color='#3498DB', edgecolor='black', linewidth=1.2,
+                                label='Histogram (frequency distribution)')
+
+# Color bins by density
+fracs = n / n.max()
+norm = plt.cm.colors.Normalize(vmin=fracs.min(), vmax=fracs.max())
+colors = plt.cm.viridis(norm(fracs))
+
+for thisfrac, thispatch in zip(fracs, patches):
+    color = plt.cm.viridis(norm(thisfrac))
+    thispatch.set_facecolor(color)
+
+# KDE overlay
+from scipy.stats import gaussian_kde
+kde = gaussian_kde(age_data)
+x_range = np.linspace(age_data.min(), age_data.max(), 200)
+ax_main.plot(x_range, kde(x_range), 'r-', linewidth=3, label='KDE (smooth density)', alpha=0.8)
+
+# Add mean and median lines
+ax_main.axvline(age_data.mean(), color='darkgreen', linestyle='--', linewidth=2.5,
+               label=f'Mean = {age_data.mean():.2f} years', alpha=0.8)
+ax_main.axvline(age_data.median(), color='orange', linestyle='-.', linewidth=2.5,
+               label=f'Median = {age_data.median():.2f} years', alpha=0.8)
+
+# Shade standard deviation range
+ax_main.axvspan(age_data.mean() - age_data.std(ddof=1),
+               age_data.mean() + age_data.std(ddof=1),
+               alpha=0.2, color='yellow', label=f'±1 SD (σ = {age_data.std(ddof=1):.2f})')
+
+ax_main.set_xlabel('Age (years)', fontsize=14, fontweight='bold')
+ax_main.set_ylabel('Density', fontsize=14, fontweight='bold')
+ax_main.set_title('BEST VISUALIZATION: Age Distribution\n(Histogram + KDE Overlay)',
+                 fontsize=16, fontweight='bold', pad=20)
+ax_main.legend(fontsize=11, loc='upper right')
+ax_main.grid(True, alpha=0.3, linestyle='--')
+
+# Add statistics box
+stats_text = f'''Statistics Summary:
+n = {len(age_data)}
+Mean = {age_data.mean():.2f} years
+Median = {age_data.median():.2f} years
+Mode = {age_data.mode()[0]:.2f} years
+SD = {age_data.std(ddof=1):.2f} years
+Range = [{age_data.min():.1f}, {age_data.max():.1f}]
+Skewness = {age_data.skew():.3f}
+Kurtosis = {age_data.kurtosis():.3f}'''
+
+ax_main.text(0.98, 0.97, stats_text, transform=ax_main.transAxes,
+            fontsize=10, verticalalignment='top', horizontalalignment='right',
+            bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.8))
+
+# 2. Box plot
+ax_box = fig.add_subplot(gs[0, 2])
+bp = ax_box.boxplot(age_data, vert=True, patch_artist=True, notch=True, showmeans=True,
+                    meanprops=dict(marker='D', markerfacecolor='red', markersize=10))
+bp['boxes'][0].set_facecolor('#66B2FF')
+bp['boxes'][0].set_alpha(0.7)
+
+ax_box.set_ylabel('Age (years)', fontsize=12, fontweight='bold')
+ax_box.set_title('Box Plot', fontsize=13, fontweight='bold')
+ax_box.grid(True, alpha=0.3, axis='y')
+
+# Add quartile labels
+Q1 = age_data.quantile(0.25)
+Q2 = age_data.median()
+Q3 = age_data.quantile(0.75)
+
+ax_box.text(1.15, Q1, f'Q1={Q1:.1f}', fontsize=9)
+ax_box.text(1.15, Q2, f'Q2={Q2:.1f}', fontsize=9)
+ax_box.text(1.15, Q3, f'Q3={Q3:.1f}', fontsize=9)
+
+# 3. Violin plot
+ax_violin = fig.add_subplot(gs[1, 2])
+parts = ax_violin.violinplot([age_data], positions=[1], showmeans=True, showmedians=True)
+for pc in parts['bodies']:
+    pc.set_facecolor('#9B59B6')
+    pc.set_alpha(0.7)
+
+ax_violin.set_ylabel('Age (years)', fontsize=12, fontweight='bold')
+ax_violin.set_title('Violin Plot', fontsize=13, fontweight='bold')
+ax_violin.set_xticks([1])
+ax_violin.set_xticklabels(['Age'])
+ax_violin.grid(True, alpha=0.3, axis='y')
+
+# 4. Cumulative distribution
+ax_cumul = fig.add_subplot(gs[2, 0])
+sorted_ages = np.sort(age_data)
+cumulative = np.arange(1, len(sorted_ages) + 1) / len(sorted_ages)
+
+ax_cumul.plot(sorted_ages, cumulative, linewidth=2.5, color='#E74C3C')
+ax_cumul.axhline(0.5, color='gray', linestyle='--', alpha=0.5)
+ax_cumul.axvline(age_data.median(), color='gray', linestyle='--', alpha=0.5)
+
+ax_cumul.set_xlabel('Age (years)', fontsize=12, fontweight='bold')
+ax_cumul.set_ylabel('Cumulative Probability', fontsize=12, fontweight='bold')
+ax_cumul.set_title('Cumulative Distribution Function (CDF)', fontsize=13, fontweight='bold')
+ax_cumul.grid(True, alpha=0.3)
+
+# 5. Q-Q plot
+ax_qq = fig.add_subplot(gs[2, 1])
+probplot(age_data, dist="norm", plot=ax_qq)
+ax_qq.set_title('Q-Q Plot (Normality Check)', fontsize=13, fontweight='bold')
+ax_qq.grid(True, alpha=0.3)
+
+# 6. Summary comparison table
+ax_table = fig.add_subplot(gs[2, 2])
+ax_table.axis('tight')
+ax_table.axis('off')
+
+comparison_data = [
+    ['Visualization', 'Score', 'Best For'],
+    ['Histogram+KDE', '⭐⭐⭐⭐⭐', 'Overall'],
+    ['Box Plot', '⭐⭐⭐⭐', 'Outliers'],
+    ['Violin Plot', '⭐⭐⭐⭐', 'Shape'],
+    ['Histogram', '⭐⭐⭐', 'Frequency'],
+    ['KDE Only', '⭐⭐⭐', 'Smoothness']
+]
+
+table = ax_table.table(cellText=comparison_data, cellLoc='center', loc='center',
+                      colWidths=[0.4, 0.3, 0.3])
+table.auto_set_font_size(False)
+table.set_fontsize(10)
+table.scale(1, 2.5)
+
+# Style header
+for i in range(3):
+    table[(0, i)].set_facecolor('#2C3E50')
+    table[(0, i)].set_text_props(weight='bold', color='white')
+
+# Highlight best choice
+table[(1, 0)].set_facecolor('#D5F4E6')
+table[(1, 1)].set_facecolor('#D5F4E6')
+table[(1, 2)].set_facecolor('#D5F4E6')
+
+for i in range(2, len(comparison_data)):
+    for j in range(3):
+        if i % 2 == 0:
+            table[(i, j)].set_facecolor('#F8F9FA')
+
+ax_table.set_title('Visualization Comparison', fontsize=13, fontweight='bold', pad=20)
+
+plt.suptitle('Question 3: Comprehensive Age Variable Visualization Analysis',
+            fontsize=18, fontweight='bold', y=0.995)
+
+plt.show()
+
+print("\n" + "="*90)
+print("CONCLUSION")
+print("="*90)
+print("\n✓ The HISTOGRAM WITH KDE OVERLAY is the best visualization for the age variable.")
+print("  It effectively shows:")
+print("  - Frequency distribution (bars)")
+print("  - Smooth probability density (KDE curve)")
+print("  - Central tendency (mean and median lines)")
+print("  - Variability (standard deviation shading)")
+print("  - Distribution shape (skewness, modality)")
+print("\n" + "="*90)
+---

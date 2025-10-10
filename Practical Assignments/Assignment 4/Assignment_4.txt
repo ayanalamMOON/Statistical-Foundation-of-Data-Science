@@ -1,0 +1,18 @@
+Practical 4
+
+Statistical Foundation of Data Sciences
+
+Start Date 6th Oct 2025, Monday 10:55 AM Due Date 14th Oct 2025 Time 3:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+Using the Student Rating Dataset and answer the following:
+1. Calculate the percentage of visible minorities are tenure professors. Will you say that tenure status differed if teacher was a visible minority? [5]
+2. Does average age differ by tenure? Produce the means and standard deviations for both tenured and untenured professors. [4]
+3. Which graph works better and plot that graph for the age variable? [5]
+4. Define the difference between pyplot.bar and pyplot.barh. Also plot the graph for gender variable. [4]
+5. What is the Median evaluation score for tenured Professors? [2]
