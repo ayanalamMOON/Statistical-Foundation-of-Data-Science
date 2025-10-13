@@ -46,7 +46,16 @@ Statistical-Foundation-of-Data-Science/
 │   │   ├── teacher_ratings.csv        # Generated teacher dataset (500 records)
 │   │   └── Assignment_2_files/        # Supporting files and assets
 │   │
-│   └── [Future assignments will be added here]
+│   ├── Assignment 3/                  # Third assignment - Advanced Analysis
+│   │   ├── Assignment_3.ipynb         # Complete analysis notebook
+│   │   ├── Assignment_3.pdf           # PDF export of assignment
+│   │   └── Assignment 3.txt           # Assignment specifications
+│   │
+│   └── Assignment_4/                  # Fourth assignment - Categorical & Continuous Variables
+│       ├── Assignment_4.ipynb         # Complete analysis notebook (emoji-free)
+│       ├── Assignment_4.pdf           # PDF export of assignment
+│       ├── Assignment_4.txt           # Assignment specifications
+│       └── remaining_cells.txt        # Additional content
 │
 ├── Project/                           # Major course projects
 │   └── [Future project implementations]
@@ -143,6 +152,63 @@ Statistical-Foundation-of-Data-Science/
 - Cross-tabulation and contingency table analysis
 - Professional markdown documentation with interpretations
 
+#### Assignment 3: Advanced Teacher Rating Analysis
+- **File**: `Practical Assignments/Assignment 3/Assignment_3.ipynb`
+- **Status**: Completed
+- **Completion Date**: October 9, 2025
+- **Topics Covered**:
+  - Duplicate identification and handling
+  - Filtered data analysis and comparison
+  - Course division comparative analysis
+  - Bivariate relationship exploration (scatter plots)
+  - Multi-variable analysis with differentiation
+  - Advanced data filtering and segmentation
+- **Key Technologies**: Pandas, NumPy, Matplotlib, Seaborn, SciPy
+- **Deliverables**:
+  - Jupyter notebook with 5 complete questions
+  - PDF export for submission
+  - Comparative visualizations (bar charts, scatter plots)
+  - Statistical analysis across multiple variables
+
+**Technical Achievements**:
+- Advanced data filtering and duplicate detection
+- Multi-level data segmentation and comparison
+- Complex scatter plot analysis with multiple groupings
+- Course division analysis with statistical significance testing
+- Professional multi-panel visualization layouts
+- Comprehensive statistical reporting
+
+#### Assignment 4: Categorical and Continuous Variable Analysis
+- **File**: `Practical Assignments/Assignment_4/Assignment_4.ipynb`
+- **Status**: Completed
+- **Completion Date**: October 13, 2025
+- **Topics Covered**:
+  - Chi-square test of independence for categorical variables
+  - Independent samples t-test for group comparisons
+  - Visualization selection and implementation
+  - Horizontal vs vertical bar chart analysis
+  - Median analysis and non-parametric testing
+  - Mann-Whitney U test
+  - Effect size calculations (Cohen's d, Cramér's V, Rank-biserial)
+- **Key Technologies**: Pandas, NumPy, Matplotlib, Seaborn, SciPy, Statsmodels
+- **Deliverables**:
+  - Jupyter notebook with 5 complete questions (emoji-free, professional format)
+  - PDF export for submission
+  - Comprehensive visualizations (histograms, KDE, box plots, violin plots, CDFs)
+  - Multiple statistical test implementations
+
+**Technical Achievements**:
+- Chi-square test with contingency tables and expected frequencies
+- Assumption checking for parametric tests (normality, homogeneity of variance)
+- Non-parametric alternatives (Mann-Whitney U test)
+- Multiple effect size measures with interpretation
+- Advanced visualization techniques (KDE, Q-Q plots, cumulative distributions)
+- Data cleaning and NaN handling for robust analysis
+- Professional, academic-style presentation (emoji-free)
+- Risk ratios and odds ratios calculation
+- Multi-panel figure layouts with GridSpec
+- Comprehensive statistical reporting with formal notation
+
 ---
 
 ## Technical Requirements
@@ -205,10 +271,12 @@ pytest >= 8.0.0
 
 ### Assignment Completion Matrix
 
-| Assignment                                     | Start Date   | Due Date     | Status      | Grade | Notes                                      |
-| ---------------------------------------------- | ------------ | ------------ | ----------- | ----- | ------------------------------------------ |
-| Assignment 1: Statistical Analysis & Array Ops | Sep 13, 2025 | Sep 16, 2025 | ✅ Completed | -     | Comprehensive implementation               |
-| Assignment 2: Teacher Rating Data Analysis     | Sep 23, 2025 | Oct 10, 2025 | ✅ Completed | -     | 6 questions with full statistical analysis |
+| Assignment                                      | Start Date   | Due Date     | Status    | Grade | Notes                                      |
+| ----------------------------------------------- | ------------ | ------------ | --------- | ----- | ------------------------------------------ |
+| Assignment 1: Statistical Analysis & Array Ops  | Sep 13, 2025 | Sep 16, 2025 | Completed | -     | Comprehensive implementation               |
+| Assignment 2: Teacher Rating Data Analysis      | Sep 23, 2025 | Oct 10, 2025 | Completed | -     | 6 questions with full statistical analysis |
+| Assignment 3: Advanced Teacher Rating Analysis  | Sep 29, 2025 | Oct 10, 2025 | Completed | -     | 5 questions with advanced filtering        |
+| Assignment 4: Categorical & Continuous Analysis | Oct 6, 2025  | Oct 14, 2025 | Completed | -     | 5 questions with hypothesis testing        |
 
 ### Skills Development Roadmap
 
@@ -303,21 +371,39 @@ GitHub: [@ayanalamMOON](https://github.com/ayanalamMOON)
 
 ## Recent Updates
 
+### October 13, 2025
+- Completed Assignment 4: Categorical and Continuous Variable Analysis
+- Implemented comprehensive hypothesis testing (chi-square, t-tests, Mann-Whitney U)
+- Added effect size calculations (Cohen's d, Cramér's V, Rank-biserial correlation)
+- Created advanced visualizations (KDE, violin plots, CDFs, Q-Q plots)
+- Removed all emojis from Assignment 4 for professional presentation
+- Generated professional PDF export (1.4 MB, emoji-free)
+- Added data cleaning and NaN handling for robust analysis
+- Implemented multi-panel figure layouts with GridSpec
+
+### October 9, 2025
+- Completed Assignment 3: Advanced Teacher Rating Analysis
+- Added duplicate identification and filtering techniques
+- Implemented course division comparative analysis
+- Created bivariate relationship visualizations with scatter plots
+- Generated PDF export for Assignment 3
+- Enhanced data segmentation and filtering methods
+
 ### October 3, 2025
-- ✅ Completed Assignment 2: Teacher Rating Data Analysis
-- ✅ Added comprehensive statistical hypothesis testing
-- ✅ Generated PDF exports for both assignments
-- ✅ Implemented code formatting with Black
-- ✅ Enhanced repository with description and 19 topics for discoverability
-- ✅ Updated README with complete repository structure
+- Completed Assignment 2: Teacher Rating Data Analysis
+- Added comprehensive statistical hypothesis testing
+- Generated PDF exports for both assignments
+- Implemented code formatting with Black
+- Enhanced repository with description and 19 topics for discoverability
+- Updated README with complete repository structure
 
 ### September 16, 2025
-- ✅ Completed Assignment 1: Statistical Analysis and Array Operations
-- ✅ Set up initial repository structure
-- ✅ Created comprehensive theory notes and interactive notebooks
-- ✅ Established development environment with virtual environment
+- Completed Assignment 1: Statistical Analysis and Array Operations
+- Set up initial repository structure
+- Created comprehensive theory notes and interactive notebooks
+- Established development environment with virtual environment
 
 ---
 
-*Last Updated: October 3, 2025*
+*Last Updated: October 13, 2025*
 *Repository maintained for academic purposes*
