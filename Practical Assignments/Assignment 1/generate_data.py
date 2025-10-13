@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 
+
 def generate_synthetic_data(n_samples=1000, random_seed=42):
     """
     Generate synthetic dataset for statistical analysis.
@@ -28,32 +29,33 @@ def generate_synthetic_data(n_samples=1000, random_seed=42):
     score = np.clip(score_base, 0, 100)
 
     # Create DataFrame
-    df = pd.DataFrame({
-        'age': age,
-        'income': income,
-        'score': score
-    })
+    df = pd.DataFrame({"age": age, "income": income, "score": score})
 
     # Introduce some NaN values randomly
-    nan_indices_income = np.random.choice(df.index, size=int(0.05 * n_samples), replace=False)
-    nan_indices_score = np.random.choice(df.index, size=int(0.03 * n_samples), replace=False)
+    nan_indices_income = np.random.choice(
+        df.index, size=int(0.05 * n_samples), replace=False
+    )
+    nan_indices_score = np.random.choice(
+        df.index, size=int(0.03 * n_samples), replace=False
+    )
 
-    df.loc[nan_indices_income, 'income'] = np.nan
-    df.loc[nan_indices_score, 'score'] = np.nan
+    df.loc[nan_indices_income, "income"] = np.nan
+    df.loc[nan_indices_score, "score"] = np.nan
 
     # Round age to integers and income to 2 decimal places
-    df['age'] = df['age'].round().astype(int)
-    df['income'] = df['income'].round(2)
-    df['score'] = df['score'].round(2)
+    df["age"] = df["age"].round().astype(int)
+    df["income"] = df["income"].round(2)
+    df["score"] = df["score"].round(2)
 
     return df
+
 
 if __name__ == "__main__":
     # Generate the dataset
     data = generate_synthetic_data(1000)
 
     # Save to CSV
-    data.to_csv('synthetic_data.csv', index=False)
+    data.to_csv("synthetic_data.csv", index=False)
 
     print("Synthetic dataset generated successfully!")
     print(f"Dataset shape: {data.shape}")

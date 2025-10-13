@@ -17,32 +17,36 @@ import warnings
 
 
 # Set default style
-plt.style.use('default')
+plt.style.use("default")
 sns.set_palette("husl")
 
 
 def setup_matplotlib_style():
     """Setup professional matplotlib styling."""
-    plt.rcParams.update({
-        'figure.figsize': (12, 8),
-        'font.size': 11,
-        'axes.titlesize': 14,
-        'axes.labelsize': 12,
-        'xtick.labelsize': 10,
-        'ytick.labelsize': 10,
-        'legend.fontsize': 10,
-        'figure.titlesize': 16,
-        'axes.grid': True,
-        'grid.alpha': 0.3,
-        'axes.spines.top': False,
-        'axes.spines.right': False
-    })
+    plt.rcParams.update(
+        {
+            "figure.figsize": (12, 8),
+            "font.size": 11,
+            "axes.titlesize": 14,
+            "axes.labelsize": 12,
+            "xtick.labelsize": 10,
+            "ytick.labelsize": 10,
+            "legend.fontsize": 10,
+            "figure.titlesize": 16,
+            "axes.grid": True,
+            "grid.alpha": 0.3,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+        }
+    )
 
 
-def create_distribution_plot(data: Union[pd.Series, np.ndarray],
-                           title: str = "Distribution Plot",
-                           bins: int = 30,
-                           show_stats: bool = True) -> matplotlib.figure.Figure:
+def create_distribution_plot(
+    data: Union[pd.Series, np.ndarray],
+    title: str = "Distribution Plot",
+    bins: int = 30,
+    show_stats: bool = True,
+) -> matplotlib.figure.Figure:
     """
     Create a comprehensive distribution plot with statistics.
 
@@ -68,40 +72,52 @@ def create_distribution_plot(data: Union[pd.Series, np.ndarray],
     clean_data = pd.Series(data).dropna()
 
     # Histogram
-    ax1.hist(clean_data, bins=bins, alpha=0.7, edgecolor='black', density=True)
+    ax1.hist(clean_data, bins=bins, alpha=0.7, edgecolor="black", density=True)
 
     if show_stats:
         mean_val = clean_data.mean()
         median_val = clean_data.median()
         std_val = clean_data.std()
 
-        ax1.axvline(mean_val, color='red', linestyle='--',
-                   label=f'Mean: {mean_val:.2f}')
-        ax1.axvline(median_val, color='blue', linestyle='--',
-                   label=f'Median: {median_val:.2f}')
-        ax1.axvline(mean_val + std_val, color='orange', linestyle=':',
-                   label=f'+1 SD: {mean_val + std_val:.2f}')
-        ax1.axvline(mean_val - std_val, color='orange', linestyle=':',
-                   label=f'-1 SD: {mean_val - std_val:.2f}')
+        ax1.axvline(
+            mean_val, color="red", linestyle="--", label=f"Mean: {mean_val:.2f}"
+        )
+        ax1.axvline(
+            median_val, color="blue", linestyle="--", label=f"Median: {median_val:.2f}"
+        )
+        ax1.axvline(
+            mean_val + std_val,
+            color="orange",
+            linestyle=":",
+            label=f"+1 SD: {mean_val + std_val:.2f}",
+        )
+        ax1.axvline(
+            mean_val - std_val,
+            color="orange",
+            linestyle=":",
+            label=f"-1 SD: {mean_val - std_val:.2f}",
+        )
         ax1.legend()
 
-    ax1.set_title(f'{title} - Histogram')
-    ax1.set_xlabel('Value')
-    ax1.set_ylabel('Density')
+    ax1.set_title(f"{title} - Histogram")
+    ax1.set_xlabel("Value")
+    ax1.set_ylabel("Density")
 
     # Box plot
     ax2.boxplot(clean_data, vert=True)
-    ax2.set_title(f'{title} - Box Plot')
-    ax2.set_ylabel('Value')
+    ax2.set_title(f"{title} - Box Plot")
+    ax2.set_ylabel("Value")
     ax2.grid(True, alpha=0.3)
 
     plt.tight_layout()
     return fig
 
 
-def create_correlation_heatmap(corr_matrix: pd.DataFrame,
-                              title: str = "Correlation Matrix",
-                              figsize: Tuple[int, int] = (10, 8)) -> matplotlib.figure.Figure:
+def create_correlation_heatmap(
+    corr_matrix: pd.DataFrame,
+    title: str = "Correlation Matrix",
+    figsize: Tuple[int, int] = (10, 8),
+) -> matplotlib.figure.Figure:
     """
     Create a professional correlation heatmap.
 
@@ -122,25 +138,29 @@ def create_correlation_heatmap(corr_matrix: pd.DataFrame,
     fig, ax = plt.subplots(figsize=figsize)
 
     # Create heatmap
-    sns.heatmap(corr_matrix,
-                annot=True,
-                cmap='RdBu_r',
-                center=0,
-                square=True,
-                fmt='.2f',
-                cbar_kws={"shrink": .8},
-                ax=ax)
+    sns.heatmap(
+        corr_matrix,
+        annot=True,
+        cmap="RdBu_r",
+        center=0,
+        square=True,
+        fmt=".2f",
+        cbar_kws={"shrink": 0.8},
+        ax=ax,
+    )
 
     ax.set_title(title, fontsize=14, pad=20)
     plt.tight_layout()
     return fig
 
 
-def create_scatter_with_regression(x: Union[pd.Series, np.ndarray],
-                                  y: Union[pd.Series, np.ndarray],
-                                  title: str = "Scatter Plot with Regression",
-                                  xlabel: str = "X Variable",
-                                  ylabel: str = "Y Variable") -> matplotlib.figure.Figure:
+def create_scatter_with_regression(
+    x: Union[pd.Series, np.ndarray],
+    y: Union[pd.Series, np.ndarray],
+    title: str = "Scatter Plot with Regression",
+    xlabel: str = "X Variable",
+    ylabel: str = "Y Variable",
+) -> matplotlib.figure.Figure:
     """
     Create scatter plot with regression line and confidence interval.
 
@@ -162,12 +182,12 @@ def create_scatter_with_regression(x: Union[pd.Series, np.ndarray],
 
     # Create scatter plot with regression line
     sns.scatterplot(x=x, y=y, alpha=0.6, ax=ax)
-    sns.regplot(x=x, y=y, scatter=False, color='red', ax=ax)
+    sns.regplot(x=x, y=y, scatter=False, color="red", ax=ax)
 
     # Calculate correlation
     corr = np.corrcoef(pd.Series(x).dropna(), pd.Series(y).dropna())[0, 1]
 
-    ax.set_title(f'{title}\nCorrelation: {corr:.3f}')
+    ax.set_title(f"{title}\nCorrelation: {corr:.3f}")
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
@@ -175,10 +195,9 @@ def create_scatter_with_regression(x: Union[pd.Series, np.ndarray],
     return fig
 
 
-def create_grouped_bar_plot(data: pd.DataFrame,
-                           x_col: str,
-                           y_cols: List[str],
-                           title: str = "Grouped Bar Plot") -> matplotlib.figure.Figure:
+def create_grouped_bar_plot(
+    data: pd.DataFrame, x_col: str, y_cols: List[str], title: str = "Grouped Bar Plot"
+) -> matplotlib.figure.Figure:
     """
     Create a grouped bar plot for multiple variables.
 
@@ -204,12 +223,12 @@ def create_grouped_bar_plot(data: pd.DataFrame,
     width = 0.8 / len(y_cols)
 
     for i, col in enumerate(y_cols):
-        offset = (i - len(y_cols)/2 + 0.5) * width
+        offset = (i - len(y_cols) / 2 + 0.5) * width
         ax.bar(x + offset, data[col], width, label=col)
 
     ax.set_title(title)
     ax.set_xlabel(x_col)
-    ax.set_ylabel('Value')
+    ax.set_ylabel("Value")
     ax.set_xticks(x)
     ax.set_xticklabels(data[x_col])
     ax.legend()
@@ -219,11 +238,13 @@ def create_grouped_bar_plot(data: pd.DataFrame,
     return fig
 
 
-def create_interactive_scatter(data: pd.DataFrame,
-                              x_col: str,
-                              y_col: str,
-                              color_col: Optional[str] = None,
-                              title: str = "Interactive Scatter Plot"):
+def create_interactive_scatter(
+    data: pd.DataFrame,
+    x_col: str,
+    y_col: str,
+    color_col: Optional[str] = None,
+    title: str = "Interactive Scatter Plot",
+):
     """
     Create an interactive scatter plot using Plotly.
 
@@ -243,27 +264,31 @@ def create_interactive_scatter(data: pd.DataFrame,
     plotly.graph_objects.Figure
         Interactive plotly figure
     """
-    fig = px.scatter(data,
-                    x=x_col,
-                    y=y_col,
-                    color=color_col,
-                    title=title,
-                    hover_data=data.columns.tolist())
+    fig = px.scatter(
+        data,
+        x=x_col,
+        y=y_col,
+        color=color_col,
+        title=title,
+        hover_data=data.columns.tolist(),
+    )
 
     fig.update_layout(
         title_font_size=16,
         xaxis_title_font_size=14,
         yaxis_title_font_size=14,
-        showlegend=True if color_col else False
+        showlegend=True if color_col else False,
     )
 
     return fig
 
 
-def create_subplots_grid(data: pd.DataFrame,
-                        columns: List[str],
-                        plot_type: str = 'hist',
-                        title: str = "Multiple Variables Analysis") -> matplotlib.figure.Figure:
+def create_subplots_grid(
+    data: pd.DataFrame,
+    columns: List[str],
+    plot_type: str = "hist",
+    title: str = "Multiple Variables Analysis",
+) -> matplotlib.figure.Figure:
     """
     Create a grid of subplots for multiple variables.
 
@@ -286,7 +311,7 @@ def create_subplots_grid(data: pd.DataFrame,
     n_cols = min(3, len(columns))
     n_rows = (len(columns) + n_cols - 1) // n_cols
 
-    fig, axes = plt.subplots(n_rows, n_cols, figsize=(5*n_cols, 4*n_rows))
+    fig, axes = plt.subplots(n_rows, n_cols, figsize=(5 * n_cols, 4 * n_rows))
 
     if n_rows == 1:
         axes = axes.reshape(1, -1) if n_cols > 1 else [axes]
@@ -300,14 +325,14 @@ def create_subplots_grid(data: pd.DataFrame,
 
         clean_data = data[col].dropna()
 
-        if plot_type == 'hist':
-            ax.hist(clean_data, bins=20, alpha=0.7, edgecolor='black')
-        elif plot_type == 'box':
+        if plot_type == "hist":
+            ax.hist(clean_data, bins=20, alpha=0.7, edgecolor="black")
+        elif plot_type == "box":
             ax.boxplot(clean_data)
-        elif plot_type == 'violin':
+        elif plot_type == "violin":
             parts = ax.violinplot([clean_data])
 
-        ax.set_title(f'{col}')
+        ax.set_title(f"{col}")
         ax.grid(True, alpha=0.3)
 
     # Hide empty subplots
@@ -324,10 +349,12 @@ def create_subplots_grid(data: pd.DataFrame,
     return fig
 
 
-def save_publication_figure(fig: matplotlib.figure.Figure,
-                           filename: str,
-                           dpi: int = 300,
-                           formats: List[str] = ['png', 'pdf']):
+def save_publication_figure(
+    fig: matplotlib.figure.Figure,
+    filename: str,
+    dpi: int = 300,
+    formats: List[str] = ["png", "pdf"],
+):
     """
     Save figure in publication-quality formats.
 
@@ -343,11 +370,13 @@ def save_publication_figure(fig: matplotlib.figure.Figure,
         List of file formats to save
     """
     for fmt in formats:
-        fig.savefig(f"{filename}.{fmt}",
-                   dpi=dpi,
-                   bbox_inches='tight',
-                   facecolor='white',
-                   edgecolor='none')
+        fig.savefig(
+            f"{filename}.{fmt}",
+            dpi=dpi,
+            bbox_inches="tight",
+            facecolor="white",
+            edgecolor="none",
+        )
     print(f"Figure saved as: {', '.join([f'{filename}.{fmt}' for fmt in formats])}")
 
 
@@ -361,21 +390,23 @@ if __name__ == "__main__":
     np.random.seed(42)
 
     # Generate sample data
-    test_data = pd.DataFrame({
-        'var1': np.random.normal(50, 10, 200),
-        'var2': np.random.normal(30, 5, 200),
-        'var3': np.random.exponential(2, 200),
-        'category': np.random.choice(['A', 'B', 'C'], 200)
-    })
+    test_data = pd.DataFrame(
+        {
+            "var1": np.random.normal(50, 10, 200),
+            "var2": np.random.normal(30, 5, 200),
+            "var3": np.random.exponential(2, 200),
+            "category": np.random.choice(["A", "B", "C"], 200),
+        }
+    )
 
     print("Testing visualization functions...")
 
     # Test distribution plot
-    fig1 = create_distribution_plot(test_data['var1'], "Test Distribution")
+    fig1 = create_distribution_plot(test_data["var1"], "Test Distribution")
     plt.show()
 
     # Test correlation heatmap
-    corr_matrix = test_data[['var1', 'var2', 'var3']].corr()
+    corr_matrix = test_data[["var1", "var2", "var3"]].corr()
     fig2 = create_correlation_heatmap(corr_matrix)
     plt.show()
 
