@@ -1,0 +1,24 @@
+Practical 5
+
+Statistical Foundation of Data Sciences
+
+Start Date 7th Oct 2025, Tuesday 10:00 AM Due Date 14th Oct 2025 Time 5:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+Dataset to be used is: ratings
+
+Q1. Using the teachers' rating dataset, what is the probability of receiving an evaluation score of greater than 4.5
+Q2. Using the teachers' rating dataset, what is the probability of receiving an evaluation score greater than 3.5 and less than 4.2
+Q3. Using the two-tailed test from a normal distribution:
+1. A professional basketball team wants to compare its performance with that of players in a regional league.
+2. The pros are known to have a historic mean of 12 points per game with a standard deviation of 5.5.
+3. A group of 36 regional players recorded on average 10.7 points per game.
+4. The pro coach would like to know whether his professional team scores on average are different from that of the regional players.
+State the null hypothesis
+Null Hypo: ("The mean point of the regional players is not different from the historic mean")
+Alternative Hypo: ("The mean point of the regional players is different from the historic mean")
