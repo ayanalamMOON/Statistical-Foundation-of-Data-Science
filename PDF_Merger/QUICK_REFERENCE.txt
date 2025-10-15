@@ -1,0 +1,149 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║                    PDF MERGER GUI - QUICK REFERENCE                  ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 🚀 QUICK START                                                       │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Windows:    Double-click "install_and_run.bat"                     │
+│  Manual:     py pdf_merger_gui.py                                   │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 📋 MAIN BUTTONS                                                      │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ➕ Add PDF Files       Select PDFs to merge                        │
+│  ❌ Remove Selected     Remove highlighted PDFs                      │
+│  🗑️ Clear All           Remove all PDFs from list                   │
+│  ⬆️ Move Up             Move selected PDF higher                    │
+│  ⬇️ Move Down           Move selected PDF lower                     │
+│  🔗 Merge PDFs          Create merged PDF file                      │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 📖 BASIC WORKFLOW                                                    │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  1. Click "Add PDF Files"                                           │
+│  2. Select PDFs (can select multiple)                               │
+│  3. Arrange order using Move Up/Down                                │
+│  4. Configure compression (optional, enabled by default)            │
+│     - Low: Fast, moderate compression                               │
+│     - Medium: Balanced (recommended)                                │
+│     - High: Maximum compression                                     │
+│  5. Click "Merge PDFs"                                              │
+│  6. Choose save location and filename                               │
+│  7. See compression results and savings!                            │
+│  8. Done! ✓                                                         │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ ⚠️ REQUIREMENTS                                                      │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  • Python 3.7+         (check: py --version)                        │
+│  • PyPDF2 library      (install: py -m pip install PyPDF2)          │
+│  • At least 2 PDFs     (to merge)                                   │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 🔧 TROUBLESHOOTING                                                   │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Problem: "PyPDF2 not found"                                        │
+│  Fix:     py -m pip install PyPDF2                                  │
+│                                                                      │
+│  Problem: "Can't save file"                                         │
+│  Fix:     Choose different location or close PDF viewers            │
+│                                                                      │
+│  Problem: "Invalid PDF"                                             │
+│  Fix:     Check if PDF opens in viewer, may be encrypted            │
+│                                                                      │
+│  Check:   py check_dependencies.py                                  │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 💡 TIPS & TRICKS                                                     │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ✓ Select multiple files at once in the file dialog                │
+│  ✓ Files show with numbers (1, 2, 3...) indicating merge order     │
+│  ✓ Same file won't be added twice (duplicate prevention)           │
+│  ✓ Move Up/Down buttons work with single selection only            │
+│  ✓ Merge button enables only with 2+ files                         │
+│  ✓ Progress bar shows during merge operation                       │
+│  ✓ Can open output folder after successful merge                   │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 📁 PROJECT FILES                                                     │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  pdf_merger_gui.py        Main application (14 KB)                  │
+│  requirements.txt         Dependencies (PyPDF2)                     │
+│  README.md                Full documentation                        │
+│  QUICK_START.md          Quick start guide                         │
+│  VISUAL_GUIDE.md         Visual mockups                            │
+│  PROJECT_SUMMARY.md      Complete project overview                 │
+│  check_dependencies.py   Verify installation                       │
+│  install.bat             Install dependencies (Windows)            │
+│  run.bat                 Launch application (Windows)              │
+│  install_and_run.bat     All-in-one launcher (Windows)             │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 🎯 COMMON USE CASES                                                  │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ✓ Merge multiple assignment PDFs into one                          │
+│  ✓ Combine chapters of a book/thesis                                │
+│  ✓ Create complete reports from sections                            │
+│  ✓ Merge scanned documents                                          │
+│  ✓ Combine presentation slides from multiple sources                │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ ⌨️ BUTTON STATES                                                     │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Always Enabled:     ➕ Add PDF Files                               │
+│                                                                      │
+│  Enabled When:                                                       │
+│    Has Files:      🗑️ Clear All                                     │
+│    Has Selection:  ❌ Remove Selected                               │
+│    2+ Files:       🔗 Merge PDFs                                    │
+│    Not First:      ⬆️ Move Up                                       │
+│    Not Last:       ⬇️ Move Down                                     │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────┐
+│ 📞 HELP & DOCUMENTATION                                              │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Full Guide:        Open README.md                                  │
+│  Quick Start:       Open QUICK_START.md                             │
+│  Visual Guide:      Open VISUAL_GUIDE.md                            │
+│  Project Info:      Open PROJECT_SUMMARY.md                         │
+│  Check Setup:       Run check_dependencies.py                       │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════════╗
+║                                                                      ║
+║  Version: 1.0.0                    Created: October 15, 2025        ║
+║  Platform: Cross-platform          License: Educational Use         ║
+║                                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
