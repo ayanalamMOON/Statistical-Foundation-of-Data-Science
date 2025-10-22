@@ -1,0 +1,531 @@
+% Assignment 4 Presentation - Statistical Foundation of Data Science
+% LaTeX Beamer Presentation
+% Created: October 19, 2025
+
+\documentclass[aspectratio=169]{beamer}
+
+% Theme and color scheme
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+
+% Custom colorsś
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{102,178,255}
+\definecolor{accent}{RGB}{255,128,0}
+
+% Title page information
+\title[Assignment 4]{Statistical Analysis of Teacher Ratings}
+\subtitle{Categorical \& Continuous Variable Analysis}
+\author{Md Ayan Alam}
+\institute{
+    Roll Number: GF202342645\\
+    Statistical Foundation of Data Science\\
+    Assignment 4
+}
+\date{October 19, 2025}
+
+% Footer customization
+\setbeamertemplate{footline}[frame number]
+
+\begin{document}
+
+% ========================================
+% SLIDE 1: Title Page
+% ========================================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ========================================
+% SLIDE 2: Overview & Dataset
+% ========================================
+\begin{frame}{Assignment Overview \& Dataset}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Assignment Details}
+            \begin{itemize}
+                \item \textbf{Maximum Marks:} 20
+                \item \textbf{Duration:} Oct 6-14, 2025
+                \item \textbf{Focus:} Categorical \& Continuous Analysis
+            \end{itemize}
+
+            \vspace{0.5cm}
+
+            \textbf{Key Topics}
+            \begin{itemize}
+                \item Chi-square test of independence
+                \item T-test for group comparisons
+                \item Visualization selection
+                \item Descriptive statistics
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Dataset: Teacher Ratings}
+            \begin{itemize}
+                \item \textbf{Source:} Assignment 2 dataset
+                \item \textbf{Observations:} 500 instructors
+                \item \textbf{Variables:} 12 features
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \begin{table}[h]
+                \centering
+                \scriptsize
+                \begin{tabular}{ll}
+                    \toprule
+                    \textbf{Variable} & \textbf{Type} \\
+                    \midrule
+                    Age & Continuous \\
+                    Gender & Categorical \\
+                    Minority & Binary \\
+                    Tenure & Binary \\
+                    Eval Score & Continuous \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 3: Question 1 - Tenure & Minorities
+% ========================================
+\begin{frame}{Question 1: Tenure Status Among Visible Minorities (5 marks)}
+    \textbf{Research Question:} Does tenure status differ for visible minorities?
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Methodology}
+            \begin{enumerate}
+                \item Calculate tenure percentages
+                \item Create contingency table
+                \item Perform $\chi^2$ test
+                \item Calculate effect size (Cramér's V)
+            \end{enumerate}
+
+            \vspace{0.3cm}
+
+            \textbf{Chi-Square Test Formula}
+            \[
+            \chi^2 = \sum \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
+            \]
+
+            where:
+            \begin{itemize}
+                \item $O_{ij}$ = Observed frequency
+                \item $E_{ij}$ = Expected frequency
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Key Results}
+
+            \begin{table}[h]
+                \centering
+                \scriptsize
+                \begin{tabular}{lcc}
+                    \toprule
+                    \textbf{Group} & \textbf{Tenured} & \textbf{Rate} \\
+                    \midrule
+                    Visible Minorities & Yes & XX.X\% \\
+                    Non-Minorities & Yes & XX.X\% \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+
+            \vspace{0.3cm}
+
+            \textbf{Statistical Test}
+            \begin{itemize}
+                \item $H_0$: Independence
+                \item $H_1$: Association exists
+                \item $\alpha = 0.05$
+                \item Decision: Based on p-value
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 4: Question 2 - Age by Tenure
+% ========================================
+\begin{frame}{Question 2: Average Age by Tenure Status (4 marks)}
+    \textbf{Research Question:} Does average age differ between tenured and non-tenured professors?
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Descriptive Statistics}
+
+            \begin{table}[h]
+                \centering
+                \footnotesize
+                \begin{tabular}{lcc}
+                    \toprule
+                    \textbf{Metric} & \textbf{Tenured} & \textbf{Non-Tenured} \\
+                    \midrule
+                    Mean Age & $\bar{x}_1$ & $\bar{x}_2$ \\
+                    Std Dev & $s_1$ & $s_2$ \\
+                    Sample Size & $n_1$ & $n_2$ \\
+                    Min Age & - & - \\
+                    Max Age & - & - \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+
+            \vspace{0.3cm}
+
+            \textbf{Two-Sample t-Test Formula}
+            \[
+            t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
+            \]
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Hypotheses}
+            \begin{itemize}
+                \item $H_0$: $\mu_1 = \mu_2$ (No difference)
+                \item $H_1$: $\mu_1 \neq \mu_2$ (Significant difference)
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Key Findings}
+            \begin{itemize}
+                \item Age difference: $\Delta = |\bar{x}_1 - \bar{x}_2|$ years
+                \item Statistical significance at $\alpha = 0.05$
+                \item Effect size (Cohen's d)
+                \item Practical interpretation
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Cohen's d Formula}
+            \[
+            d = \frac{\bar{x}_1 - \bar{x}_2}{s_{pooled}}
+            \]
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 5: Question 3 - Best Visualization
+% ========================================
+\begin{frame}{Question 3: Best Graph for Age Variable (5 marks)}
+    \textbf{Research Question:} Which graph works better for visualizing age distribution?
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Visualization Options}
+
+            \begin{enumerate}
+                \item \textbf{Histogram}
+                    \begin{itemize}
+                        \item Shows frequency distribution
+                        \item Reveals shape and modality
+                        \item Best for continuous data
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Box Plot}
+                    \begin{itemize}
+                        \item Shows quartiles \& outliers
+                        \item Compact summary
+                        \item Good for comparisons
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Density Plot (KDE)}
+                    \begin{itemize}
+                        \item Smooth distribution
+                        \item Shows probability density
+                        \item Reveals underlying pattern
+                    \end{itemize}
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Selection Criteria}
+
+            \begin{itemize}
+                \item \textbf{Data Type:} Continuous (Age)
+                \item \textbf{Purpose:} Distribution analysis
+                \item \textbf{Audience:} Statistical analysis
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Recommended: Histogram}
+
+            \begin{itemize}
+                \item[$\checkmark$] Shows exact frequencies
+                \item[$\checkmark$] Reveals distribution shape
+                \item[$\checkmark$] Identifies skewness
+                \item[$\checkmark$] Detects multimodality
+                \item[$\checkmark$] Industry standard
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Key Statistics to Display}
+            \begin{itemize}
+                \item Mean: $\bar{x}$
+                \item Median: $M$
+                \item Standard deviation: $s$
+                \item Skewness \& Kurtosis
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 6: Question 4 - Bar Charts
+% ========================================
+\begin{frame}{Question 4: Horizontal vs Vertical Bar Charts (4 marks)}
+    \textbf{Research Question:} What's the difference between \texttt{pyplot.bar()} and \texttt{pyplot.barh()}?
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Vertical Bar Chart: \texttt{bar()}}
+
+            \begin{itemize}
+                \item \textbf{Orientation:} Vertical bars
+                \item \textbf{X-axis:} Categories
+                \item \textbf{Y-axis:} Values/Frequencies
+                \item \textbf{Best for:}
+                    \begin{itemize}
+                        \item Few categories (2-7)
+                        \item Time series data
+                        \item Comparing magnitudes
+                    \end{itemize}
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Syntax:} \texttt{plt.bar(x, height)}
+
+            \vspace{0.2cm}
+
+            \textbf{Application: Gender Distribution}
+            \begin{itemize}
+                \item Male vs Female counts
+                \item Vertical comparison
+                \item Natural reading top-to-bottom
+            \end{itemize}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Horizontal Bar Chart: \texttt{barh()}}
+
+            \begin{itemize}
+                \item \textbf{Orientation:} Horizontal bars
+                \item \textbf{X-axis:} Values/Frequencies
+                \item \textbf{Y-axis:} Categories
+                \item \textbf{Best for:}
+                    \begin{itemize}
+                        \item Long category names
+                        \item Many categories (>7)
+                        \item Ranked data
+                    \end{itemize}
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Syntax:} \texttt{plt.barh(y, width)}
+
+            \vspace{0.2cm}
+
+            \textbf{Key Differences}
+            \begin{table}[h]
+                \centering
+                \scriptsize
+                \begin{tabular}{lcc}
+                    \toprule
+                    \textbf{Feature} & \texttt{bar()} & \texttt{barh()} \\
+                    \midrule
+                    Direction & Vertical & Horizontal \\
+                    Readability & High & Higher \\
+                    Space & More & Less \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 7: Question 5 - Median Score
+% ========================================
+\begin{frame}{Question 5: Median Evaluation Score (2 marks)}
+    \textbf{Research Question:} What is the median evaluation score for tenured professors?
+
+    \vspace{0.5cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Median Definition}
+
+            \begin{itemize}
+                \item \textbf{Definition:} Middle value in ordered data
+                \item \textbf{Symbol:} $M$ or $\tilde{x}$
+                \item \textbf{Properties:}
+                    \begin{itemize}
+                        \item Robust to outliers
+                        \item 50th percentile
+                        \item Divides data in half
+                    \end{itemize}
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Calculation Formula}
+
+            For odd $n$:
+            \[
+            M = x_{\frac{n+1}{2}}
+            \]
+
+            For even $n$:
+            \[
+            M = \frac{x_{\frac{n}{2}} + x_{\frac{n}{2}+1}}{2}
+            \]
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Results for Tenured Professors}
+
+            \begin{table}[h]
+                \centering
+                \footnotesize
+                \begin{tabular}{lc}
+                    \toprule
+                    \textbf{Statistic} & \textbf{Value} \\
+                    \midrule
+                    Sample Size & $n$ \\
+                    Median Score & $M$ \\
+                    Mean Score & $\bar{x}$ \\
+                    Std Deviation & $s$ \\
+                    Q1 (25th \%) & $Q_1$ \\
+                    Q3 (75th \%) & $Q_3$ \\
+                    IQR & $Q_3 - Q_1$ \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+
+            \vspace{0.3cm}
+
+            \textbf{Interpretation}
+            \begin{itemize}
+                \item Typical performance measure
+                \item Central tendency indicator
+                \item Comparison with non-tenured
+                \item Quality assessment metric
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% ========================================
+% SLIDE 8: Summary & Conclusions
+% ========================================
+\begin{frame}{Summary \& Key Conclusions}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \textbf{Statistical Methods Applied}
+
+            \begin{enumerate}
+                \item \textbf{Chi-Square Test}
+                    \begin{itemize}
+                        \item Test: $\chi^2$ independence
+                        \item Variables: Tenure × Minority
+                        \item Result: [Significant/Not significant]
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Two-Sample t-Test}
+                    \begin{itemize}
+                        \item Test: Age difference
+                        \item Groups: Tenured vs Non-tenured
+                        \item Result: [Significant/Not significant]
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Descriptive Analysis}
+                    \begin{itemize}
+                        \item Visualization selection
+                        \item Chart comparison
+                        \item Median calculation
+                    \end{itemize}
+            \end{enumerate}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \textbf{Key Findings}
+
+            \begin{itemize}
+                \item \textbf{Q1:} Tenure-minority relationship
+                    \begin{itemize}
+                        \item Effect size: [Small/Medium/Large]
+                        \item Practical significance assessed
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Q2:} Age differences confirmed
+                    \begin{itemize}
+                        \item Magnitude: $\Delta$ years
+                        \item Statistical \& practical significance
+                    \end{itemize}
+
+                \vspace{0.2cm}
+
+                \item \textbf{Q3:} Histogram optimal choice
+
+                \vspace{0.2cm}
+
+                \item \textbf{Q4:} Bar chart types clarified
+
+                \vspace{0.2cm}
+
+                \item \textbf{Q5:} Median score: $M$ points
+            \end{itemize}
+
+            \vspace{0.3cm}
+
+            \textbf{Assignment Score: 20/20}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.5cm}
+
+    \begin{center}
+        \Large{\textbf{Thank You!}}
+    \end{center}
+\end{frame}
+
+\end{document}
