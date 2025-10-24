@@ -1,0 +1,22 @@
+Practical 6
+
+Statistical Foundation of Data Sciences
+
+Start Date 14th Oct 2025, Tuesday 9:00 AM Due Date 24th Oct 2025 Time 5:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+Q1. T-Test: Using the teachers' rating data set, does gender affect teaching evaluation rates?
+Q2. ANOVA: Using the teachers' rating data set, does beauty score for instructors differ by age?
+Q3. Chi-square: Using the teachers' rating data set, is there an association between tenure and gender?
+Q4. Correlation: Using the teachers rating dataset, Is teaching evaluation score correlated with beauty score?
+
+Course Outcomes
+
+BT Level
+
+Topic Level Outcomes(TLOs)
