@@ -1,0 +1,1103 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,geometry,booktabs}
+\usepackage{enumitem}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{mathtools}
+% Define common operators used in the problem set
+\DeclareMathOperator{\logit}{logit}
+\geometry{margin=1in}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{Advanced Problems in Statistical Theory and Data Science}}\\[1em]
+    {\large Compiled by: The Department of Statistics and Data Science}\\[0.5em]
+    {\large \today}
+\end{center}
+
+\bigskip
+
+\noindent
+This document presents a series of graduate-level problems in probability, statistical inference, data science, and machine learning. Each problem emphasizes theoretical derivation, interpretation, and numerical analysis.
+
+\bigskip
+\hrule
+\bigskip
+
+\setcounter{section}{0}
+\renewcommand{\thesection}{\textbf{PROBLEM \arabic{section}.}}
+
+\section{Zero-Inflated Normal Distribution}
+Let \( X \) be a zero-inflated normal:
+\[
+\mathbb{P}(X = 0) = \alpha, \quad X \mid (X \neq 0) \sim \mathcal{N}(\mu, \sigma^2)
+\]
+with probability \( (1 - \alpha) \).
+\begin{enumerate}[label=(\arabic*)]
+\item Write the PMF/PDF and CDF of \( X \).
+\item Derive \( \mathbb{E}[X] \) and \( \mathrm{Var}(X) \).
+\item Numerically evaluate \( \mathbb{P}(X \leq 0) \) for \( \alpha = 0.3, \mu = 2, \sigma = 1 \).
+\end{enumerate}
+
+\section{Binomial Distribution Approximation}
+Let \( X \sim \mathrm{Bin}(n, p) \) with \( n = 10, p = 0.3 \).
+\begin{enumerate}[label=(\arabic*)]
+\item Compute exactly \( \mathbb{P}(X \geq 6) \).
+\item Approximate \( \mathbb{P}(X \geq 6) \) using the normal approximation with continuity correction and compare.
+\end{enumerate}
+
+\section{Poisson Thinning}
+Suppose \( N \sim \mathrm{Poisson}(\lambda) \). Conditional on \( N \), each of the \( N \) events is independently tagged ``A'' with probability \( q \) (and ``B'' otherwise). Let \( K \) be the number of ``A'' events.
+\begin{enumerate}[label=(\arabic*)]
+\item Show \( K \sim \mathrm{Poisson}(\lambda q) \) (the thinning property).
+\item Show that \( K \mid N = n \sim \mathrm{Bin}(n, q) \).
+\item For \( \lambda = 12, q = 0.2 \), compute \( \mathbb{P}(K = 0) \) and \( \mathbb{P}(K \leq 2) \).
+\end{enumerate}
+
+\section{Normalization and Scaling Transformations}
+Let \( X = (X_1, \ldots, X_n) \) be nonconstant real data with
+\[
+\mu = \frac{1}{n}\sum_i X_i, \quad \sigma = \sqrt{\frac{1}{n}\sum_i (X_i - \mu)^2}.
+\]
+Define:
+\begin{itemize}
+    \item Z-score: \( Z_i = \frac{X_i - \mu}{\sigma} \)
+    \item Min-max normalization: \( M_i = \frac{X_i - \min X}{\max X - \min X} \)
+    \item Robust scaling: \( R_i = \frac{X_i - \mathrm{med}(X)}{\mathrm{IQR}(X)} \)
+\end{itemize}
+\begin{enumerate}[label=(\alph*)]
+\item Prove \( \bar{Z} = 0 \) and \( \mathrm{Var}(Z) = 1 \).
+\item Show that Pearson correlation is invariant to positive affine transforms.
+\item Derive inverse transforms to recover \( X \) from \( Z \) and \( M \).
+\item Perform numerical check for \( x = (3,7,7,19,21) \).
+\end{enumerate}
+
+\section{Histogram Rules and Robustness}
+You collect \( n = 200 \) observations: 199 are approximately \( N(0,1) \) and one outlier at 8. Compare three binning rules:
+\[
+\text{Sturges: } K = \lceil \log_2 n \rceil + 1, \quad
+\text{Scott: } h_S = 3.5s n^{-1/3}, \quad
+\text{FD: } h_{FD} = 2\,\mathrm{IQR}\,n^{-1/3}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item Compute the new mean and variance \( s^2 \).
+\item Compute \( h_S \) and \( h_{FD} \) (use \( \mathrm{IQR} \approx 1.349 \)).
+\item On range \([-4,8]\), report effective bin counts and interpret robustness.
+\end{enumerate}
+
+\section{Logistic Regression on \( 2 \times 2 \) Table}
+Two groups \( X \in \{0,1\} \) with outcomes \( Y \in \{0,1\} \):
+\[
+\begin{array}{c|cc}
+ & Y=1 & Y=0 \\
+\hline
+X=0 & a & b \\
+X=1 & c & d
+\end{array}
+\]
+Model: \( \logit[P(Y=1|X)] = \beta_0 + \beta_1 X \).
+\begin{enumerate}[label=(\alph*)]
+\item Show \( \hat{\beta}_0 = \log\frac{a}{b}, \quad \hat{\beta}_1 = \log\frac{cb}{ad} \).
+\item Show \( \mathrm{Var}(\hat{\beta}_1) \approx \frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d} \).
+\item Compute 95\% CI for odds ratio using \( a=18,b=12,c=30,d=10 \).
+\end{enumerate}
+
+% --- Continue problems 7–35 exactly as structured above ---
+
+% Due to message length constraints, this is truncated here.
+% The full LaTeX code includes all problems 1–35 in identical formatting, each beginning with:
+% \section{Problem Title}
+% followed by enumerated subquestions.
+% ===================== CONTINUATION =====================
+\section{Within-Subjects ANOVA}
+Five subjects each measured under three conditions (within-subject). Data:
+\[
+\begin{array}{c|ccc}
+\text{Subject} & C1 & C2 & C3 \\
+\hline
+1 & 10 & 12 & 13 \\
+2 & 9 & 11 & 12 \\
+3 & 8 & 10 & 11 \\
+4 & 9 & 10 & 12 \\
+5 & 11 & 12 & 14 \\
+\end{array}
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Conduct a within-subjects ANOVA test for the condition effect (assume sphericity).
+\item Compute the sums of squares, degrees of freedom, mean squares, and \( F \)-statistic.
+\item Report whether the condition effect is statistically significant at \( \alpha = 0.05 \).
+\end{enumerate}
+
+\section{Entropy, Gini, and Error Functions}
+For binary class probability \( p \in [0,1] \), define
+\[
+H(p) = -p \log_2 p - (1-p)\log_2(1-p), \quad
+G(p) = 2p(1-p), \quad
+E(p) = \min\{p, 1-p\}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item Prove \( H(p) \geq G(p) \) for all \( p \).
+\item Prove \( G(p) \geq E(p) \) for all \( p \).
+\item Provide a numerical comparison table for representative values \( p = 0.1, 0.25, 0.5, 0.75, 0.9 \).
+\end{enumerate}
+
+\section{Information Gain and Attribute Selection}
+A dataset of 12 instances has \( Y \in \{0,1\} \) (6 positives, 6 negatives).
+Attributes:
+
+\begin{itemize}
+    \item Attribute A: \( v_1:(5,\ 4+,\ 1-),\ v_2:(3,\ 1+,\ 2-),\ v_3:(4,\ 1+,\ 3-) \)
+    \item Attribute B: \( b_0:(6,\ 4+,\ 2-),\ b_1:(6,\ 2+,\ 4-) \)
+\end{itemize}
+\begin{enumerate}[label=(\arabic*)]
+\item Compute parent entropy \(H(S)\) and Gini \(G(S)\).
+\item Compute weighted entropy, information gain \(\mathrm{IG}(S;A)\), weighted Gini, and Gini decrease for A.
+\item Repeat (2) for B.
+\item Determine which attribute ID3 and CART would choose.
+\end{enumerate}
+
+\section{Simple Linear Regression Analysis}
+Data (\( n=5 \)):
+\[
+\begin{array}{c|ccccc}
+x & 0 & 1 & 2 & 3 & 4 \\
+\hline
+y & 1.0 & 2.9 & 5.1 & 5.9 & 9.2
+\end{array}
+\]
+Model \( y = \beta_0 + \beta_1 x + \epsilon \).
+\begin{enumerate}[label=(\arabic*)]
+\item Compute \( \hat{\beta}_0, \hat{\beta}_1 \).
+\item Compute residuals, SSE, \( R^2 \), and residual standard error.
+\item Test \( H_0:\beta_1=0 \) (two-sided) and form a 95\% CI for \( \beta_1 \).
+\item Compute a 95\% prediction interval for \( y \) at \( x_0=5 \).
+\end{enumerate}
+
+\section{Two-Piece Normal Distribution}
+Let \( X \) follow a split normal:
+\[
+f(x; \mu, \sigma_1, \sigma_2) =
+\begin{cases}
+A \exp\!\left(-\frac{(x-\mu)^2}{2\sigma_1^2}\right), & x < \mu,\\[0.5em]
+A \exp\!\left(-\frac{(x-\mu)^2}{2\sigma_2^2}\right), & x \ge \mu,
+\end{cases}
+\]
+where \( A = \sqrt{\tfrac{2}{\pi}}(\sigma_1 + \sigma_2)^{-1} \).
+\begin{enumerate}[label=(\arabic*)]
+\item Show \( f(x) \) integrates to 1.
+\item Derive \( \mathbb{E}[X] \) and \( \mathrm{Var}(X) \).
+\item For \( \mu=0,\sigma_1=1,\sigma_2=2 \), evaluate \( \mathbb{P}(-1<X<1) \) numerically.
+\end{enumerate}
+
+\section{Gamma and Inverse-Gamma Relationship}
+Let \( X \sim \mathrm{Gamma}(\alpha,\beta) \) (shape \(\alpha>0\), rate \(\beta>0\)), and \( Y=1/X \).
+\begin{enumerate}[label=(\arabic*)]
+\item Derive the PDF of \( Y \) (the inverse-gamma distribution).
+\item Compute \( \mathbb{E}[Y] \) and specify when it exists.
+\item Find the mode of \( Y \) given that \( \mathrm{mode}(X) = (\alpha-1)/\beta \) for \( \alpha\ge1 \).
+\item For \( \alpha=4,\beta=2 \), compute \( \mathbb{P}(Y>1) \).
+\end{enumerate}
+% =========================================================
+
+% ===================== CONTINUATION (PROBLEMS 13–18) =====================
+
+\section{Estimator Comparison for Exponential Mean}
+Let \( X_1, X_2, \ldots, X_n \stackrel{\text{i.i.d.}}{\sim} \mathrm{Exp}(\lambda) \).
+We estimate the mean \( \theta = 1/\lambda \) using:
+\[
+T_1 = \bar{X}_n, \qquad T_2 = \frac{n}{n+1}\bar{X}_n.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Compute the bias, variance, and mean squared error (MSE) of both \( T_1 \) and \( T_2 \).
+\item Determine which estimator has the smaller MSE, and identify the dependence on \( n \) and \( \lambda \).
+\item Show that \( T_1 \) is a consistent estimator for \( \theta \).
+\item For \( n=25 \) and sample mean \( \bar{x}=4.2 \), compute \( T_1 \) and \( T_2 \).
+\end{enumerate}
+
+\section{Gini Coefficient and Inequality Measures}
+The Gini coefficient for a continuous distribution with CDF \( F(x) \) and mean \( \mu \) is:
+\[
+G = \frac{1}{2\mu}\iint_{-\infty}^{\infty} |x - y|\, dF(x)\,dF(y).
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item For the Pareto distribution with \( F(x) = 1 - (x_m/x)^\alpha \) for \( x \ge x_m > 0, \alpha > 1 \), show that:
+\[
+G = \frac{1}{2\alpha - 1}.
+\]
+\item For a sample \( \{x_1,\ldots,x_n\} \), estimate
+\[
+\hat{G} = \frac{\sum_{i=1}^n\sum_{j=1}^n |x_i - x_j|}{2n^2\bar{x}},
+\]
+and compute \( \hat{G} \) for \( \{1,3,6,10\} \).
+\item Prove that for any nonnegative data, \( 0 \le \hat{G} \le 1 \).
+\end{enumerate}
+
+\section{Bayesian Linear Regression Posterior}
+Consider the Bayesian linear model:
+\[
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i, \quad \epsilon_i \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,\sigma^2).
+\]
+Priors: \( \beta_0 \sim \mathcal{N}(0,\tau_0^2), \ \beta_1 \sim \mathcal{N}(0,\tau_1^2) \), with known variances.
+\begin{enumerate}[label=(\arabic*)]
+\item Write down \( p(\beta_0,\beta_1\mid \mathbf{y}) \) up to proportionality.
+\item Show that \( p(\beta_1\mid\beta_0,\mathbf{y}) \) is Normal; identify mean and variance.
+\item Given data from Problem 10 with priors \( \tau_0^2=\tau_1^2=100, \sigma^2=0.5 \), compute posterior mean for \( \beta_1 \) (approximate via OLS).
+\end{enumerate}
+
+\section{F-score and Precision–Recall Relationship}
+The F1-score is defined as:
+\[
+F_1 = \frac{2PR}{P + R},
+\]
+where \( P \) is precision and \( R \) is recall.
+\begin{enumerate}[label=(\arabic*)]
+\item Express \( F_1 \) in terms of confusion matrix counts \( a,b,c,d \) from Problem 6.
+\item Given classifier 1 with \( (P,R)=(0.9,0.7) \) and classifier 2 with \( (0.8,0.8) \), compute \( F_1 \) for both.
+\item Prove that for \( P,R\in(0,1] \), \( F_1 \le \tfrac{P+R}{2} \) with equality iff \( P=R \).
+\end{enumerate}
+
+\section{Correlated Bivariate Normal Example}
+Let \( X,Y \) have joint PDF proportional to:
+\[
+f_{X,Y}(x,y) \propto \exp\!\big(-(x^2 + xy + y^2)\big), \qquad x,y\in\mathbb{R}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Determine the normalizing constant.
+\item Find the marginals of \( X \) and \( Y \); assess independence.
+\item Derive the conditional \( X\mid Y=y \).
+\item Compute \( \mathrm{Cov}(X,Y) \).
+\end{enumerate}
+
+\section{Quantile–Quantile (QQ) Plot and Skewness Assessment}
+A QQ-plot assesses whether data come from a target distribution.
+\begin{enumerate}[label=(\arabic*)]
+\item Outline steps for constructing a QQ-plot against normality for a sample \( \{x_1,\ldots,x_n\} \).
+\item For \( n=100 \), with sample quartiles \( Q_1=-0.7, Q_3=0.6 \) and theoretical normal quartiles \( z_{0.25}=-0.674, z_{0.75}=0.674 \), compute the robust skewness:
+\[
+\frac{(Q_3-Q_2)-(Q_2-Q_1)}{Q_3-Q_1},
+\]
+and interpret its sign.
+\item Explain what an ``S-shaped'' QQ-plot indicates about tail heaviness relative to normality.
+\end{enumerate}
+
+% ========================================================================
+
+% ===================== CONTINUATION (PROBLEMS 19–24) =====================
+
+\section{Principal Component Analysis (PCA)}
+Consider performing PCA on a data matrix \( \mathbf{X} \) with \( n \) observations and \( p \) centered variables.
+\begin{enumerate}[label=(\arabic*)]
+\item Prove that the first principal component direction \( \mathbf{v}_1 \) is the eigenvector of the covariance matrix \( \mathbf{S} \) corresponding to its largest eigenvalue.
+\item Show that the principal components are uncorrelated with each other.
+\item Given
+\[
+\mathbf{S} =
+\begin{pmatrix}
+5 & 2 \\
+2 & 2
+\end{pmatrix},
+\]
+find the principal components and the proportion of total variance explained by the first principal component.
+\end{enumerate}
+
+\section{Kullback–Leibler (KL) Divergence}
+The KL divergence between two continuous densities \( p(x) \) and \( q(x) \) is:
+\[
+D_{\mathrm{KL}}(P\|Q) = \int_{-\infty}^{\infty} p(x)\log\!\left(\frac{p(x)}{q(x)}\right)dx.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Compute \( D_{\mathrm{KL}}(P\|Q) \) when \( P\sim \mathcal{N}(\mu_1,\sigma_1^2) \) and \( Q\sim \mathcal{N}(\mu_2,\sigma_2^2) \).
+\item Show that \( D_{\mathrm{KL}}(P\|Q)\ge0 \) with equality iff \( P=Q \) almost everywhere.
+\item Let \( Q=\mathcal{N}(0,1) \). For a sample \( x_1,\ldots,x_n \), show that minimizing \( D_{\mathrm{KL}}(\hat{P}\|Q) \) (where \( \hat{P} \) is empirical) equals maximizing the log-likelihood under \( Q \).
+\end{enumerate}
+
+\section{Mixture of Two Gaussian Distributions}
+Let
+\[
+X \sim \alpha \mathcal{N}(\mu_1,\sigma_1^2) + (1-\alpha)\mathcal{N}(\mu_2,\sigma_2^2),
+\quad 0<\alpha<1.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Write the explicit form of the PDF of \( X \).
+\item Derive \( \mathbb{E}[X] \) and \( \mathrm{Var}(X) \).
+\item For \( \alpha=0.6,\mu_1=0,\sigma_1=1,\mu_2=3,\sigma_2=2 \), numerically evaluate \( \mathbb{P}(X>2) \).
+\end{enumerate}
+
+\section{Negative Binomial Distribution}
+Let \( X\sim\mathrm{NegBin}(r,p) \), the number of failures before the \(r\)-th success in independent Bernoulli(\(p\)) trials.
+\begin{enumerate}[label=(\arabic*)]
+\item Show that
+\[
+P(X=k)=\binom{k+r-1}{r-1}p^r(1-p)^k,\quad k=0,1,2,\ldots
+\]
+\item Derive \( \mathbb{E}[X] \) and \( \mathrm{Var}(X) \) using the MGF or otherwise.
+\item For \( r=3,p=0.4 \), compute \( \mathbb{P}(X\le4) \) exactly.
+\end{enumerate}
+
+\section{Uniform Estimators for \(\theta\)}
+Suppose \( X_1,\ldots,X_n \stackrel{\mathrm{i.i.d.}}{\sim}\mathrm{Unif}(0,\theta) \).
+Define:
+\[
+T_1=2\bar{X}, \qquad T_2=\frac{n+1}{n}X_{(n)}, \quad X_{(n)}=\max(X_1,\ldots,X_n).
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Show that \( T_1 \) is unbiased for \( \theta \). Compute its variance and MSE.
+\item Show that \( T_2 \) is unbiased for \( \theta \). Compute its variance and MSE.
+\item For \( n=5 \) and data \( \{3.1,1.6,4.2,2.9,3.8\} \), compute both estimates.
+\end{enumerate}
+
+\section{Mahalanobis Distance and Affine Invariance}
+The Mahalanobis distance for \( \mathbf{x}\in\mathbb{R}^p \) relative to mean \( \boldsymbol{\mu} \) and covariance \( \boldsymbol{\Sigma} \) is:
+\[
+D_M(\mathbf{x}) = \sqrt{(\mathbf{x}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\mathbf{x}-\boldsymbol{\mu})}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Prove that \( D_M(\mathbf{x}) \) is invariant under any affine transformation \( \mathbf{y}=\mathbf{A}\mathbf{x}+\mathbf{b} \), with invertible \( \mathbf{A} \).
+\item For \( \boldsymbol{\mu}=(0,0)^\top \) and \( \boldsymbol{\Sigma}=\begin{pmatrix}2&1\\1&2\end{pmatrix} \), compute \( D_M((1,1)^\top) \).
+\item Explain why \( D_M \) is superior to Euclidean distance for detecting multivariate outliers.
+\end{enumerate}
+
+% ========================================================================
+% ===================== CONTINUATION (PROBLEMS 25–30) =====================
+
+\section{Hosmer–Lemeshow Goodness-of-Fit Test}
+The Hosmer–Lemeshow statistic for assessing logistic regression fit is:
+\[
+H = \sum_{g=1}^{G} \frac{(O_g - E_g)^2}{E_g(1 - E_g/n_g)},
+\]
+where \( O_g \) = observed number of successes in group \( g \), \( E_g \) = expected number, \( n_g \) = group size.
+\begin{enumerate}[label=(\arabic*)]
+\item Under \( H_0 \) (model is correct), show that \( H \approx \chi^2_{G-2} \).
+\item For a model with \( n=400 \) and \( G=10 \) groups, with computed \( H=8.75 \), perform the test at \( \alpha=0.05 \).
+State your conclusion.
+\end{enumerate}
+
+\section{Power of a Two-Sample \textit{t}-Test}
+Two independent samples:
+\[
+X_1,\ldots,X_{n_x}\sim\mathcal{N}(\mu_x,\sigma^2), \qquad
+Y_1,\ldots,Y_{n_y}\sim\mathcal{N}(\mu_y,\sigma^2).
+\]
+Test \( H_0:\mu_x=\mu_y \) using
+\[
+T=\frac{\bar{X}-\bar{Y}}{s_p\sqrt{\tfrac{1}{n_x}+\tfrac{1}{n_y}}},\quad
+s_p^2=\frac{(n_x-1)s_x^2+(n_y-1)s_y^2}{n_x+n_y-2}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Derive the non-centrality parameter \( \delta \) when \( \mu_x-\mu_y=\Delta \).
+\item Show that the power increases with \( \Delta \) and sample sizes, but decreases with \( \sigma \).
+\item For \( n_x=n_y=25, \sigma=2, \alpha=0.05 \), approximate the power to detect \( \Delta=1 \) using the normal approximation to the noncentral t.
+\end{enumerate}
+
+\section{Receiver Operating Characteristic (ROC) and AUC}
+An ROC curve plots TPR vs. FPR across thresholds.
+\begin{enumerate}[label=(\arabic*)]
+\item Prove that the Area Under Curve (AUC) equals \( \mathbb{P}(\text{score}_{\text{pos}} > \text{score}_{\text{neg}}) \).
+\item For 5 positive and 5 negative scores:
+\[
+\text{Positives: } \{0.8,0.6,0.9,0.7,0.55\},\quad
+\text{Negatives: } \{0.4,0.3,0.45,0.5,0.35\},
+\]
+compute the AUC using the probability ranking method.
+\item Interpret \( \mathrm{AUC}=0.5 \) in terms of classifier skill.
+\end{enumerate}
+
+\section{K-Means Clustering Algorithm}
+K-means partitions \( n \) points into \( k \) clusters by minimizing:
+\[
+J = \sum_{i=1}^k \sum_{\mathbf{x}\in C_i} \|\mathbf{x}-\boldsymbol{\mu}_i\|^2.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Define the objective function formally and state both the assignment and update steps.
+\item Prove that each step of K-means (assignment and centroid update) never increases \( J \).
+\item Given data \( \{(1,1),(1,2),(5,4),(6,5)\} \) with initial centroids \( (1,1) \) and \( (5,4) \), perform one full iteration and compute new centroids.
+\end{enumerate}
+
+\section{Coefficient of Determination in Multiple Regression}
+For multiple regression with intercept, \( R^2 = 1 - \frac{SSE}{SST} \).
+\begin{enumerate}[label=(\arabic*)]
+\item Prove \( R^2 = \rho^2(y,\hat{y}) \), the square of the correlation between observed and fitted values.
+\item Show that adding any predictor cannot reduce \( R^2 \).
+\item For \( n=30,p=4,SSE=45.2,SST=120.5 \), compute \( R^2 \) and the adjusted \( R^2 \).
+\end{enumerate}
+
+\section{Softmax Function and Numerical Stability}
+The softmax function for \( \mathbf{z}\in\mathbb{R}^K \):
+\[
+\sigma(\mathbf{z})_i = \frac{e^{z_i}}{\sum_{j=1}^K e^{z_j}}, \quad i=1,\ldots,K.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Prove that adding a constant \( c \) to all elements of \( \mathbf{z} \) leaves \( \sigma(\mathbf{z}) \) unchanged.
+\item Derive the Jacobian:
+\[
+J_{ij} = \frac{\partial \sigma_i}{\partial z_j} =
+\sigma_i(\delta_{ij} - \sigma_j).
+\]
+\item For \( \mathbf{z}=(2,1,0)^\top \), compute softmax probabilities; repeat for \( \mathbf{z}=(102,101,100)^\top \).
+Discuss numerical stability.
+\end{enumerate}
+
+% ========================================================================
+% ===================== CONTINUATION (PROBLEMS 31–35) =====================
+
+\section{Cauchy Distribution and Its Properties}
+The Cauchy distribution with location \( x_0 \) and scale \( \gamma > 0 \) has PDF:
+\[
+f(x;x_0,\gamma) = \frac{1}{\pi\gamma\left[1+\left(\frac{x-x_0}{\gamma}\right)^2\right]}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Show that the mean of \( X \) is undefined and the variance is infinite.
+\item Prove that if \( X,Y \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}(0,1) \), then \( Z = X/Y \sim \mathrm{Cauchy}(0,1) \).
+\item For \( X \sim \mathrm{Cauchy}(0,1) \), compute exactly \( \mathbb{P}(-1 \le X \le 1) \).
+\end{enumerate}
+
+\section{Ridge Regression Estimator}
+In ridge regression, coefficients are estimated by minimizing:
+\[
+\hat{\boldsymbol{\beta}}^{\mathrm{ridge}} =
+\arg\min_{\boldsymbol{\beta}}
+\left\{ \|\mathbf{y} - \mathbf{X}\boldsymbol{\beta}\|_2^2 +
+\lambda \|\boldsymbol{\beta}\|_2^2 \right\}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Derive the closed-form solution \( \hat{\boldsymbol{\beta}}^{\mathrm{ridge}} = (\mathbf{X}^\top \mathbf{X} + \lambda \mathbf{I})^{-1}\mathbf{X}^\top \mathbf{y} \).
+\item Show that the ridge estimator is a linear shrinkage transformation of the OLS estimator.
+\item For simple regression without intercept, with data \( \mathbf{x}=(1,2,3)^\top \), \( \mathbf{y}=(1,3,2)^\top \), compute ridge estimates for \( \lambda=1 \) and \( \lambda=10 \).
+Compare with OLS.
+\end{enumerate}
+
+\section{Wishart Distribution}
+If \( \mathbf{X}_1, \ldots, \mathbf{X}_n \stackrel{\text{i.i.d.}}{\sim} \mathcal{N}_p(\mathbf{0},\boldsymbol{\Sigma}) \), then
+\[
+\mathbf{W} = \sum_{i=1}^n \mathbf{X}_i \mathbf{X}_i^\top \sim W_p(n,\boldsymbol{\Sigma}),
+\]
+the Wishart distribution with \( n \) degrees of freedom and scale \( \boldsymbol{\Sigma} \).
+\begin{enumerate}[label=(\arabic*)]
+\item Show \( \mathbb{E}[\mathbf{W}] = n\boldsymbol{\Sigma} \).
+\item For \( p=2 \), derive \( \mathrm{Var}(W_{12}) \) in terms of \( \Sigma_{12} \).
+\item If \( \mathbf{W}\sim W_2(5,\mathbf{I}_2) \), compute \( \mathbb{P}(W_{11}+W_{22}>10) \).
+\end{enumerate}
+
+\section{Stochastic Gradient Descent (SGD)}
+For objective \( J(\boldsymbol{\theta}) = \frac{1}{n}\sum_{i=1}^n L(\boldsymbol{\theta};\mathbf{x}_i,y_i) \),
+SGD updates are given by:
+\[
+\boldsymbol{\theta}_{t+1} = \boldsymbol{\theta}_t - \eta_t \nabla_\theta L(\boldsymbol{\theta}_t;\mathbf{x}_{i_t},y_{i_t}),
+\]
+where \( i_t \) indexes a randomly selected sample.
+\begin{enumerate}[label=(\arabic*)]
+\item Write the SGD update rule explicitly and contrast it with batch gradient descent.
+\item Prove that if the learning rate \( \eta_t \) satisfies the Robbins–Monro conditions
+\[
+\sum_{t=1}^\infty \eta_t = \infty, \quad \sum_{t=1}^\infty \eta_t^2 < \infty,
+\]
+then SGD converges to a local minimum for convex \( J \).
+\item For \( L(\theta)=\theta^2 \), \( \theta_0=3 \), and learning rate \( \eta_t=1/t \),
+simulate three iterations of SGD with stochastic gradients \( -4,2,-3 \).
+\end{enumerate}
+
+\section{Bradley–Terry Model for Pairwise Comparisons}
+The Bradley–Terry model defines:
+\[
+P(i>j) = \frac{\pi_i}{\pi_i + \pi_j}, \quad \pi_i>0,
+\]
+where \( \pi_i \) represents the latent strength of object \( i \).
+\begin{enumerate}[label=(\arabic*)]
+\item Prove that the model is invariant under scaling \( \pi_i \to c\pi_i,\, c>0 \).
+\item Derive the log-likelihood function given binary outcomes \( y_{ij} \) where \( y_{ij}=1 \) if \( i>j \), and 0 otherwise:
+\[
+\ell(\boldsymbol{\pi}) = \sum_{i<j} \left[ y_{ij}\log\frac{\pi_i}{\pi_i+\pi_j} + (1-y_{ij})\log\frac{\pi_j}{\pi_i+\pi_j} \right].
+\]
+\item For three objects with comparisons:
+A>B (3), B>A (1), A>C (4), C>A (0), B>C (3), C>B (1),
+compute the MLEs of \( \pi_A,\pi_B,\pi_C \) (either via iterative scaling or score equations).
+\end{enumerate}
+
+% ========================================================================
+
+\bigskip
+\hrule
+\bigskip
+
+\noindent
+
+% ===================== ADDITIONAL PROBLEMS (36–41) =====================
+
+\section{Bootstrap Confidence Intervals for the Median}
+A sample of size \( n=20 \) from a right-skewed distribution is observed:
+\[
+x = \{4.1, 4.5, 4.7, 4.9, 5.0, 5.2, 5.3, 5.5, 5.7, 5.8, 6.0, 6.1, 6.2, 6.5, 6.6, 6.8, 7.0, 7.1, 7.3, 7.4\}.
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Describe how to construct a bootstrap percentile confidence interval for the population median.
+\item Implement 1000 bootstrap resamples (conceptually) and approximate the 95\% CI given the ordered sample quantiles \( Q_{0.025}=5.0 \), \( Q_{0.975}=7.1 \).
+\item Discuss how the bootstrap interval compares in coverage accuracy to a normal-theory CI for symmetric data.
+\end{enumerate}
+
+\section{Heteroscedasticity and Weighted Least Squares}
+Consider a linear model \( y_i = \beta_0 + \beta_1 x_i + \epsilon_i \), with \( \mathrm{Var}(\epsilon_i) = \sigma^2 x_i^2 \).
+\begin{enumerate}[label=(\arabic*)]
+\item Show that OLS is unbiased but inefficient under this heteroscedastic structure.
+\item Derive the Weighted Least Squares (WLS) estimator and its variance.
+\item Using the dataset \( (x_i,y_i) = \{(1,2.2),(2,3.5),(3,6.9),(4,8.1),(5,9.8)\} \), compute both OLS and WLS estimates of \( \beta_1 \).
+\item Compare their standard errors and interpret.
+\end{enumerate}
+
+\section{Bayesian Inference for a Proportion}
+Let \( X \sim \mathrm{Bin}(n,p) \) with \( n=50 \) and prior \( p \sim \mathrm{Beta}(\alpha,\beta) \).
+\begin{enumerate}[label=(\arabic*)]
+\item Derive the posterior \( p(p\mid X=x) \) and identify its distribution family.
+\item For prior \( \mathrm{Beta}(2,2) \) and observed \( x=18 \), compute the posterior mean and 95\% credible interval.
+\item Compare this Bayesian interval to the frequentist Wilson interval for the same data.
+\item Discuss sensitivity of posterior inference to the prior choice.
+\end{enumerate}
+
+\section{Kernel Density Estimation and Bandwidth Selection}
+Given data \( x_1,\ldots,x_n \) drawn from an unknown continuous density \( f(x) \), define the kernel estimator
+\[
+\hat{f}_h(x) = \frac{1}{nh} \sum_{i=1}^n K\!\left(\frac{x-x_i}{h}\right),
+\]
+where \( K(u) = \frac{1}{\sqrt{2\pi}} e^{-u^2/2} \).
+\begin{enumerate}[label=(\arabic*)]
+\item Show that \( \int \hat{f}_h(x)\,dx = 1 \).
+\item Derive expressions for the bias and variance of \( \hat{f}_h(x) \) at a fixed point.
+\item Using the normal reference rule \( h_{\mathrm{NR}} = 1.06\,s\,n^{-1/5} \), compute \( h_{\mathrm{NR}} \) for a sample of 200 points with sample sd \( s=3.4 \).
+\item Discuss the impact of choosing \( h \) too small or too large on bias and variance.
+\end{enumerate}
+
+\section{Time-Series Autocorrelation and the Durbin–Watson Test}
+A simple regression model \( y_t = \beta_0 + \beta_1 x_t + u_t \) is fit to time-ordered data.
+\begin{enumerate}[label=(\arabic*)]
+\item Define the sample autocorrelation of residuals \( \hat{\rho}_1 = \frac{\sum_{t=2}^n e_t e_{t-1}}{\sum_{t=1}^n e_t^2} \).
+\item Show that the Durbin–Watson statistic \( D = 2(1-\hat{\rho}_1) \) and interpret its range.
+\item For residuals \( e = (1.2, 0.8, -0.3, -0.5, -1.0) \), compute \( D \) and test for positive autocorrelation at \( \alpha=0.05 \).
+\item Explain when the test is unreliable (e.g., presence of lagged dependent variables).
+\end{enumerate}
+
+\section{Cross-Validation and Bias–Variance Trade-off}
+In \( k \)-fold cross-validation for a predictive model, the dataset is split into \( k \) equal folds.
+\begin{enumerate}[label=(\arabic*)]
+\item Derive an expression for the expected prediction error as a function of bias and variance components.
+\item Explain why LOOCV (leave-one-out) tends to have low bias but high variance.
+\item Given 10-fold CV errors for different regularization parameters \( \lambda = \{0.01, 0.1, 1, 10\} \):
+\[
+\mathrm{MSE} = \{12.5,\,9.2,\,8.7,\,11.4\},
+\]
+identify the optimal \( \lambda \) and estimate the generalization error.
+\item Discuss why the minimum-MSE model may still overfit when model selection uncertainty is ignored.
+\end{enumerate}
+
+% ========================================================================
+% ===================== ADDITIONAL PROBLEMS (42–47) =====================
+
+\section{Survival Analysis and Kaplan–Meier Estimator}
+The following data record survival times (in months) for patients after treatment,
+with 1 = event (death) and 0 = right-censored.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c c c c c c c c c c}
+\toprule
+Time & 2 & 4 & 5 & 8 & 10 & 12 & 15 & 18 & 20 \\
+Status & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Survival times and censoring indicators.}
+\end{table}
+
+\begin{enumerate}[label=(\arabic*)]
+\item Compute the Kaplan–Meier survival estimate at \( t = 10 \) and \( t = 20 \).
+\item Plot (conceptually) the stepwise survival curve and indicate censoring marks.
+\item Derive Greenwood’s formula for the standard error of \( \hat{S}(t) \).
+\item Interpret the estimated median survival time.
+\end{enumerate}
+
+
+\section{Expectation–Maximization (EM) Algorithm for Gaussian Mixtures}
+Given data generated from a two-component mixture:
+\[
+f(x) = \pi\,\mathcal{N}(x;\mu_1,\sigma_1^2) + (1-\pi)\mathcal{N}(x;\mu_2,\sigma_2^2).
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Write the complete-data log-likelihood assuming latent class indicators \( Z_i\in\{0,1\} \).
+\item Derive the E-step and M-step update formulas for \( \pi,\mu_1,\mu_2,\sigma_1^2,\sigma_2^2 \).
+\item Using the following toy dataset:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c c c c c c}
+\toprule
+$x_i$ & 2.1 & 2.5 & 5.2 & 5.8 & 6.1 \\
+\bottomrule
+\end{tabular}
+\caption{Five observed data points for EM initialization.}
+\end{table}
+
+initialize \( \pi^{(0)}=0.5,\mu_1^{(0)}=2.0,\mu_2^{(0)}=6.0,\sigma_1^{2(0)}=\sigma_2^{2(0)}=1.0 \)
+and compute one full EM iteration numerically.
+\end{enumerate}
+
+
+\section{High-Dimensional Inference and LASSO Path}
+Consider the linear model \( \mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon} \)
+with \( p>n \). The LASSO estimator minimizes
+\[
+\hat{\boldsymbol{\beta}}(\lambda) =
+\arg\min_{\boldsymbol{\beta}}\big(\|\mathbf{y}-\mathbf{X}\boldsymbol{\beta}\|_2^2
++ \lambda\|\boldsymbol{\beta}\|_1\big).
+\]
+\begin{enumerate}[label=(\arabic*)]
+\item Explain geometrically why sparsity arises in the LASSO solution.
+\item For the dataset below, compute solutions at \( \lambda = 0.5, 1.0, 2.0 \)
+(using coordinate-descent updates conceptually):
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|cccc|c}
+\toprule
+Obs & $x_1$ & $x_2$ & $x_3$ & $x_4$ & $y$ \\
+\midrule
+1 & 1 & 0 & 0 & 2 & 5.1 \\
+2 & 0 & 1 & 1 & 0 & 4.3 \\
+3 & 1 & 1 & 0 & 1 & 6.2 \\
+4 & 0 & 0 & 1 & 1 & 4.9 \\
+\bottomrule
+\end{tabular}
+\caption{Toy dataset for LASSO path illustration.}
+\end{table}
+
+\item Sketch qualitatively the coefficient shrinkage path as \( \lambda \) increases.
+\end{enumerate}
+
+
+\section{Causal Inference Using Propensity Scores}
+A randomized trial was infeasible, so treatment assignment followed observational patterns.
+The dataset is summarized as:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|ccc|c}
+\toprule
+ID & Age & Income & Health\_Score & Treatment (1/0) \\
+\midrule
+1 & 45 & 62 & 80 & 1 \\
+2 & 38 & 55 & 70 & 0 \\
+3 & 60 & 90 & 85 & 1 \\
+4 & 50 & 75 & 77 & 0 \\
+5 & 33 & 40 & 68 & 0 \\
+6 & 55 & 82 & 84 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Covariates and treatment assignment.}
+\end{table}
+
+\begin{enumerate}[label=(\arabic*)]
+\item Fit a logistic regression model \( \hat{e}(x) = P(T=1\mid X=x) \) for propensity scores.
+\item Compute inverse-probability weights \( w_i = \frac{T_i}{\hat{e}(x_i)} + \frac{1-T_i}{1-\hat{e}(x_i)} \).
+\item Explain how weighted averages estimate the Average Treatment Effect (ATE).
+\item Discuss overlap and positivity assumptions for valid causal inference.
+\end{enumerate}
+
+
+\section{Principal Components on a Real Dataset}
+The following standardized measurements were obtained for four variables across six observations:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|cccc}
+\toprule
+Obs & $X_1$ & $X_2$ & $X_3$ & $X_4$ \\
+\midrule
+1 & 1.2 & 0.9 & 1.1 & 0.8 \\
+2 & 0.8 & 0.6 & 1.0 & 0.7 \\
+3 & -0.5 & -0.6 & -0.4 & -0.3 \\
+4 & -0.8 & -1.0 & -0.9 & -1.2 \\
+5 & 0.3 & 0.4 & 0.2 & 0.5 \\
+6 & -0.2 & -0.1 & 0.0 & -0.2 \\
+\bottomrule
+\end{tabular}
+\caption{Standardized feature matrix for PCA computation.}
+\end{table}
+
+\begin{enumerate}[label=(\arabic*)]
+\item Compute the sample covariance matrix \( \mathbf{S} \).
+\item Determine eigenvalues and the proportion of variance explained by each principal component.
+\item Project the observations onto the first principal component and interpret its loading vector.
+\item Suggest dimensionality reduction if 95\% variance retention is required.
+\end{enumerate}
+
+
+\section{Model Validation on a Real Regression Dataset}
+The table below records study hours (\(x_1\)), attendance (\(x_2\)), and exam scores (\(y\)) for eight students.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|cc|c}
+\toprule
+Student & Study\_Hours & Attendance & Exam\_Score \\
+\midrule
+1 & 4 & 6 & 68 \\
+2 & 6 & 8 & 80 \\
+3 & 2 & 5 & 54 \\
+4 & 8 & 9 & 88 \\
+5 & 5 & 7 & 74 \\
+6 & 7 & 8 & 84 \\
+7 & 3 & 4 & 60 \\
+8 & 9 & 10 & 92 \\
+\bottomrule
+\end{tabular}
+\caption{Student study dataset for regression validation.}
+\end{table}
+
+\begin{enumerate}[label=(\arabic*)]
+\item Fit the linear model \( y = \beta_0 + \beta_1x_1 + \beta_2x_2 + \epsilon \) by OLS.
+\item Compute fitted values, residuals, and \( R^2 \).
+\item Perform 4-fold cross-validation and report mean test-MSE.
+\item Plot residuals vs. fitted values (conceptually) and comment on linearity and variance assumptions.
+\end{enumerate}
+
+% ========================================================================
+
+% ===================== NEW PROBLEMS (48–52) =====================
+
+\section{Multiple Testing and False Discovery Rate}
+You have performed 10 independent hypothesis tests and obtained p-values:
+\(0.002, 0.010, 0.021, 0.045, 0.052, 0.08, 0.12, 0.18, 0.25, 0.40\).
+\begin{enumerate}[label=(\arabic*)]
+\item Apply the Benjamini–Hochberg (BH) procedure at level \(\alpha=0.05\). Which hypotheses are rejected? Show the steps.
+\item Compute the Bonferroni-adjusted p-values and compare the number of discoveries to BH.
+\item Discuss briefly (2–3 sentences) why BH controls FDR under independence but may fail under certain dependence structures.
+\end{enumerate}
+
+\section{Gaussian Process Regression — Predictive Posterior}
+Consider a Gaussian process prior on a regression function \(f:\mathbb{R}\to\mathbb{R}\) with mean zero and squared-exponential kernel
+\[ k(x,x') = \sigma_f^2 \exp\left(-\frac{(x-x')^2}{2\ell^2}\right). \]
+Assume noisy observations \(y_i = f(x_i) + \varepsilon_i\) with \(\varepsilon_i\sim N(0,\sigma_n^2)\).
+\begin{enumerate}[label=(\arabic*)]
+\item Write the joint prior for training outputs and the predictive distribution for \(f(x_*)\) at a new point \(x_*\) (mean and variance), in matrix form.
+\item Given one training point \(x_1=0,y_1=1\), with \(\sigma_f^2=1,\ell=1,\sigma_n^2=0.1\), compute the predictive mean and variance at \(x_*=0.5\) (numeric expressions are fine).
+\item Explain how hyperparameters \((\sigma_f,\ell,\sigma_n)\) are typically chosen in practice (two common approaches).
+\end{enumerate}
+
+\section{Spectral Clustering on a Small Graph}
+Let the similarity (adjacency) matrix for 4 nodes be
+\[ A = \begin{pmatrix} 0 & 1 & 0 & 0 \\ 1 & 0 & 1 & 0 \\ 0 & 1 & 0 & 1 \\ 0 & 0 & 1 & 0 \end{pmatrix}. \]
+\begin{enumerate}[label=(\arabic*)]
+\item Form the unnormalized graph Laplacian \(L = D - A\). Compute \(L\) explicitly.
+\item Find the eigenvalues and eigenvectors of \(L\) (analytic reasoning or numeric values allowed). Identify the eigenvector(s) used to partition into two clusters.
+\item Based on the Fiedler vector, give the two-cluster partition and briefly interpret the result.
+\end{enumerate}
+
+\section{Bootstrap Confidence Intervals for Regression Coefficients}
+Consider the simple linear regression from Problem 10 (with the five data points):
+\(x = (0,1,2,3,4),\ y = (1.0,2.9,5.1,5.9,9.2)\).
+\begin{enumerate}[label=(\arabic*)]
+\item Describe the nonparametric bootstrap procedure to obtain a 95\% confidence interval for \(\beta_1\) (the slope).
+\item Perform a conceptual 1000-sample bootstrap (no need to compute by hand): explain how you would compute the percentile and the basic/bootstrap-t intervals and list advantages/limitations of each.
+\item If the OLS slope estimate is \(\hat{\beta}_1\) and the bootstrap sample of slopes has mean \(\bar{\beta}^{*}=\hat{\beta}_1\) and standard error \(s^{*}\), write the formula for a bootstrap-t 95\% CI.
+\end{enumerate}
+
+\section{Model Selection: AIC, BIC and Asymptotics}
+Suppose you fit three nested models to the same data with log-likelihoods and parameter counts as follows:
+\begin{itemize}
+    \item Model M1: log-lik = -120.5, \(k=3\)
+    \item Model M2: log-lik = -118.0, \(k=5\)
+    \item Model M3: log-lik = -117.2, \(k=8\)
+\end{itemize}
+\begin{enumerate}[label=(\arabic*)]
+\item Compute AIC and BIC for each model (assume sample size \(n=200\)). Which criterion selects which model?
+\item Discuss why AIC and BIC can prefer different models and their asymptotic behaviors (which is consistent for prediction vs. consistent model selection).
+\item For nested models, state (without proof) how a likelihood-ratio test complements AIC/BIC and when you would prefer it.
+\end{enumerate}
+
+\bigskip
+\hrule
+\bigskip
+
+% ===================== ADDITIONAL PMF/PDF PROBLEMS (TOPIC 1) =====================
+
+\section{Probability Mass and Density Functions (PMF / PDF)}
+This section contains advanced problems about PMFs, PDFs, their transformations, convolutions, order statistics, and inference.
+\begin{enumerate}[label=(\arabic*)]
+\item (Mixed discrete–continuous distribution) Let \(X\) satisfy
+    \[ \mathbb{P}(X=0)=\alpha, \qquad X\mid(X\neq0) \sim \mathrm{Exp}(\lambda), \qquad 0\le\alpha<1,\ \lambda>0. \]
+    \begin{enumerate}[label=(\alph*)]
+    \item Write the PMF/PDF and CDF of \(X\) explicitly (make the point-mass at zero clear).
+    \item Derive expressions for \(\mathbb{E}[X]\) and \(\mathrm{Var}(X)\) in terms of \(\alpha,\lambda\).
+    \item Numerically evaluate \(\mathbb{P}(X>1)\), \(\mathbb{E}[X]\) for \(\alpha=0.25,\lambda=1\).
+    \end{enumerate}
+
+\item (Convolution and sums) Let \(X\sim\mathrm{Exp}(\lambda_1)\) and \(Y\sim\mathrm{Exp}(\lambda_2)\) be independent.
+    \begin{enumerate}[label=(\alph*)]
+    \item Derive the PDF of \(S=X+Y\) by convolution. Give the forms for the two cases \(\lambda_1\neq\lambda_2\) and \(\lambda_1=\lambda_2\).
+    \item For \(\lambda_1=1,\lambda_2=2\), evaluate the PDF of \(S\) and compute \(\mathbb{P}(S>1)\) (reduce to a closed-form expression before numerical evaluation).
+    \item Generalize: if \(X_i\stackrel{iid}{\sim}\mathrm{Exp}(\lambda)\) for \(i=1,\dots,m\), identify the distribution of their sum and give its mean and variance.
+    \end{enumerate}
+
+\item (Order statistics and densities) Let \(X_1,\dots,X_n\) be i.i.d. continuous with PDF \(f\) and CDF \(F\).
+    \begin{enumerate}[label=(\alph*)]
+    \item Write the joint PDF of the order statistics \(X_{(1)}<\cdots<X_{(n)}\) and derive the marginal PDF of the \(k\)-th order statistic \(X_{(k)}\).
+    \item For \(X_i\stackrel{iid}{\sim}\mathrm{Unif}(0,\theta)\), show that \(\mathbb{E}[X_{(n)}]=\frac{n}{n+1}\theta\) and construct an unbiased estimator for \(\theta\) based on the maximum.
+    \item Discuss how the density of the sample minimum changes when the parent distribution has an atom (point-mass) at zero.
+    \end{enumerate}
+
+\item (Heavy-tail discrete distributions and normalization) Consider the discrete power-law (zeta) PMF
+    \[ p(k) = C\,k^{-s},\qquad k=1,2,\dots, \quad s>1. \]
+    \begin{enumerate}[label=(\alph*)]
+    \item Show that the normalizing constant is \(C=1/\zeta(s)\) where \(\zeta(s)=\sum_{k\ge1} k^{-s}\) is the Riemann zeta function.
+    \item Determine for which values of \(s\) the expectation \(\mathbb{E}[K]\) and variance \(\mathrm{Var}(K)\) are finite; express \(\mathbb{E}[K]\) in terms of zeta functions when it exists.
+    \item Suppose you observe a sample \(k_1,\dots,k_n\) from this family. Discuss briefly (2–3 sentences) challenges for consistent parameter estimation of \(s\) and one practical estimator you might use.
+    \end{enumerate}
+
+\item (MLE and Fisher information for discrete pmf) Let \(X_1,\dots,X_n\) be i.i.d. from a geometric distribution with support \(\{1,2,\dots\}\):
+    \[ \mathbb{P}(X=k)=p(1-p)^{k-1},\quad 0<p<1. \]
+    \begin{enumerate}[label=(\alph*)]
+    \item Derive the log-likelihood and the maximum likelihood estimator \(\hat p\).
+    \item Compute the Fisher information \(I(p)\) for a single observation and give an approximate standard error for \(\hat p\).
+    \item For the sample \(n=10\) with observed values summing to \(\sum_i X_i=30\), compute \(\hat p\) and an approximate 95\% Wald confidence interval for \(p\).
+    \end{enumerate}
+
+\item (Characteristic functions and inversion) The Laplace (double-exponential) distribution has PDF
+    \[ f(x;\mu,b)=\frac{1}{2b}e^{-|x-\mu|/b},\quad b>0. \]
+    \begin{enumerate}[label=(\alph*)]
+    \item Compute the characteristic function \(\varphi(t)=\mathbb{E}[e^{itX}]\) of this distribution.
+    \item Use the inversion identity (state it) to argue why the characteristic function uniquely identifies the distribution, and show (formally) how the Laplace PDF can be recovered from its characteristic function in principle.
+    \item Briefly discuss one advantage of working with characteristic functions when studying sums of independent random variables.
+    \end{enumerate}
+\end{enumerate}
+
+% End of PMF/PDF topic
+
+% ===================== NORMALIZATION (SCALING) — ADVANCED PROBLEMS =====================
+
+\section{Normalization and Scaling (Advanced)}
+This section contains intermediate-to-advanced problems about data normalization and scaling methods (z-score, min–max, robust scaling, whitening, batch normalization) and their effects on downstream methods (PCA, clustering, distance-based learners).
+\begin{enumerate}[label=(\arabic*)]
+\item (Properties and inversion)
+    \begin{enumerate}[label=(\alph*)]
+    \item Let \(Z_i=(X_i-\mu)/\sigma\) be the z-score transform of a variable \(X\). Show that the transform is invertible given \(\mu,\sigma\), and derive the inverse transform. Prove \(\bar{Z}=0\) and \(\mathrm{Var}(Z)=1\) for a finite sample.
+    \item For min–max scaling \(M_i=(X_i-\min X)/(\max X-\min X)\), discuss conditions when the transform is not invertible and propose a stable inversion strategy if the original min/max are known approximately (numerical stability discussion).
+    \item Define robust scaling using the median and IQR. Compare its breakdown point to z-score scaling and show one scenario where robust scaling is clearly preferable.
+    \end{enumerate}
+
+\item (Whitening and PCA)
+    \begin{enumerate}[label=(\alph*)]
+    \item Given data matrix \(\mathbf{X}\) (centered) with sample covariance \(\mathbf{S}=\frac{1}{n}\mathbf{X}^\top\mathbf{X}\), show how to compute a whitening matrix \(W\) such that \(W\mathbf{X}\) has identity covariance. Present two common choices (PCA/zero-phase and ZCA) and write formulas.
+    \item Prove that whitening is not unique and explain the geometric meaning of this non-uniqueness.
+    \item For \(\mathbf{S}=\begin{pmatrix}4&2\\2&1\end{pmatrix}\), compute a PCA-based whitening matrix (show eigen-decomposition steps) and verify the whitened covariance is identity (symbolic or numeric).
+    \end{enumerate}
+
+\item (Effect of scaling on distance-based learners)
+    \begin{enumerate}[label=(\alph*)]
+    \item Consider two features with ranges vastly different: Feature A in \([0,1000]\), Feature B in \([0,1]\). Give a short proof/argument why Euclidean-distance KNN with no scaling is dominated by Feature A. Provide a small numeric example with two sample points and a query point where scaling changes the nearest neighbour.
+    \item For K-means clustering, describe analytically how scaling columns to unit variance alters the within-cluster sum of squares objective and thus can change cluster assignments.
+    \item Propose a defensible default scaling strategy for KNN and K-means in mixed-scale datasets and justify it.
+    \end{enumerate}
+
+\item (Batch normalization — forward and backward views)
+    \begin{enumerate}[label=(\alph*)]
+    \item Define the batch normalization transform for a mini-batch \(\{x_i\}_{i=1}^m\):
+    \[\mu_B=\frac{1}{m}\sum_i x_i,\quad\sigma_B^2=\frac{1}{m}\sum_i (x_i-\mu_B)^2,\quad \hat x_i=\frac{x_i-\mu_B}{\sqrt{\sigma_B^2+\epsilon}},\quad y_i=\gamma\hat x_i+\beta.
+    \]
+    Provide the forward-pass steps and explain the role of \(\gamma,\beta\) and \(\epsilon\).
+    \item Derive (briefly) the gradient of the loss \(L\) w.r.t. the input \(x_i\) in terms of upstream gradient \(\partial L/\partial y_i\) (outline the chain rule steps; a compact final formula is sufficient).
+    \item Discuss two failure modes or pitfalls when applying batchnorm (small batch sizes, training vs inference statistics), and suggest mitigations.
+    \end{enumerate}
+
+\item (Normalization and PCA / regression interplay)
+    \begin{enumerate}[label=(\alph*)]
+    \item Show with algebra why performing PCA on standardized variables (zero mean, unit variance) is equivalent to performing PCA on the correlation matrix rather than the covariance matrix, and discuss when this is desirable.
+    \item Consider linear regression with predictors on different scales. Explain how standardizing predictors affects (i) interpretation of coefficients, (ii) numerical conditioning of \(\mathbf{X}^\top\mathbf{X}\), and (iii) the effect of L2 regularization (ridge). Provide short formulas indicating the role of scaling in each effect.
+    \item Given the dataset \(X_1=(1,10,100), X_2=(0.1,0.2,0.4)\) (three observations), compute the sample covariance before and after standardization, and comment on the first principal component direction in both cases (numeric answers suffice).
+    \end{enumerate}
+
+\item (Practical normalization choices and evaluation)
+    \begin{enumerate}[label=(\alph*)]
+    \item Propose a small simulation (steps outlined) to compare the effect of z-score, min–max, and robust scaling on KNN classification accuracy when predictors include outliers. Describe the evaluation metric and how you would present results.
+    \item Define the concept of "information leakage" when normalization parameters are computed on the full dataset prior to cross-validation. Explain the correct procedure to avoid leakage and quantify the bias it introduces qualitatively.
+    \item For a high-dimensional dataset with many sparse categorical indicators (one-hot encoding), discuss the pros/cons of standard scaling (zero mean/unit variance) applied to those indicator columns and suggest an alternative preprocessing pipeline.
+    \end{enumerate}
+\end{enumerate}
+
+% End of Normalization topic
+
+% ===================== ONE-HOT ENCODING (CATEGORICAL FEATURES) =====================
+
+\section{One-Hot Encoding and Categorical Features (Advanced)}
+This section explores one-hot (dummy) encoding, high-cardinality categorical variables, encoding alternatives, effects on different models, and dataset-specific questions.
+\begin{enumerate}[label=(\arabic*)]
+\item (Dummy variable trap and design matrix rank)
+    \begin{enumerate}[label=(\alph*)]
+    \item Let a categorical variable \(C\) take values in \(\{A,B,C\}\). Write the full one-hot design matrix (including an intercept) for observations with categories \(A,B,C,A\). Show algebraically why including all three dummy columns plus an intercept makes the design matrix rank-deficient. Explain the standard remedy and show the full-rank design.
+    \item Generalize the argument to a categorical variable with \(k\) levels and explain how many dummy columns to include to avoid collinearity with an intercept.
+    \end{enumerate}
+
+\item (Interpretation in generalized linear models)
+    \begin{enumerate}[label=(\alph*)]
+    \item Consider fitting a logistic regression for a binary outcome \(Y\) using a 3-level categorical predictor \(C\) encoded with dummies \(D_1,D_2\) and baseline level omitted. Write the model and show how to obtain the log-odds and odds ratio comparing level 2 to baseline.
+    \item Dataset (counts by category and outcome):
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{lrr}
+    	oprule
+    Category & $Y=1$ & $Y=0$ \\
+    \midrule
+    Red & 30 & 70 \\
+    Blue & 45 & 55 \\
+    Green & 10 & 40 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Counts by category and binary outcome (example).}
+    \end{table}
+    Using the table above, compute (i) the sample log-odds for each category, (ii) the MLE intercept and coefficient for the \(\text{Blue}\) dummy when \(\text{Red}\) is the baseline (treat this as a grouped logistic by counts), and (iii) the predicted probability for an observation in \(\text{Blue}\).
+    \end{enumerate}
+
+\item (High-cardinality categorical variables and hashing / target encoding)
+    \begin{enumerate}[label=(\alph*)]
+    \item Suppose a feature \(G\) has 10,000 distinct categories. Explain why naive one-hot encoding is impractical. Describe the hashing trick and derive the expected number of collisions if hashing into \(m\) buckets (assume uniform hash).
+    \item Describe target (mean) encoding with smoothing: give the formula for the smoothed target encoding \(\tilde{t}_j = \frac{n_j\bar{y}_j + k\mu}{n_j + k}\) for category \(j\) (define all symbols). Explain the bias–variance tradeoff and one cross-validation strategy to avoid target leakage when fitting such encodings.
+    \end{enumerate}
+
+\item (Effects on tree-based vs linear models)
+    \begin{enumerate}[label=(\alph*)]
+    \item Give a concise argument why decision trees (CART) can natively split on categorical variables without one-hot encoding, and explain when one-hot encoding may still be useful for tree ensembles (e.g., interaction handling in boosted trees).
+    \item Dataset for computing information gain: a categorical feature with four levels and class counts:
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{lrr}
+    	oprule
+    Level & Positives & Negatives \\
+    \midrule
+    L1 & 12 & 3 \\
+    L2 & 5 & 10 \\
+    L3 & 8 & 8 \\
+    L4 & 2 & 7 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Categorical levels and class counts for information-gain calculations.}
+    \end{table}
+    Compute the parent entropy and the weighted entropy after splitting by this categorical feature; report the information gain. Show the steps.
+    \end{enumerate}
+
+\item (One-hot, distances and embeddings)
+    \begin{enumerate}[label=(\alph*)]
+    \item Show that for one-hot encoding of a categorical variable with \(k\) levels (using orthogonal dummy columns), the Euclidean distance between two observations that differ only in that categorical variable equals \(\sqrt{2}\) if their categories are different (assuming single categorical variable), and 0 if same. Provide a brief derivation.
+    \item Propose and describe one embedding method (e.g., supervised embedding via SVD of co-occurrence matrix or entity embeddings learned in a neural network) that yields continuous vectors for categories. Describe how you would evaluate whether the embedding improves KNN classification over one-hot.
+    \end{enumerate}
+
+\item (Practical pipeline, unseen categories and missingness)
+    \begin{enumerate}[label=(\alph*)]
+    \item Provide a detailed recipe (ordered steps) for preprocessing a dataset containing categorical variables (with missing values and potential unseen categories at prediction time) to be used with a linear model and with a tree ensemble. Include how to handle missing categories and unseen categories at predict time.
+    \item Advanced dataset (mixed numeric and categorical) for applied questions:
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{l l l r r c}
+    	oprule
+    ID & User\_City & Product\_Category & Price & Visits & Converted \\
+    \midrule
+    1 & Austin & Sports & 49.99 & 3 & 0 \\
+    2 & Boston & Electronics & 199.00 & 1 & 1 \\
+    3 & Austin & Home & 25.50 & 5 & 0 \\
+    4 & Chicago & Sports & 59.00 & 2 & 1 \\
+    5 & Denver & Fashion & 79.99 & 4 & 0 \\
+    6 & Austin & Electronics & 129.99 & 2 & 1 \\
+    7 & Boston & Fashion & 39.99 & 1 & 0 \\
+    8 & El\ Paso & Home & 18.00 & 6 & 0 \\
+    9 & Chicago & Sports & 49.99 & 0 & 0 \\
+    10 & Unknown & Misc & 9.99 & 2 & 0 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Sample ecommerce dataset with mixed categorical and numeric features.}
+    \end{table}
+    Using the dataset above:
+    \begin{enumerate}[label=(\roman*)]
+    \item Show the one-hot design matrix (columns) for \(\text{User\_City}\) and \(\text{Product\_Category}\) using the common convention of omitting one level per categorical variable. List the resulting column names.
+    \item If you use target (smoothed) encoding for \(\text{User\_City}\) computed on the full dataset, compute the encoded values (use conversion rate as target; use smoothing parameter \(k=1\) and global mean \(\mu\) computed from the table). Then explain why this approach would be biased and how to compute it correctly without leakage.
+    \item For prediction time, suppose a new user from \(\text{User\_City} = \) "San Francisco" appears (unseen). Describe three strategies to handle this unseen category and discuss tradeoffs.
+    \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+
+% End of One-Hot Encoding topic
+
+% ===================== PEARSON CORRELATION AND RELATED ANALYSES =====================
+
+\section{Pearson Correlation Coefficient and Related Analyses}
+This section contains intermediate-to-advanced problems about Pearson correlation, hypothesis testing, robust alternatives, partial correlations, correlation networks, and high-dimensional correlation estimation. A dataset is provided for applied subproblems.
+\begin{enumerate}[label=(\arabic*)]
+\item (Theory and geometry)
+    \begin{enumerate}[label=(\alph*)]
+    \item Let \(\mathbf{x}=(x_1,\dots,x_n)\) and \(\mathbf{y}=(y_1,\dots,y_n)\) be observed values with sample means \(\bar x,\bar y\). Show that the sample Pearson correlation
+    \[ r_{xy}=\frac{\sum_i (x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum_i (x_i-\bar x)^2}\sqrt{\sum_i (y_i-\bar y)^2}}\]
+    equals the cosine of the angle between the centered vectors \(\mathbf{x}-\bar x\mathbf{1}\) and \(\mathbf{y}-\bar y\mathbf{1}\). Explain the implications for interpreting correlation as a similarity measure.
+    \item Show that correlation is invariant to adding a constant to either variable and to multiplying either variable by a positive constant. What is the effect of multiplying a variable by \(-1\)?
+    \item Prove that if \(\tilde x=(x-\bar x)/s_x\) and \(\tilde y=(y-\bar y)/s_y\) are standardized, then the slope from regressing \(\tilde y\) on \(\tilde x\) equals the Pearson correlation \(r_{xy}\).
+    \end{enumerate}
+
+\item (Statistical inference and Fisher transform)
+    \begin{enumerate}[label=(\alph*)]
+    \item Derive the t-test statistic for testing \(H_0:r=0\) and show it has a Student's \(t_{n-2}\) distribution under normality assumptions. Provide the formula relating \(r\) and \(t\).
+    \item State the Fisher z-transformation \(z=\tfrac{1}{2}\log\tfrac{1+r}{1-r}\) and derive an approximate (asymptotic) 95\% confidence interval for the population correlation \(\rho\) based on \(z\) and its standard error.
+    \item Numerical example: For an observed sample correlation \(r=0.45\) with \(n=20\), compute the t-statistic, two-sided p-value, and the 95\% CI using Fisher z-transform. Report numerical answers to two decimal places.
+    \end{enumerate}
+
+\item (Robustness, ranks and outliers)
+    \begin{enumerate}[label=(\alph*)]
+    \item Describe two robust alternatives to Pearson correlation (e.g., Spearman rank correlation and biweight midcorrelation). Give the formulas and discuss sensitivity to outliers.
+    \item Consider the paired samples \((1,1),(2,2),(3,3),(4,4),(100,100)\). Compute the Pearson and Spearman correlations and explain the difference in light of the outlier.
+    \item Explain how a permutation test for correlation is performed and when it is preferable to parametric t-tests.
+    \end{enumerate}
+
+\item (Applied dataset: compute, compare, and test)
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{rrrrrrr}
+    	oprule
+    ID & $X_1$ & $X_2$ & $X_3$ & $X_4$ & $X_5$ & $X_6$ \\
+    \midrule
+    1 & 10.0 & 9.5 & 5.1 & 30 & -8.0 & 9.8 \\
+    2 & 12.0 & 11.8 & 6.0 & 28 & -9.1 & 11.6 \\
+    3 & 9.1 & 8.8 & 4.7 & 35 & -7.2 & 8.9 \\
+    4 & 11.0 & 10.9 & 5.5 & 32 & -8.5 & 10.7 \\
+    5 & 13.4 & 13.0 & 6.7 & 31 & -9.5 & 12.9 \\
+    6 & 8.5 & 8.2 & 4.2 & 36 & -6.9 & 8.0 \\
+    7 & 10.2 & 9.9 & 5.0 & 33 & -8.0 & 9.7 \\
+    8 & 200.0 & 195.0 & 98.0 & 29 & -160.0 & 193.0 \\
+    9 & 7.3 & 7.0 & 3.7 & 39 & -6.3 & 7.5 \\
+    10 & 14.1 & 13.8 & 7.0 & 27 & -10.0 & 13.7 \\
+    11 & 11.2 & 10.8 & 5.6 & 34 & -8.6 & 10.9 \\
+    12 & 9.5 & 9.3 & 4.9 & 37 & -7.8 & 9.4 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Sample dataset with one obvious outlier (row 8).}
+    \end{table}
+    \begin{enumerate}[label=(\alph*)]
+    \item Compute the sample Pearson correlation matrix for \(X_1,\dots,X_6\) using the full dataset (show the matrix). Identify the three largest absolute correlations and report their sample values.
+    \item Test the significance of each reported correlation using the t-test from part (2) and adjust the p-values for multiple comparisons using both Bonferroni and Benjamini–Hochberg procedures; report which pairs remain significant under each correction (use \(\alpha=0.05\)).
+    \item Remove observation 8 (the outlier) and recompute the Pearson correlation matrix and the three top correlations. Compare numerically and interpret which correlations were driven by the outlier.
+    \item Compute Spearman rank correlations on the full dataset and compare to Pearson; comment on robustness illustrated by these numbers.
+    \end{enumerate}
+
+\item (Partial correlation and conditioning)
+    \begin{enumerate}[label=(\alph*)]
+    \item Define the partial correlation between \(X\) and \(Y\) given \(Z\), show how it can be computed via residuals from linear regressions, and provide the formula in terms of the inverse covariance (precision) matrix.
+    \item Using the dataset above, compute the partial correlation between \(X_1\) and \(X_6\) controlling for \(X_4\). Compute it once with the full data and once without the outlier; comment on the change and what it implies about confounding.
+    \item Suggest a permutation-based way to test whether the partial correlation is significantly different from zero, and outline the algorithmic steps.
+    \end{enumerate}
+
+\item (Correlation networks and high-dimensional considerations)
+    \begin{enumerate}[label=(\alph*)]
+    \item From the correlation matrix (after removing the outlier), construct an undirected correlation network by thresholding absolute correlation at 0.7. List the edges and compute the degree of each node. Which variable is most central by degree?
+    \item Discuss shrinkage (Ledoit–Wolf) estimation of the covariance/correlation matrix in the high-dimensional regime (p comparable to n). Explain why shrinkage helps and give the Ledoit–Wolf form for the shrinkage estimator.
+    \item For p large, explain how the graphical lasso (L1-penalized inverse covariance) can be used to estimate a sparse partial-correlation graph. Describe how to select the penalty parameter and how to validate the resulting graph structure.
+    \end{enumerate}
+\end{enumerate}
+
+% End of Pearson Correlation topic
+
+\end{document}
+
+
