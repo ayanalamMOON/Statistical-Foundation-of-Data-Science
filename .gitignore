@@ -137,3 +137,6 @@ temp_analysis/
 *.out
 *.synctex.gz
 *.toc
+
+# Typst compiler
+typst-x86_64-pc-windows-msvc/
