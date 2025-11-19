@@ -173,10 +173,10 @@ $
     $ sum_(j=1)^N p_(i j) = 1 quad "for all" i $
 
   3. *n-Step Transition Probability*:
-     $ P^n = underbrace(P · P · ... · P, n "times") $
+    $ P^n = underbrace(P · P · ... · P, n "times") $
 
   4. *Chapman-Kolmogorov Equation*:
-     $ p_(i j)^((n+m)) = sum_(k=1)^N p_(i k)^((n)) p_(k j)^((m)) $
+    $ p_(i j)^((n+m)) = sum_(k=1)^N p_(i k)^((n)) p_(k j)^((m)) $
 ]
 
 === Detailed Derivation: n-Step Transition Probabilities
@@ -443,7 +443,7 @@ From state 3 (three cards):
     node((2.5, 0), [1\ Card], name: <1>, radius: 0.8cm),
     node((5, 0), [2\ Cards], name: <2>, radius: 0.8cm),
     node((7.5, 0), [3\ Cards], name: <3>, radius: 0.8cm),
-    
+
     edge(<1>, <0>, "->", label: "0.4", bend: 20deg),
     edge(<1>, <2>, "->", label: "0.6", bend: 20deg),
     edge(<2>, <1>, "->", label: "0.3", bend: 20deg),
@@ -457,12 +457,14 @@ From state 3 (three cards):
 
 *Step 4: Transition Matrix*
 
-$ P = mat(
-  1, 0, 0, 0;
-  0.4, 0, 0.6, 0;
-  0, 0.3, 0.2, 0.5;
-  0, 0, 0.7, 0.3
-) $
+$
+  P = mat(
+    1, 0, 0, 0;
+    0.4, 0, 0.6, 0;
+    0, 0.3, 0.2, 0.5;
+    0, 0, 0.7, 0.3
+  )
+$
 
 #table(
   columns: 5,
@@ -693,13 +695,15 @@ The state space can be partitioned into *communicating classes*—maximal sets o
 *Example 1: Identifying Classes*
 
 Consider the transition matrix:
-$ P = mat(
-  0.5, 0.5, 0, 0, 0;
-  0.3, 0.7, 0, 0, 0;
-  0, 0, 0.6, 0.4, 0;
-  0, 0, 0.3, 0.7, 0;
-  0.1, 0, 0, 0, 0.9
-) $
+$
+  P = mat(
+    0.5, 0.5, 0, 0, 0;
+    0.3, 0.7, 0, 0, 0;
+    0, 0, 0.6, 0.4, 0;
+    0, 0, 0.3, 0.7, 0;
+    0.1, 0, 0, 0, 0.9
+  )
+$
 
 *Step 1: Build accessibility table*
 
@@ -746,30 +750,30 @@ $ P = mat(
     spacing: 2.5cm,
     node-stroke: 1pt,
     edge-stroke: 1pt,
-    
+
     // Class 1
     node((0, 1), $0$, name: <0>, radius: 0.6cm, stroke: rgb("#0066cc") + 2pt),
     node((1.5, 1), $1$, name: <1>, radius: 0.6cm, stroke: rgb("#0066cc") + 2pt),
-    
-    // Class 2  
+
+    // Class 2
     node((0, -1), $2$, name: <2>, radius: 0.6cm, stroke: rgb("#cc0066") + 2pt),
     node((1.5, -1), $3$, name: <3>, radius: 0.6cm, stroke: rgb("#cc0066") + 2pt),
-    
+
     // Class 3
     node((3.5, 0), $4$, name: <4>, radius: 0.6cm, stroke: rgb("#00aa00") + 2pt),
-    
+
     // Edges within Class 1
     edge(<0>, <1>, "->", label: "0.5", bend: -20deg),
     edge(<1>, <0>, "->", label: "0.3", bend: -20deg),
     edge(<0>, <0>, "->", label: "0.5", bend: 130deg, loop-angle: 180deg),
     edge(<1>, <1>, "->", label: "0.7", bend: -130deg, loop-angle: 0deg),
-    
+
     // Edges within Class 2
     edge(<2>, <3>, "->", label: "0.4", bend: -20deg),
     edge(<3>, <2>, "->", label: "0.3", bend: -20deg),
     edge(<2>, <2>, "->", label: "0.6", bend: 130deg, loop-angle: 180deg),
     edge(<3>, <3>, "->", label: "0.7", bend: -130deg, loop-angle: 0deg),
-    
+
     // Edges from Class 3
     edge(<4>, <0>, "->", label: "0.1", bend: 20deg),
     edge(<4>, <4>, "->", label: "0.9", bend: 130deg, loop-angle: 90deg),
@@ -784,11 +788,13 @@ The chain above is reducible (3 classes).
 
 *Irreducible Chain:* Only one communicating class (all states communicate)
 
-$ P = mat(
-  0, 1, 0;
-  0, 0, 1;
-  1, 0, 0
-) $
+$
+  P = mat(
+    0, 1, 0;
+    0, 0, 1;
+    1, 0, 0
+  )
+$
 
 All states form one class: ${0, 1, 2}$
 - 0 → 1 → 2 → 0 (cycle)
@@ -1086,7 +1092,7 @@ $ A = mat(-0.5, 0.4, 0.3; 0.3, -0.6, 0.3; 0.2, 0.2, -0.6) $
 *Step 3:* Row reduce to find null space:
 
 $
-  mat(-0.5, 0.4, 0.3; 0.3, -0.6, 0.3; 0.2, 0.2, -0.6) 
+  mat(-0.5, 0.4, 0.3; 0.3, -0.6, 0.3; 0.2, 0.2, -0.6)
   →
   mat(1, -0.8, -0.6; 0.3, -0.6, 0.3; 0.2, 0.2, -0.6)
 $
@@ -1214,7 +1220,7 @@ If detailed balance holds, we can solve $N(N-1)/2$ equations instead of $N$ equa
 1. Verify reversibility by checking if $p_(i j)/p_(j i)$ is consistent across paths
 2. Choose a reference state (usually state 1)
 3. For each state $j$, compute:
-   $ π_j = π_1 · product_("path" 1 → j) p_k / p_(k^(-1)) $
+  $ π_j = π_1 · product_("path" 1 → j) p_k / p_(k^(-1)) $
 4. Normalize: $π_1 = 1 / (1 + sum_(j≠1) π_j / π_1)$
 
 *Detailed Example - Birth-Death Process:*
@@ -1427,7 +1433,9 @@ Since $|λ_i| < 1$ for $i ≥ 2$ (by Lemma 1):
 $ lim_(n→∞) λ_i^n = 0 quad "for all" i ≥ 2 $
 
 Therefore:
-$ lim_(n→∞) P^n = e π^T = mat(π_1, π_2, ..., π_N; π_1, π_2, ..., π_N; dots.v, dots.v, dots.down, dots.v; π_1, π_2, ..., π_N) $
+$
+  lim_(n→∞) P^n = e π^T = mat(π_1, π_2, ..., π_N; π_1, π_2, ..., π_N; dots.v, dots.v, dots.down, dots.v; π_1, π_2, ..., π_N)
+$
 
 This proves:
 $ lim_(n→∞) p_(i j)^((n)) = π_j quad "for all" i, j $
@@ -1456,7 +1464,7 @@ where $C$ depends on the eigenvector structure.
   $ lim_(N→∞) 1/N sum_(n=1)^N 𝟙{X_n = j} = π_j quad "almost surely" $
 
   *Proof outline:*
-  
+
   Define $V_N(j) = sum_(n=1)^N 𝟙{X_n = j}$ (number of visits to state $j$ by time $N$)
 
   *Claim:* $V_N(j) / N → π_j$ almost surely
@@ -1603,12 +1611,14 @@ where:
 
 Original transition matrix (states ordered 1, 2, 3, 4):
 
-$ P_"original" = mat(
-  0.5, 0.3, 0.2, 0;
-  0.4, 0, 0.6, 0;
-  0, 0, 1, 0;
-  0, 0, 0, 1
-) $
+$
+  P_"original" = mat(
+    0.5, 0.3, 0.2, 0;
+    0.4, 0, 0.6, 0;
+    0, 0, 1, 0;
+    0, 0, 0, 1
+  )
+$
 
 *Step 1: Identify states*
 - Transient: states 1, 2 (can leave)
@@ -1644,12 +1654,14 @@ Original matrix (states A, B, C, D where B and D are absorbing):
   [*D*], [0], [0], [0], [1],
 )
 
-$ P_"original" = mat(
-  0.3, 0.4, 0.2, 0.1;
-  0, 1, 0, 0;
-  0.5, 0.2, 0.1, 0.2;
-  0, 0, 0, 1
-) $
+$
+  P_"original" = mat(
+    0.3, 0.4, 0.2, 0.1;
+    0, 1, 0, 0;
+    0.5, 0.2, 0.1, 0.2;
+    0, 0, 0, 1
+  )
+$
 
 *Step 1: Identify*
 - Transient: A (state 1), C (state 3)
@@ -1680,13 +1692,15 @@ where $Π$ swaps rows/columns 2 and 3.
   [*D*], [0], [0], [| 0], [1], [],
 )
 
-$ P_"canonical" = mat(
-  0.3, 0.2, |, 0.4, 0.1;
-  0.5, 0.1, |, 0.2, 0.2;
-  ―, ―, ―, ―, ―;
-  0, 0, |, 1, 0;
-  0, 0, |, 0, 1
-) = mat(Q, R; 0, I) $
+$
+  P_"canonical" = mat(
+    0.3, 0.2, |, 0.4, 0.1;
+    0.5, 0.1, |, 0.2, 0.2;
+    ―, ―, ―, ―, ―;
+    0, 0, |, 1, 0;
+    0, 0, |, 0, 1
+  ) = mat(Q, R; 0, I)
+$
 
 where:
 $
@@ -2142,12 +2156,12 @@ $ m_(R S) = 2 $
 Substituting back:
 $ m_(S S) = 1 + 0.7 m_(S S) + 0.3 · 2 $
 $ 0.3 m_(S S) = 1 + 0.6 = 1.6 $
-$ m_(S S) = 1.6 / 0.3 ≈ 5.33 $ 
+$ m_(S S) = 1.6 / 0.3 ≈ 5.33 $
 
 Wait, this doesn't match! Let me recalculate properly.
 
 Actually, for *first return* to $S$, we must leave $S$ first:
-$ μ_S = 1 + 0.7 · (1 + μ_S) + 0.3 · (1 + m_(R S))  $ — This is WRONG!
+$ μ_S = 1 + 0.7 · (1 + μ_S) + 0.3 · (1 + m_(R S)) $ — This is WRONG!
 
 Correct formulation:
 $ μ_S = 1 + 0.7 · μ_S + 0.3 · m_(R S) $
@@ -2311,13 +2325,15 @@ A *Poisson process* with rate $λ$ is the fundamental example of a CTMC. It coun
 
 The infinitesimal generator has a simple structure:
 
-$ Q = mat(
-  -λ, λ, 0, 0, 0, ...;
-  0, -λ, λ, 0, 0, ...;
-  0, 0, -λ, λ, 0, ...;
-  0, 0, 0, -λ, λ, ...;
-  dots.v, dots.v, dots.v, dots.v, dots.v, dots.down
-) $
+$
+  Q = mat(
+    -λ, λ, 0, 0, 0, ...;
+    0, -λ, λ, 0, 0, ...;
+    0, 0, -λ, λ, 0, ...;
+    0, 0, 0, -λ, λ, ...;
+    dots.v, dots.v, dots.v, dots.v, dots.v, dots.down
+  )
+$
 
 *Elements:*
 - $q_(n, n+1) = λ$ for all $n ≥ 0$ (transition rate upward)
@@ -2603,13 +2619,15 @@ The *M/M/1 queue* is one of the most fundamental queueing models, representing a
 
 === Generator Matrix
 
-$ Q = mat(
-  -λ, λ, 0, 0, 0, ...;
-  μ, -(λ+μ), λ, 0, 0, ...;
-  0, μ, -(λ+μ), λ, 0, ...;
-  0, 0, μ, -(λ+μ), λ, ...;
-  dots.v, dots.v, dots.v, dots.v, dots.v, dots.down
-) $
+$
+  Q = mat(
+    -λ, λ, 0, 0, 0, ...;
+    μ, -(λ+μ), λ, 0, 0, ...;
+    0, μ, -(λ+μ), λ, 0, ...;
+    0, 0, μ, -(λ+μ), λ, ...;
+    dots.v, dots.v, dots.v, dots.v, dots.v, dots.down
+  )
+$
 
 *Key difference from Poisson process:* Birth-death structure allows both upward (arrivals) and downward (service) transitions.
 
