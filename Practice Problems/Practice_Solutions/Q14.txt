@@ -1,0 +1,270 @@
+PROBLEM 14.
+
+The Gini coefficient is a measure of statistical dispersion, often used for economic inequality. For a continuous distribution with CDF  F(x)  and mean  \mu , it can be defined as:
+
+G = \frac{1}{2\mu} \iint_{-\infty}^{\infty} |x - y| \, dF(x) \, dF(y)
+
+1. For the Pareto distribution with CDF  F(x) = 1 - (x_m/x)^\alpha  for  x \geq x_m > 0, \alpha > 1 , show that the Gini coefficient is  G = \frac{1}{2\alpha - 1} .
+2. For a finite sample  \{x_1, \ldots, x_n\} , the Gini coefficient can be estimated by:
+   \hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+   Compute  \hat{G}  for the dataset  \{1, 3, 6, 10\} .
+3. Prove that for any non-negative dataset,  0 \leq \hat{G} \leq 1 .
+
+solve this Problem, with detailed analysis and deduction, and step by step mathematical calculations without missing any steps, do not skipping any steps and calculations, I want see everything , I repeat I want All the steps of the calculations and analysis in answer output. Remember that.  I want to all the steps of calculations you did in the chat in detail no skipping any things, I want to see the all the step by step calculations and analysis. and every mathematical calculations an equation must be rendered properly so write them correctly but DO NOT LEAVE ANY THINGS
+
+---------------------------------------------
+soltion:
+
+### Step 1. Gini Coefficient for the Pareto Distribution
+
+The Pareto distribution has the cumulative distribution function (CDF):
+
+\[
+F(x) = 1 - \left( \frac{x_m}{x} \right)^\alpha \quad \text{for } x \geq x_m > 0, \ \alpha > 1
+\]
+
+The probability density function (PDF) is:
+
+\[
+f(x) = \frac{\alpha x_m^\alpha}{x^{\alpha+1}}
+\]
+
+The mean is:
+
+\[
+\mu = \int_{x_m}^\infty x f(x)  dx = \int_{x_m}^\infty x \cdot \frac{\alpha x_m^\alpha}{x^{\alpha+1}}  dx = \alpha x_m^\alpha \int_{x_m}^\infty x^{-\alpha}  dx
+\]
+
+\[
+= \alpha x_m^\alpha \left[ \frac{x^{1-\alpha}}{1-\alpha} \right]_{x_m}^\infty = \alpha x_m^\alpha \left( 0 - \frac{x_m^{1-\alpha}}{1-\alpha} \right) = \frac{\alpha x_m}{\alpha - 1}
+\]
+
+The Gini coefficient is defined as:
+
+\[
+G = \frac{1}{2\mu} \iint_{-\infty}^{\infty} |x - y|  dF(x)  dF(y)
+\]
+
+Due to symmetry, this simplifies to:
+
+\[
+G = \frac{1}{\mu} \iint_{y < x} (x - y)  dF(x)  dF(y) = \frac{1}{\mu} \int_{x_m}^\infty \left[ \int_{x_m}^x (x - y) f(y)  dy \right] f(x)  dx
+\]
+
+Let:
+
+\[
+J(x) = \int_{x_m}^x (x - y) f(y)  dy
+\]
+
+Substitute the PDF:
+
+\[
+J(x) = \int_{x_m}^x (x - y) \cdot \frac{\alpha x_m^\alpha}{y^{\alpha+1}}  dy = \alpha x_m^\alpha \int_{x_m}^x \left( \frac{x}{y^{\alpha+1}} - \frac{1}{y^\alpha} \right) dy
+\]
+
+Compute the integrals separately:
+
+- \[
+\int_{x_m}^x \frac{x}{y^{\alpha+1}}  dy = x \int_{x_m}^x y^{-\alpha-1}  dy = x \left[ \frac{y^{-\alpha}}{-\alpha} \right]_{x_m}^x = \frac{x}{\alpha} \left( x_m^{-\alpha} - x^{-\alpha} \right)
+\]
+
+- \[
+\int_{x_m}^x \frac{1}{y^\alpha}  dy = \int_{x_m}^x y^{-\alpha}  dy = \left[ \frac{y^{1-\alpha}}{1-\alpha} \right]_{x_m}^x = \frac{1}{1-\alpha} \left( x^{1-\alpha} - x_m^{1-\alpha} \right) = \frac{1}{\alpha - 1} \left( x_m^{1-\alpha} - x^{1-\alpha} \right)
+\]
+
+Thus:
+
+\[
+J(x) = \alpha x_m^\alpha \left[ \frac{x}{\alpha} \left( x_m^{-\alpha} - x^{-\alpha} \right) - \frac{1}{\alpha - 1} \left( x_m^{1-\alpha} - x^{1-\alpha} \right) \right]
+\]
+
+\[
+= x_m^\alpha \left[ x \left( x_m^{-\alpha} - x^{-\alpha} \right) - \frac{\alpha}{\alpha - 1} \left( x_m^{1-\alpha} - x^{1-\alpha} \right) \right]
+\]
+
+\[
+= x \left( 1 - \left( \frac{x_m}{x} \right)^\alpha \right) - \frac{\alpha}{\alpha - 1} x_m + \frac{\alpha}{\alpha - 1} x \left( \frac{x_m}{x} \right)^\alpha
+\]
+
+Now compute the double integral:
+
+\[
+I = \int_{x_m}^\infty J(x) f(x)  dx = \int_{x_m}^\infty J(x) \cdot \frac{\alpha x_m^\alpha}{x^{\alpha+1}}  dx
+\]
+
+Substitute \( J(x) \):
+
+\[
+I = \alpha x_m^\alpha \int_{x_m}^\infty \left[ x \left( 1 - \left( \frac{x_m}{x} \right)^\alpha \right) - \frac{\alpha}{\alpha - 1} x_m + \frac{\alpha}{\alpha - 1} x \left( \frac{x_m}{x} \right)^\alpha \right] \cdot \frac{1}{x^{\alpha+1}}  dx
+\]
+
+\[
+= \alpha x_m^\alpha \int_{x_m}^\infty \left[ x^{-\alpha} - x_m^\alpha x^{-2\alpha} - \frac{\alpha}{\alpha - 1} x_m x^{-\alpha-1} + \frac{\alpha}{\alpha - 1} x_m^\alpha x^{-2\alpha} \right] dx
+\]
+
+\[
+= \alpha x_m^\alpha \int_{x_m}^\infty \left[ x^{-\alpha} - \frac{\alpha}{\alpha - 1} x_m x^{-\alpha-1} + \left( \frac{\alpha}{\alpha - 1} - 1 \right) x_m^\alpha x^{-2\alpha} \right] dx
+\]
+
+Note:
+
+\[
+\frac{\alpha}{\alpha - 1} - 1 = \frac{1}{\alpha - 1}
+\]
+
+So:
+
+\[
+I = \alpha x_m^\alpha \int_{x_m}^\infty \left[ x^{-\alpha} - \frac{\alpha}{\alpha - 1} x_m x^{-\alpha-1} + \frac{1}{\alpha - 1} x_m^\alpha x^{-2\alpha} \right] dx
+\]
+
+Compute each integral:
+
+- \[
+I_1 = \int_{x_m}^\infty x^{-\alpha}  dx = \left[ \frac{x^{1-\alpha}}{1-\alpha} \right]_{x_m}^\infty = \frac{x_m^{1-\alpha}}{\alpha - 1}
+\]
+
+- \[
+I_2 = \int_{x_m}^\infty x^{-\alpha-1}  dx = \left[ \frac{x^{-\alpha}}{-\alpha} \right]_{x_m}^\infty = \frac{x_m^{-\alpha}}{\alpha}
+\]
+
+- \[
+I_3 = \int_{x_m}^\infty x^{-2\alpha}  dx = \left[ \frac{x^{1-2\alpha}}{1-2\alpha} \right]_{x_m}^\infty = \frac{x_m^{1-2\alpha}}{2\alpha - 1}
+\]
+
+Substitute back:
+
+\[
+I = \alpha x_m^\alpha \left[ I_1 - \frac{\alpha}{\alpha - 1} x_m I_2 + \frac{1}{\alpha - 1} x_m^\alpha I_3 \right]
+\]
+
+\[
+= \alpha x_m^\alpha \left[ \frac{x_m^{1-\alpha}}{\alpha - 1} - \frac{\alpha}{\alpha - 1} x_m \cdot \frac{x_m^{-\alpha}}{\alpha} + \frac{1}{\alpha - 1} x_m^\alpha \cdot \frac{x_m^{1-2\alpha}}{2\alpha - 1} \right]
+\]
+
+\[
+= \alpha x_m^\alpha \left[ \frac{x_m^{1-\alpha}}{\alpha - 1} - \frac{x_m^{1-\alpha}}{\alpha - 1} + \frac{x_m^{1-\alpha}}{(\alpha - 1)(2\alpha - 1)} \right]
+\]
+
+\[
+= \alpha x_m^\alpha \cdot \frac{x_m^{1-\alpha}}{(\alpha - 1)(2\alpha - 1)} = \frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)}
+\]
+
+Now compute the Gini coefficient:
+
+\[
+G = \frac{I}{2\mu} = \frac{\frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)}}{2 \cdot \frac{\alpha x_m}{\alpha - 1}} = \frac{1}{2\alpha - 1}
+\]
+
+✅ **Result:**
+
+\[
+\boxed{\frac{1}{2\alpha - 1}}
+\]
+
+---
+
+### Step 2. Estimate Ĝ for the Dataset {1, 3, 6, 10}
+
+The estimator is:
+
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+\]
+
+Given data: \( x_1 = 1, x_2 = 3, x_3 = 6, x_4 = 10 \), so \( n = 4 \).
+
+Compute the sample mean:
+
+\[
+\bar{x} = \frac{1 + 3 + 6 + 10}{4} = \frac{20}{4} = 5
+\]
+
+Compute the double sum:
+
+\[
+S = \sum_{i=1}^4 \sum_{j=1}^4 |x_i - x_j|
+\]
+
+Calculate pairwise absolute differences:
+
+- \( |1-1| = 0 \), \( |1-3| = 2 \), \( |1-6| = 5 \), \( |1-10| = 9 \) → sum = 16
+- \( |3-1| = 2 \), \( |3-3| = 0 \), \( |3-6| = 3 \), \( |3-10| = 7 \) → sum = 12
+- \( |6-1| = 5 \), \( |6-3| = 3 \), \( |6-6| = 0 \), \( |6-10| = 4 \) → sum = 12
+- \( |10-1| = 9 \), \( |10-3| = 7 \), \( |10-6| = 4 \), \( |10-10| = 0 \) → sum = 20
+
+Total:
+
+\[
+S = 16 + 12 + 12 + 20 = 60
+\]
+
+Now compute:
+
+\[
+\hat{G} = \frac{60}{2 \cdot 4^2 \cdot 5} = \frac{60}{160} = 0.375
+\]
+
+✅ **Result:**
+
+\[
+\boxed{0.375}
+\]
+
+---
+
+### Step 3. Prove that \( 0 \leq \hat{G} \leq 1 \) for Non-Negative Data
+
+We have:
+
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+\]
+
+Since all \( x_i \geq 0 \), the numerator and denominator are non-negative, so \( \hat{G} \geq 0 \).
+
+To show \( \hat{G} \leq 1 \), note that for any \( i, j \):
+
+\[
+|x_i - x_j| \leq x_i + x_j
+\]
+
+Summing over all \( i, j \):
+
+\[
+\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j| \leq \sum_{i=1}^n \sum_{j=1}^n (x_i + x_j) = n \sum_{i=1}^n x_i + n \sum_{j=1}^n x_j = 2n \cdot n\bar{x} = 2n^2 \bar{x}
+\]
+
+Thus:
+
+\[
+\hat{G} \leq \frac{2n^2 \bar{x}}{2n^2 \bar{x}} = 1
+\]
+
+Equality occurs when \( |x_i - x_j| = x_i + x_j \) for all \( i, j \), which happens when at least one of \( x_i, x_j \) is zero. For example, if one value is positive and the rest are zero, then \( \hat{G} = 1 \).
+
+✅ **Result:**
+
+\[
+\boxed{0} \leq \hat{G} \leq \boxed{1}
+\]
+
+---
+
+### Final Answers
+
+1. Gini coefficient for Pareto distribution:
+   \[
+   \boxed{\frac{1}{2\alpha - 1}}
+   \]
+
+2. Estimated Gini coefficient for {1, 3, 6, 10}:
+   \[
+   \boxed{0.375}
+   \]
+
+3. Bounds for non-negative data:
+   \[
+   \boxed{0} \leq \hat{G} \leq \boxed{1}
+   \]

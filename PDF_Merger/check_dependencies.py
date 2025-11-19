@@ -3,6 +3,7 @@ Demo/Test script for PDF Merger GUI
 This script can be used to verify the installation is working.
 """
 
+
 def check_dependencies():
     """Check if all required dependencies are installed."""
     print("=" * 50)
@@ -14,6 +15,7 @@ def check_dependencies():
 
     # Check Python version
     import sys
+
     print(f"✓ Python version: {sys.version.split()[0]}")
 
     if sys.version_info < (3, 7):
@@ -23,6 +25,7 @@ def check_dependencies():
     # Check tkinter
     try:
         import tkinter
+
         print("✓ tkinter is available")
     except ImportError:
         print("✗ tkinter is NOT available")
@@ -32,6 +35,7 @@ def check_dependencies():
     # Check PyPDF2
     try:
         import PyPDF2
+
         print(f"✓ PyPDF2 is installed (version: {PyPDF2.__version__})")
     except ImportError:
         print("✗ PyPDF2 is NOT installed")

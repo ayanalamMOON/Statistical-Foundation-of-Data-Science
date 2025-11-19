@@ -1,0 +1,28 @@
+title
+# PRACTICAL 7
+
+title
+# Q1. Regression with T-test: Using the teachers rating data set, does gender affect teaching evaluation rates?
+
+text
+**The output should be:**
+
+table
+
+<table><tr><td>[5]:</td><td colspan="4">OLS Regression Results</td></tr><tr><td>Dep. Variable:</td><td>eval</td><td colspan="3">R-squared: 0.022</td></tr><tr><td>Model:</td><td>OLS</td><td colspan="3">Adj. R-squared: 0.020</td></tr><tr><td>Method:</td><td>Least Squares</td><td colspan="3">F-statistic: 10.56</td></tr><tr><td>Date:</td><td>Sat, 28 Sep 2024</td><td colspan="3">Prob (F-statistic): 0.00124</td></tr><tr><td>Time:</td><td>11:10:49</td><td colspan="3">Log-Likelihood: -378.50</td></tr><tr><td>No. Observations:</td><td>463</td><td colspan="3">AIC: 761.0</td></tr><tr><td>Df Residuals:</td><td>461</td><td colspan="3">BIC: 769.3</td></tr><tr><td>Df Model:</td><td>1</td><td colspan="3"></td></tr><tr><td>Covariance Type:</td><td colspan="4">nonrobust</td></tr><tr><td>coef</td><td>std err</td><td>t</td><td>P&gt;|t|</td><td>[0.025 0.975]</td></tr><tr><td>const</td><td>4.0690 0.034</td><td>121.288</td><td>0.000</td><td>4.003 4.135</td></tr><tr><td>female</td><td>-0.1680 0.052</td><td>-3.250</td><td>0.001</td><td>-0.270 -0.066</td></tr><tr><td>Omnibus:</td><td>17.625</td><td colspan="3">Durbin-Watson: 1.209</td></tr><tr><td>Prob(Omnibus):</td><td>0.000</td><td colspan="3">Jarque-Bera (JB): 18.970</td></tr><tr><td>Skew:</td><td>-0.496</td><td colspan="3">Prob(JB): 7.60e-05</td></tr><tr><td>Kurtosis:</td><td>2.981</td><td colspan="3">Cond. No. 2.47</td></tr></table>
+
+Q2. Regression with ANOVA: Using the teachers' rating data set, does
+beauty score for instructors differ by age?
+The output should be:
+df sum_sq mean_sq F PR(>F)
+age_group 2.0 20.422744 10.211372 17.597559 4.322549e-08
+
+title
+# Q3. Correlation: Using the teachers' rating dataset, Is teaching evaluation score correlated with beauty score?  
+
+text
+The output should be:  
+
+table
+
+<table><tr><td colspan="4">OLS Regression Results</td></tr><tr><td>Dep. Variable:</td><td>eval</td><td>R-squared:</td><td>0.036</td></tr><tr><td>Model:</td><td>OLS</td><td>Adj. R-squared:</td><td>0.034</td></tr><tr><td>Method:</td><td>Least Squares</td><td>F-statistic:</td><td>17.08</td></tr><tr><td>Date:</td><td>Sat, 28 Sep 2024</td><td>Prob (F-statistic):</td><td>4.25e-05</td></tr><tr><td>Time:</td><td>11:20:13</td><td>Log-Likelihood:</td><td>-375.32</td></tr><tr><td>No. Observations:</td><td>463</td><td>AIC:</td><td>754.6</td></tr><tr><td>Df Residuals:</td><td>461</td><td>BIC:</td><td>762.9</td></tr><tr><td>Df Model:</td><td>1</td><td></td><td></td></tr><tr><td>Covariance Type:</td><td colspan="3">nonrobust</td></tr><tr><td>coef</td><td>std err</td><td>t</td><td>P&amp;gt;[t]</td></tr><tr><td>const</td><td>3.9983</td><td>0.025</td><td>157.727</td></tr><tr><td>beauty</td><td>0.1330</td><td>0.032</td><td>4.133</td></tr><tr><td>Omnibus:</td><td>15.399</td><td>Durbin-Watson:</td><td>1.238</td></tr><tr><td>Prob(Omnibus):</td><td>0.000</td><td>Jarque-Bera (JB):</td><td>16.405</td></tr><tr><td>Skew:</td><td>-0.453</td><td>Prob(JB):</td><td>0.000274</td></tr><tr><td>Kurtosis:</td><td>2.831</td><td>Cond. No.</td><td>1.27</td></tr></table>
