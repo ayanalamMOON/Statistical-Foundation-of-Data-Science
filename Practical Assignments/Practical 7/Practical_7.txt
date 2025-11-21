@@ -18,10 +18,10 @@ df sum_sq mean_sq F PR(>F)
 age_group 2.0 20.422744 10.211372 17.597559 4.322549e-08
 
 title
-# Q3. Correlation: Using the teachers' rating dataset, Is teaching evaluation score correlated with beauty score?  
+# Q3. Correlation: Using the teachers' rating dataset, Is teaching evaluation score correlated with beauty score?
 
 text
-The output should be:  
+The output should be:
 
 table
 
