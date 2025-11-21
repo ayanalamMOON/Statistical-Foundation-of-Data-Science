@@ -30,7 +30,7 @@ class PDFMergerGUI:
         self.compression_level = tk.StringVar(value="medium")
 
         # Configure style
-        self.setup_styles()        # Create GUI elements
+        self.setup_styles()  # Create GUI elements
         self.create_widgets()
 
         # Center window
@@ -39,14 +39,16 @@ class PDFMergerGUI:
     def setup_styles(self):
         """Configure ttk styles for better appearance."""
         style = ttk.Style()
-        style.theme_use('clam')
+        style.theme_use("clam")
 
         # Configure colors
-        style.configure('TFrame', background='#f0f0f0')
-        style.configure('Title.TLabel', font=('Arial', 16, 'bold'), background='#f0f0f0')
-        style.configure('Info.TLabel', font=('Arial', 10), background='#f0f0f0')
-        style.configure('TButton', font=('Arial', 10), padding=5)
-        style.configure('Action.TButton', font=('Arial', 11, 'bold'), padding=8)
+        style.configure("TFrame", background="#f0f0f0")
+        style.configure(
+            "Title.TLabel", font=("Arial", 16, "bold"), background="#f0f0f0"
+        )
+        style.configure("Info.TLabel", font=("Arial", 10), background="#f0f0f0")
+        style.configure("TButton", font=("Arial", 10), padding=5)
+        style.configure("Action.TButton", font=("Arial", 11, "bold"), padding=8)
 
     def create_widgets(self):
         """Create all GUI widgets."""
@@ -56,9 +58,7 @@ class PDFMergerGUI:
 
         # Title
         title_label = ttk.Label(
-            main_frame,
-            text="PDF Merger Tool",
-            style='Title.TLabel'
+            main_frame, text="PDF Merger Tool", style="Title.TLabel"
         )
         title_label.pack(pady=(0, 10))
 
@@ -66,7 +66,7 @@ class PDFMergerGUI:
         info_label = ttk.Label(
             main_frame,
             text="Add PDFs and arrange them in the order you want to merge",
-            style='Info.TLabel'
+            style="Info.TLabel",
         )
         info_label.pack(pady=(0, 10))
 
@@ -79,7 +79,7 @@ class PDFMergerGUI:
             button_frame,
             text="➕ Add PDF Files",
             command=self.add_pdfs,
-            style='Action.TButton'
+            style="Action.TButton",
         )
         self.add_btn.pack(side=tk.LEFT, padx=5)
 
@@ -88,16 +88,13 @@ class PDFMergerGUI:
             button_frame,
             text="❌ Remove Selected",
             command=self.remove_selected,
-            state=tk.DISABLED
+            state=tk.DISABLED,
         )
         self.remove_btn.pack(side=tk.LEFT, padx=5)
 
         # Clear all button
         self.clear_btn = ttk.Button(
-            button_frame,
-            text="🗑️ Clear All",
-            command=self.clear_all,
-            state=tk.DISABLED
+            button_frame, text="🗑️ Clear All", command=self.clear_all, state=tk.DISABLED
         )
         self.clear_btn.pack(side=tk.LEFT, padx=5)
 
@@ -106,19 +103,13 @@ class PDFMergerGUI:
 
         # Move up button
         self.move_up_btn = ttk.Button(
-            button_frame,
-            text="⬆️ Move Up",
-            command=self.move_up,
-            state=tk.DISABLED
+            button_frame, text="⬆️ Move Up", command=self.move_up, state=tk.DISABLED
         )
         self.move_up_btn.pack(side=tk.LEFT, padx=5)
 
         # Move down button
         self.move_down_btn = ttk.Button(
-            button_frame,
-            text="⬇️ Move Down",
-            command=self.move_down,
-            state=tk.DISABLED
+            button_frame, text="⬇️ Move Down", command=self.move_down, state=tk.DISABLED
         )
         self.move_down_btn.pack(side=tk.LEFT, padx=5)
 
@@ -133,32 +124,32 @@ class PDFMergerGUI:
         # Listbox to display PDF files
         self.pdf_listbox = tk.Listbox(
             list_frame,
-            font=('Arial', 10),
+            font=("Arial", 10),
             selectmode=tk.EXTENDED,
             yscrollcommand=scrollbar.set,
-            activestyle='none',
+            activestyle="none",
             relief=tk.SOLID,
-            borderwidth=1
+            borderwidth=1,
         )
         self.pdf_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.config(command=self.pdf_listbox.yview)
 
         # Bind selection event
-        self.pdf_listbox.bind('<<ListboxSelect>>', self.on_selection_change)
+        self.pdf_listbox.bind("<<ListboxSelect>>", self.on_selection_change)
 
         # Status frame
         status_frame = ttk.Frame(main_frame)
         status_frame.pack(fill=tk.X, pady=(0, 10))
 
         self.status_label = ttk.Label(
-            status_frame,
-            text="No PDFs added yet",
-            style='Info.TLabel'
+            status_frame, text="No PDFs added yet", style="Info.TLabel"
         )
         self.status_label.pack(side=tk.LEFT)
 
         # Compression settings frame
-        compression_frame = ttk.LabelFrame(main_frame, text="Compression Settings", padding="10")
+        compression_frame = ttk.LabelFrame(
+            main_frame, text="Compression Settings", padding="10"
+        )
         compression_frame.pack(fill=tk.X, pady=(0, 10))
 
         # Enable compression checkbox
@@ -166,7 +157,7 @@ class PDFMergerGUI:
             compression_frame,
             text="Enable compression (reduces file size)",
             variable=self.enable_compression,
-            command=self.on_compression_toggle
+            command=self.on_compression_toggle,
         )
         compression_check.pack(anchor=tk.W, pady=(0, 5))
 
@@ -174,12 +165,14 @@ class PDFMergerGUI:
         self.level_frame = ttk.Frame(compression_frame)
         self.level_frame.pack(fill=tk.X, padx=20)
 
-        ttk.Label(self.level_frame, text="Compression level:").pack(side=tk.LEFT, padx=(0, 10))
+        ttk.Label(self.level_frame, text="Compression level:").pack(
+            side=tk.LEFT, padx=(0, 10)
+        )
 
         levels = [
             ("Low (faster, larger)", "low"),
             ("Medium (balanced)", "medium"),
-            ("High (slower, smaller)", "high")
+            ("High (slower, smaller)", "high"),
         ]
 
         for text, value in levels:
@@ -187,8 +180,10 @@ class PDFMergerGUI:
                 self.level_frame,
                 text=text,
                 variable=self.compression_level,
-                value=value
-            ).pack(side=tk.LEFT, padx=5)        # Merge button frame
+                value=value,
+            ).pack(
+                side=tk.LEFT, padx=5
+            )  # Merge button frame
         merge_frame = ttk.Frame(main_frame)
         merge_frame.pack(fill=tk.X)
 
@@ -196,17 +191,13 @@ class PDFMergerGUI:
             merge_frame,
             text="🔗 Merge PDFs",
             command=self.merge_pdfs,
-            style='Action.TButton',
-            state=tk.DISABLED
+            style="Action.TButton",
+            state=tk.DISABLED,
         )
         self.merge_btn.pack(side=tk.RIGHT, padx=5)
 
         # Progress bar
-        self.progress = ttk.Progressbar(
-            merge_frame,
-            mode='indeterminate',
-            length=200
-        )
+        self.progress = ttk.Progressbar(merge_frame, mode="indeterminate", length=200)
         self.progress.pack(side=tk.RIGHT, padx=5)
 
     def center_window(self):
@@ -216,14 +207,14 @@ class PDFMergerGUI:
         height = self.root.winfo_height()
         x = (self.root.winfo_screenwidth() // 2) - (width // 2)
         y = (self.root.winfo_screenheight() // 2) - (height // 2)
-        self.root.geometry(f'{width}x{height}+{x}+{y}')
+        self.root.geometry(f"{width}x{height}+{x}+{y}")
 
     def add_pdfs(self):
         """Open file dialog to add PDF files."""
         files = filedialog.askopenfilenames(
             title="Select PDF Files",
             filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")],
-            initialdir=Path.home()
+            initialdir=Path.home(),
         )
 
         if files:
@@ -272,8 +263,10 @@ class PDFMergerGUI:
         index = selected_indices[0]
 
         # Swap in list
-        self.pdf_files[index], self.pdf_files[index - 1] = \
-            self.pdf_files[index - 1], self.pdf_files[index]
+        self.pdf_files[index], self.pdf_files[index - 1] = (
+            self.pdf_files[index - 1],
+            self.pdf_files[index],
+        )
 
         # Renumber and reselect
         self.renumber_list()
@@ -291,8 +284,10 @@ class PDFMergerGUI:
         index = selected_indices[0]
 
         # Swap in list
-        self.pdf_files[index], self.pdf_files[index + 1] = \
-            self.pdf_files[index + 1], self.pdf_files[index]
+        self.pdf_files[index], self.pdf_files[index + 1] = (
+            self.pdf_files[index + 1],
+            self.pdf_files[index],
+        )
 
         # Renumber and reselect
         self.renumber_list()
@@ -411,8 +406,7 @@ class PDFMergerGUI:
         """Merge the PDF files in the current order with optional compression."""
         if len(self.pdf_files) < 2:
             messagebox.showwarning(
-                "Not Enough Files",
-                "Please add at least 2 PDF files to merge."
+                "Not Enough Files", "Please add at least 2 PDF files to merge."
             )
             return
 
@@ -421,7 +415,7 @@ class PDFMergerGUI:
             title="Save Merged PDF As",
             defaultextension=".pdf",
             filetypes=[("PDF files", "*.pdf")],
-            initialfile="merged_output.pdf"
+            initialfile="merged_output.pdf",
         )
 
         if not output_file:
@@ -457,15 +451,19 @@ class PDFMergerGUI:
                 self.status_label.config(text="Compressing PDF...")
                 self.root.update()
 
-                compressed_buffer = self.compress_pdf(temp_buffer, self.compression_level.get())
+                compressed_buffer = self.compress_pdf(
+                    temp_buffer, self.compression_level.get()
+                )
                 compressed_size_mb = self.get_file_size_mb(compressed_buffer)
 
                 # Write compressed PDF to output file
-                with open(output_file, 'wb') as output:
+                with open(output_file, "wb") as output:
                     output.write(compressed_buffer.getvalue())
 
                 # Calculate compression ratio
-                reduction_percent = ((original_size_mb - compressed_size_mb) / original_size_mb) * 100
+                reduction_percent = (
+                    (original_size_mb - compressed_size_mb) / original_size_mb
+                ) * 100
                 compression_info = (
                     f"\n\nCompression Results:"
                     f"\nOriginal: {original_size_mb:.2f} MB"
@@ -474,7 +472,7 @@ class PDFMergerGUI:
                 )
             else:
                 # Write uncompressed PDF to output file
-                with open(output_file, 'wb') as output:
+                with open(output_file, "wb") as output:
                     output.write(temp_buffer.getvalue())
 
                 compression_info = f"\n\nFile size: {original_size_mb:.2f} MB"
@@ -486,29 +484,33 @@ class PDFMergerGUI:
             # Show success message
             messagebox.showinfo(
                 "Success",
-                f"PDFs merged successfully!\n\nOutput saved to:\n{output_file}{compression_info}"
+                f"PDFs merged successfully!\n\nOutput saved to:\n{output_file}{compression_info}",
             )
 
             # Ask if user wants to open the folder
-            if messagebox.askyesno("Open Folder", "Would you like to open the output folder?"):
+            if messagebox.askyesno(
+                "Open Folder", "Would you like to open the output folder?"
+            ):
                 import os
                 import subprocess
+
                 folder_path = Path(output_file).parent
 
                 # Open folder based on OS
-                if os.name == 'nt':  # Windows
-                    subprocess.run(['explorer', str(folder_path)])
-                elif os.name == 'posix':  # macOS/Linux
-                    subprocess.run(['open' if os.uname().sysname == 'Darwin' else 'xdg-open',
-                                   str(folder_path)])
+                if os.name == "nt":  # Windows
+                    subprocess.run(["explorer", str(folder_path)])
+                elif os.name == "posix":  # macOS/Linux
+                    subprocess.run(
+                        [
+                            "open" if os.uname().sysname == "Darwin" else "xdg-open",
+                            str(folder_path),
+                        ]
+                    )
 
         except Exception as e:
             self.progress.stop()
             self.update_button_states()
-            messagebox.showerror(
-                "Error",
-                f"Failed to merge PDFs:\n\n{str(e)}"
-            )
+            messagebox.showerror("Error", f"Failed to merge PDFs:\n\n{str(e)}")
 
 
 def main():

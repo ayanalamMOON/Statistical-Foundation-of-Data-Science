@@ -1,0 +1,550 @@
+\documentclass[12pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+
+% Page setup
+\geometry{left=2.5cm, right=2.5cm, top=3cm, bottom=3cm}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Statistical Foundation of Data Science}
+\fancyhead[R]{Practice Problem 14}
+\fancyfoot[C]{\thepage}
+
+% Custom theorem environments
+\theoremstyle{definition}
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+
+% Custom colors
+\definecolor{headercolor}{RGB}{70,130,180}
+\definecolor{resultcolor}{RGB}{34,139,34}
+
+% Title information
+\title{\textbf{\Large Practice Problem 14: Gini Coefficient Analysis}}
+\author{
+    \textbf{Student:} Md Ayan Alam \\
+    \textbf{Roll Number:} GF202342645 \\
+    \textbf{Course:} Statistical Foundation of Data Science \\
+    \textbf{Institution:} Shoolini University
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\section*{Problem Statement}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=headercolor,title=Problem 14: Gini Coefficient]
+The Gini coefficient is a measure of statistical dispersion, often used for economic inequality. For a continuous distribution with CDF $F(x)$ and mean $\mu$, it can be defined as:
+\[
+G = \frac{1}{2\mu} \iint_{-\infty}^{\infty} |x - y| \, dF(x) \, dF(y)
+\]
+
+\textbf{Part 1:} For the Pareto distribution with CDF $F(x) = 1 - \left(\frac{x_m}{x}\right)^\alpha$ for $x \geq x_m > 0$, $\alpha > 1$, show that the Gini coefficient is $G = \frac{1}{2\alpha - 1}$.
+
+\textbf{Part 2:} For a finite sample $\{x_1, \ldots, x_n\}$, the Gini coefficient can be estimated by:
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+\]
+Compute $\hat{G}$ for the dataset $\{1, 3, 6, 10\}$.
+
+\textbf{Part 3:} Prove that for any non-negative dataset, $0 \leq \hat{G} \leq 1$.
+\end{tcolorbox}
+
+\section{Solution to Part 1: Gini Coefficient for Pareto Distribution}
+
+\subsection{Step 1: Derive the PDF from the CDF}
+
+The Pareto distribution has the cumulative distribution function (CDF):
+\[
+F(x) = 1 - \left( \frac{x_m}{x} \right)^\alpha \quad \text{for } x \geq x_m > 0, \quad \alpha > 1
+\]
+
+The probability density function (PDF) is obtained by differentiating the CDF:
+\[
+f(x) = \frac{d}{dx}F(x) = \frac{d}{dx}\left[1 - \left( \frac{x_m}{x} \right)^\alpha\right]
+\]
+
+Using the chain rule:
+\[
+f(x) = -\frac{d}{dx}\left[x_m^\alpha x^{-\alpha}\right] = -x_m^\alpha \cdot (-\alpha) x^{-\alpha-1} = \frac{\alpha x_m^\alpha}{x^{\alpha+1}}
+\]
+
+\subsection{Step 2: Calculate the Mean of the Pareto Distribution}
+
+The mean is computed as:
+\[
+\mu = \mathbb{E}[X] = \int_{x_m}^\infty x \cdot f(x) \, dx = \int_{x_m}^\infty x \cdot \frac{\alpha x_m^\alpha}{x^{\alpha+1}} \, dx
+\]
+
+Simplifying:
+\[
+\mu = \alpha x_m^\alpha \int_{x_m}^\infty x^{-\alpha} \, dx
+\]
+
+Evaluating the integral:
+\[
+\int_{x_m}^\infty x^{-\alpha} \, dx = \left[ \frac{x^{1-\alpha}}{1-\alpha} \right]_{x_m}^\infty = \lim_{x \to \infty} \frac{x^{1-\alpha}}{1-\alpha} - \frac{x_m^{1-\alpha}}{1-\alpha}
+\]
+
+Since $\alpha > 1$, we have $1-\alpha < 0$, so $\lim_{x \to \infty} x^{1-\alpha} = 0$:
+\[
+\int_{x_m}^\infty x^{-\alpha} \, dx = 0 - \frac{x_m^{1-\alpha}}{1-\alpha} = \frac{x_m^{1-\alpha}}{\alpha - 1}
+\]
+
+Therefore, the mean is:
+\[
+\mu = \alpha x_m^\alpha \cdot \frac{x_m^{1-\alpha}}{\alpha - 1} = \frac{\alpha x_m}{\alpha - 1}
+\]
+
+\subsection{Step 3: Simplify the Gini Coefficient Formula}
+
+The Gini coefficient is defined as:
+\[
+G = \frac{1}{2\mu} \iint_{-\infty}^{\infty} |x - y| \, dF(x) \, dF(y)
+\]
+
+Using symmetry, we can rewrite this as:
+\[
+G = \frac{1}{\mu} \iint_{y < x} (x - y) \, dF(x) \, dF(y)
+\]
+
+This becomes:
+\[
+G = \frac{1}{\mu} \int_{x_m}^\infty \left[ \int_{x_m}^x (x - y) f(y) \, dy \right] f(x) \, dx
+\]
+
+\subsection{Step 4: Calculate the Inner Integral $J(x)$}
+
+Define:
+\[
+J(x) = \int_{x_m}^x (x - y) f(y) \, dy = \int_{x_m}^x (x - y) \cdot \frac{\alpha x_m^\alpha}{y^{\alpha+1}} \, dy
+\]
+
+Factor out constants:
+\[
+J(x) = \alpha x_m^\alpha \int_{x_m}^x \left( \frac{x}{y^{\alpha+1}} - \frac{1}{y^\alpha} \right) dy
+\]
+
+Split into two integrals:
+\[
+J(x) = \alpha x_m^\alpha \left[ x \int_{x_m}^x y^{-\alpha-1} \, dy - \int_{x_m}^x y^{-\alpha} \, dy \right]
+\]
+
+\textbf{First integral:}
+\[
+\int_{x_m}^x y^{-\alpha-1} \, dy = \left[ \frac{y^{-\alpha}}{-\alpha} \right]_{x_m}^x = -\frac{1}{\alpha}\left(x^{-\alpha} - x_m^{-\alpha}\right) = \frac{1}{\alpha}\left(x_m^{-\alpha} - x^{-\alpha}\right)
+\]
+
+\textbf{Second integral:}
+\[
+\int_{x_m}^x y^{-\alpha} \, dy = \left[ \frac{y^{1-\alpha}}{1-\alpha} \right]_{x_m}^x = \frac{1}{1-\alpha}\left(x^{1-\alpha} - x_m^{1-\alpha}\right) = \frac{1}{\alpha - 1}\left(x_m^{1-\alpha} - x^{1-\alpha}\right)
+\]
+
+Substituting back:
+\[
+J(x) = \alpha x_m^\alpha \left[ \frac{x}{\alpha}\left(x_m^{-\alpha} - x^{-\alpha}\right) - \frac{1}{\alpha - 1}\left(x_m^{1-\alpha} - x^{1-\alpha}\right) \right]
+\]
+
+Simplifying:
+\[
+J(x) = x_m^\alpha \left[ x\left(x_m^{-\alpha} - x^{-\alpha}\right) - \frac{\alpha}{\alpha - 1}\left(x_m^{1-\alpha} - x^{1-\alpha}\right) \right]
+\]
+
+\[
+J(x) = x - x \cdot x_m^\alpha x^{-\alpha} - \frac{\alpha}{\alpha - 1} x_m + \frac{\alpha}{\alpha - 1} x \cdot x_m^\alpha x^{-\alpha}
+\]
+
+\[
+J(x) = x\left(1 - \left(\frac{x_m}{x}\right)^\alpha\right) - \frac{\alpha}{\alpha - 1} x_m + \frac{\alpha}{\alpha - 1} x\left(\frac{x_m}{x}\right)^\alpha
+\]
+
+\subsection{Step 5: Calculate the Outer Integral}
+
+Now we compute:
+\[
+I = \int_{x_m}^\infty J(x) f(x) \, dx = \int_{x_m}^\infty J(x) \cdot \frac{\alpha x_m^\alpha}{x^{\alpha+1}} \, dx
+\]
+
+Substituting $J(x)$:
+\[
+I = \alpha x_m^\alpha \int_{x_m}^\infty \left[ x\left(1 - \left(\frac{x_m}{x}\right)^\alpha\right) - \frac{\alpha}{\alpha - 1} x_m + \frac{\alpha}{\alpha - 1} x\left(\frac{x_m}{x}\right)^\alpha \right] \frac{1}{x^{\alpha+1}} \, dx
+\]
+
+Expanding:
+\[
+I = \alpha x_m^\alpha \int_{x_m}^\infty \left[ x^{-\alpha} - x_m^\alpha x^{-2\alpha} - \frac{\alpha}{\alpha - 1} x_m x^{-\alpha-1} + \frac{\alpha}{\alpha - 1} x_m^\alpha x^{-2\alpha} \right] dx
+\]
+
+Combining the $x^{-2\alpha}$ terms:
+\[
+\left(\frac{\alpha}{\alpha - 1} - 1\right) x_m^\alpha x^{-2\alpha} = \frac{\alpha - (\alpha - 1)}{\alpha - 1} x_m^\alpha x^{-2\alpha} = \frac{1}{\alpha - 1} x_m^\alpha x^{-2\alpha}
+\]
+
+So:
+\[
+I = \alpha x_m^\alpha \int_{x_m}^\infty \left[ x^{-\alpha} - \frac{\alpha}{\alpha - 1} x_m x^{-\alpha-1} + \frac{1}{\alpha - 1} x_m^\alpha x^{-2\alpha} \right] dx
+\]
+
+\subsection{Step 6: Evaluate Each Component Integral}
+
+\textbf{First integral:}
+\[
+I_1 = \int_{x_m}^\infty x^{-\alpha} \, dx = \left[ \frac{x^{1-\alpha}}{1-\alpha} \right]_{x_m}^\infty = 0 - \frac{x_m^{1-\alpha}}{1-\alpha} = \frac{x_m^{1-\alpha}}{\alpha - 1}
+\]
+
+\textbf{Second integral:}
+\[
+I_2 = \int_{x_m}^\infty x^{-\alpha-1} \, dx = \left[ \frac{x^{-\alpha}}{-\alpha} \right]_{x_m}^\infty = 0 - \frac{x_m^{-\alpha}}{-\alpha} = \frac{x_m^{-\alpha}}{\alpha}
+\]
+
+\textbf{Third integral:}
+\[
+I_3 = \int_{x_m}^\infty x^{-2\alpha} \, dx = \left[ \frac{x^{1-2\alpha}}{1-2\alpha} \right]_{x_m}^\infty = 0 - \frac{x_m^{1-2\alpha}}{1-2\alpha} = \frac{x_m^{1-2\alpha}}{2\alpha - 1}
+\]
+
+Note: Since $\alpha > 1$, we have $2\alpha > 2 > 1$, so $1-2\alpha < 0$, ensuring convergence.
+
+\subsection{Step 7: Combine All Terms}
+
+Substituting back:
+\[
+I = \alpha x_m^\alpha \left[ I_1 - \frac{\alpha}{\alpha - 1} x_m I_2 + \frac{1}{\alpha - 1} x_m^\alpha I_3 \right]
+\]
+
+\[
+I = \alpha x_m^\alpha \left[ \frac{x_m^{1-\alpha}}{\alpha - 1} - \frac{\alpha}{\alpha - 1} x_m \cdot \frac{x_m^{-\alpha}}{\alpha} + \frac{1}{\alpha - 1} x_m^\alpha \cdot \frac{x_m^{1-2\alpha}}{2\alpha - 1} \right]
+\]
+
+Simplifying each term:
+
+\textbf{First term:}
+\[
+\alpha x_m^\alpha \cdot \frac{x_m^{1-\alpha}}{\alpha - 1} = \frac{\alpha x_m}{\alpha - 1}
+\]
+
+\textbf{Second term:}
+\[
+\alpha x_m^\alpha \cdot \frac{\alpha}{\alpha - 1} x_m \cdot \frac{x_m^{-\alpha}}{\alpha} = \frac{\alpha x_m^\alpha \cdot x_m \cdot x_m^{-\alpha}}{\alpha - 1} = \frac{\alpha x_m}{\alpha - 1}
+\]
+
+\textbf{Third term:}
+\[
+\alpha x_m^\alpha \cdot \frac{1}{\alpha - 1} x_m^\alpha \cdot \frac{x_m^{1-2\alpha}}{2\alpha - 1} = \frac{\alpha x_m^{2\alpha} \cdot x_m^{1-2\alpha}}{(\alpha - 1)(2\alpha - 1)} = \frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)}
+\]
+
+Therefore:
+\[
+I = \frac{\alpha x_m}{\alpha - 1} - \frac{\alpha x_m}{\alpha - 1} + \frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)} = \frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)}
+\]
+
+\subsection{Step 8: Calculate the Gini Coefficient}
+
+The Gini coefficient is:
+\[
+G = \frac{I}{\mu} = \frac{\frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)}}{\frac{\alpha x_m}{\alpha - 1}} = \frac{\alpha x_m}{(\alpha - 1)(2\alpha - 1)} \cdot \frac{\alpha - 1}{\alpha x_m}
+\]
+
+\[
+G = \frac{1}{2\alpha - 1}
+\]
+
+\begin{tcolorbox}[colback=green!5!white,colframe=resultcolor,title=Result for Part 1]
+\[
+\boxed{G = \frac{1}{2\alpha - 1}}
+\]
+
+This elegant result shows that the Gini coefficient for a Pareto distribution depends only on the shape parameter $\alpha$. As $\alpha$ increases, the inequality (measured by $G$) decreases. For example:
+\begin{itemize}
+    \item When $\alpha = 1.5$: $G = \frac{1}{2} = 0.5$ (high inequality)
+    \item When $\alpha = 2$: $G = \frac{1}{3} \approx 0.333$ (moderate inequality)
+    \item When $\alpha = 5$: $G = \frac{1}{9} \approx 0.111$ (low inequality)
+\end{itemize}
+\end{tcolorbox}
+
+\section{Solution to Part 2: Empirical Gini Coefficient}
+
+\subsection{Step 1: Define the Estimator and Dataset}
+
+For a finite sample $\{x_1, \ldots, x_n\}$, the Gini coefficient is estimated by:
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+\]
+
+Given dataset: $\{1, 3, 6, 10\}$, so $n = 4$.
+
+\subsection{Step 2: Calculate the Sample Mean}
+
+\[
+\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i = \frac{1 + 3 + 6 + 10}{4} = \frac{20}{4} = 5
+\]
+
+\subsection{Step 3: Compute All Pairwise Absolute Differences}
+
+We need to calculate $|x_i - x_j|$ for all pairs $(i,j)$. Let's create a difference matrix:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|cccc|c}
+\toprule
+$|x_i - x_j|$ & $x_1=1$ & $x_2=3$ & $x_3=6$ & $x_4=10$ & Row Sum \\
+\midrule
+$x_1=1$ & 0 & 2 & 5 & 9 & 16 \\
+$x_2=3$ & 2 & 0 & 3 & 7 & 12 \\
+$x_3=6$ & 5 & 3 & 0 & 4 & 12 \\
+$x_4=10$ & 9 & 7 & 4 & 0 & 20 \\
+\midrule
+\textbf{Total} & & & & & \textbf{60} \\
+\bottomrule
+\end{tabular}
+\caption{Pairwise absolute differences matrix}
+\end{table}
+
+\textbf{Detailed calculations for each row:}
+
+\textbf{Row 1 ($x_1 = 1$):}
+\begin{align*}
+|1-1| &= 0 \\
+|1-3| &= |{-2}| = 2 \\
+|1-6| &= |{-5}| = 5 \\
+|1-10| &= |{-9}| = 9 \\
+\text{Sum} &= 0 + 2 + 5 + 9 = 16
+\end{align*}
+
+\textbf{Row 2 ($x_2 = 3$):}
+\begin{align*}
+|3-1| &= 2 \\
+|3-3| &= 0 \\
+|3-6| &= |{-3}| = 3 \\
+|3-10| &= |{-7}| = 7 \\
+\text{Sum} &= 2 + 0 + 3 + 7 = 12
+\end{align*}
+
+\textbf{Row 3 ($x_3 = 6$):}
+\begin{align*}
+|6-1| &= 5 \\
+|6-3| &= 3 \\
+|6-6| &= 0 \\
+|6-10| &= |{-4}| = 4 \\
+\text{Sum} &= 5 + 3 + 0 + 4 = 12
+\end{align*}
+
+\textbf{Row 4 ($x_4 = 10$):}
+\begin{align*}
+|10-1| &= 9 \\
+|10-3| &= 7 \\
+|10-6| &= 4 \\
+|10-10| &= 0 \\
+\text{Sum} &= 9 + 7 + 4 + 0 = 20
+\end{align*}
+
+\textbf{Grand total:}
+\[
+S = \sum_{i=1}^4 \sum_{j=1}^4 |x_i - x_j| = 16 + 12 + 12 + 20 = 60
+\]
+
+\subsection{Step 4: Calculate the Gini Coefficient}
+
+Now we can compute $\hat{G}$:
+\[
+\hat{G} = \frac{S}{2n^2 \bar{x}} = \frac{60}{2 \times 4^2 \times 5} = \frac{60}{2 \times 16 \times 5} = \frac{60}{160} = \frac{3}{8} = 0.375
+\]
+
+\begin{tcolorbox}[colback=green!5!white,colframe=resultcolor,title=Result for Part 2]
+\[
+\boxed{\hat{G} = 0.375 = \frac{3}{8}}
+\]
+
+\textbf{Interpretation:} A Gini coefficient of 0.375 indicates moderate inequality in the dataset. This value is between 0 (perfect equality) and 1 (perfect inequality). The dataset $\{1, 3, 6, 10\}$ shows some dispersion, with the largest value being 10 times the smallest value.
+\end{tcolorbox}
+
+\section{Solution to Part 3: Bounds on the Gini Coefficient}
+
+\subsection{Proof that $0 \leq \hat{G} \leq 1$ for Non-Negative Data}
+
+\textbf{Theorem:} For any non-negative dataset $\{x_1, x_2, \ldots, x_n\}$ with $x_i \geq 0$ for all $i$, the empirical Gini coefficient satisfies:
+\[
+0 \leq \hat{G} \leq 1
+\]
+
+\subsection{Part A: Lower Bound ($\hat{G} \geq 0$)}
+
+The Gini coefficient is defined as:
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}}
+\]
+
+\textbf{Step 1:} Since absolute values are always non-negative:
+\[
+|x_i - x_j| \geq 0 \quad \text{for all } i, j
+\]
+
+Therefore:
+\[
+\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j| \geq 0
+\]
+
+\textbf{Step 2:} The denominator is positive when at least one $x_i > 0$ (otherwise $\bar{x} = 0$ and $\hat{G}$ is undefined):
+\[
+2n^2 \bar{x} = 2n^2 \cdot \frac{\sum_{i=1}^n x_i}{n} = 2n \sum_{i=1}^n x_i > 0
+\]
+
+\textbf{Step 3:} Since both numerator and denominator are non-negative:
+\[
+\hat{G} = \frac{\text{(non-negative)}}{\text{(positive)}} \geq 0
+\]
+
+\textbf{When does $\hat{G} = 0$?} Equality holds when:
+\[
+\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j| = 0
+\]
+This occurs if and only if $x_i = x_j$ for all $i, j$, meaning all values are equal (perfect equality).
+
+\subsection{Part B: Upper Bound ($\hat{G} \leq 1$)}
+
+\textbf{Key inequality:} For non-negative values $x_i, x_j \geq 0$, we have:
+\[
+|x_i - x_j| \leq x_i + x_j
+\]
+
+\textbf{Proof of key inequality:} Without loss of generality, assume $x_i \geq x_j \geq 0$. Then:
+\begin{align*}
+|x_i - x_j| &= x_i - x_j \\
+&\leq x_i - x_j + 2x_j \quad \text{(since } x_j \geq 0\text{)} \\
+&= x_i + x_j
+\end{align*}
+
+\textbf{Step 1:} Applying this inequality to the double sum:
+\[
+\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j| \leq \sum_{i=1}^n \sum_{j=1}^n (x_i + x_j)
+\]
+
+\textbf{Step 2:} Expand the right-hand side:
+\[
+\sum_{i=1}^n \sum_{j=1}^n (x_i + x_j) = \sum_{i=1}^n \sum_{j=1}^n x_i + \sum_{i=1}^n \sum_{j=1}^n x_j
+\]
+
+For the first term, $x_i$ is constant with respect to the inner sum over $j$:
+\[
+\sum_{i=1}^n \sum_{j=1}^n x_i = \sum_{i=1}^n x_i \sum_{j=1}^n 1 = \sum_{i=1}^n x_i \cdot n = n \sum_{i=1}^n x_i
+\]
+
+Similarly for the second term:
+\[
+\sum_{i=1}^n \sum_{j=1}^n x_j = \sum_{i=1}^n \left(\sum_{j=1}^n x_j\right) = n \sum_{j=1}^n x_j
+\]
+
+Therefore:
+\[
+\sum_{i=1}^n \sum_{j=1}^n (x_i + x_j) = n \sum_{i=1}^n x_i + n \sum_{j=1}^n x_j = 2n \sum_{i=1}^n x_i
+\]
+
+\textbf{Step 3:} Substitute into the Gini formula:
+\[
+\hat{G} = \frac{\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j|}{2n^2 \bar{x}} \leq \frac{2n \sum_{i=1}^n x_i}{2n^2 \bar{x}}
+\]
+
+\textbf{Step 4:} Recall that $\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i$, so:
+\[
+\hat{G} \leq \frac{2n \sum_{i=1}^n x_i}{2n^2 \cdot \frac{1}{n}\sum_{i=1}^n x_i} = \frac{2n \sum_{i=1}^n x_i}{2n \sum_{i=1}^n x_i} = 1
+\]
+
+\subsection{When does $\hat{G} = 1$?}
+
+Maximum inequality occurs when $|x_i - x_j| = x_i + x_j$ for all pairs. From our inequality proof, this happens when one of the values equals zero.
+
+\textbf{Example:} Consider the dataset $\{0, 0, \ldots, 0, a\}$ where $n-1$ values are zero and one value is $a > 0$.
+
+Then $\bar{x} = \frac{a}{n}$, and:
+\begin{align*}
+\sum_{i=1}^n \sum_{j=1}^n |x_i - x_j| &= 2(n-1) \times a = 2(n-1)a
+\end{align*}
+
+(Each of the $n-1$ zeros paired with $a$ contributes $|0-a| = a$, counted twice due to symmetry)
+
+Therefore:
+\[
+\hat{G} = \frac{2(n-1)a}{2n^2 \cdot \frac{a}{n}} = \frac{2(n-1)a}{2na} = \frac{n-1}{n} = 1 - \frac{1}{n} \to 1 \text{ as } n \to \infty
+\]
+
+For finite $n$, the maximum is $\frac{n-1}{n}$, which approaches 1 as the sample size increases.
+
+\begin{tcolorbox}[colback=green!5!white,colframe=resultcolor,title=Result for Part 3]
+\textbf{Proven:}
+\[
+\boxed{0 \leq \hat{G} \leq 1}
+\]
+
+\textbf{Summary:}
+\begin{itemize}
+    \item $\hat{G} = 0$ occurs when all values are equal (perfect equality)
+    \item $\hat{G} = 1$ (or close to 1) occurs when all wealth is concentrated in one observation (perfect inequality)
+    \item The bounds hold for any non-negative dataset
+\end{itemize}
+\end{tcolorbox}
+
+\section{Summary and Key Insights}
+
+\begin{tcolorbox}[colback=yellow!10!white,colframe=orange,title=Final Summary]
+\subsection*{Main Results}
+
+\textbf{1. Theoretical Gini for Pareto Distribution:}
+\[
+G = \frac{1}{2\alpha - 1}
+\]
+This shows that higher shape parameter $\alpha$ leads to lower inequality.
+
+\textbf{2. Empirical Gini for Dataset $\{1, 3, 6, 10\}$:}
+\[
+\hat{G} = 0.375
+\]
+This indicates moderate inequality in the sample.
+
+\textbf{3. Universal Bounds:}
+\[
+0 \leq \hat{G} \leq 1 \quad \text{for all non-negative datasets}
+\]
+
+\subsection*{Applications}
+
+The Gini coefficient is widely used in:
+\begin{itemize}
+    \item \textbf{Economics:} Measuring income and wealth inequality
+    \item \textbf{Healthcare:} Assessing disparities in health outcomes
+    \item \textbf{Ecology:} Measuring biodiversity and species distribution
+    \item \textbf{Machine Learning:} Feature selection and decision tree splitting criteria
+\end{itemize}
+
+\subsection*{Key Properties}
+
+\begin{enumerate}
+    \item \textbf{Scale invariance:} Multiplying all values by a constant doesn't change $G$
+    \item \textbf{Translation sensitivity:} Adding a constant to all values changes $G$
+    \item \textbf{Population independence:} For Pareto, $G$ depends only on $\alpha$, not $x_m$
+    \item \textbf{Interpretability:} Values between 0.25-0.35 indicate reasonable equality, above 0.50 indicates high inequality
+\end{enumerate}
+\end{tcolorbox}
+
+\section*{Conclusion}
+
+This problem demonstrates the mathematical rigor required to analyze inequality measures. The Pareto distribution's analytical Gini coefficient provides a theoretical foundation, while the empirical estimate shows practical application. The proof of bounds ensures the measure is well-behaved and interpretable across all datasets.
+
+The step-by-step derivations reveal the deep connections between probability theory, calculus, and statistical measurement, showcasing how abstract mathematical concepts translate into practical tools for understanding real-world phenomena.
+
+\end{document}
