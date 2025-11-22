@@ -28,6 +28,13 @@ source .venv/Scripts/activate  # Windows Git Bash
 ```
 All dependencies installed in `.venv/` at repository root.
 
+**Dependency Versions** (from `requirements.txt`):
+- pandas>=2.3.0, numpy>=2.3.0, scipy>=1.16.0
+- matplotlib>=3.10.0, seaborn>=0.13.0
+- jupyter>=1.1.0, jupyterlab>=4.4.0
+- statsmodels>=0.14.0, scikit-learn>=1.7.0
+- black>=25.0.0 (formatter)
+
 ### Code Formatting (Pre-submission Standard)
 ```bash
 # Format Python files and notebooks before committing
@@ -191,6 +198,133 @@ When assisting with this codebase:
 7. **Test notebooks by running all cells** - ensure reproducibility from clean state
 8. **Reference Theory/notes/** using the guide above for statistical concept explanations
 
+## Dataset Reuse Pattern (Critical)
+
+**Key Rule**: Most assignments share the same dataset to enable cross-assignment comparisons.
+
+### Dataset Mapping
+- **Assignments 2-6**: ALL use `teacher_ratings.csv` (500 records, 12 variables)
+  - Generated once by `Assignment 2/generate_rating_data.py`
+  - Includes: teacher_id, gender, age, beauty, tenured, experience_years, students, eval_score, difficulty, course_type, department, teaching_format
+  - Intentional missing values: ~2% in beauty, ~1% in eval_score
+- **Assignment 1**: Uses `synthetic_data.csv` (age demographics)
+
+**Before starting any assignment 2-6**:
+1. Check if `Practical Assignments/Assignment 2/teacher_ratings.csv` exists
+2. If missing, run `generate_rating_data.py` from Assignment 2 folder
+3. Load the same dataset for subsequent assignments - DO NOT regenerate
+
+### Why This Matters
+Assignments build on each other:
+- Assignment 2: Basic descriptive stats on dataset
+- Assignment 3: Filtered analysis and segmentation
+- Assignment 4: Hypothesis testing on categorical/continuous variables
+- Assignments 5-6: Advanced statistical techniques on same data
+
+Regenerating the dataset breaks reproducibility across assignments.
+
+## Import Pattern (Standardized)
+
+All assignment notebooks follow this exact import structure:
+```python
+# Standard imports in every assignment notebook
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
+from scipy.stats import [specific_tests_needed]  # e.g., ttest_ind, chi2_contingency
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set visualization defaults
+sns.set_style("whitegrid")
+plt.rcParams['figure.dpi'] = 100
+```
+
+Additional imports added as needed:
+- `from scipy.stats import shapiro, levene` - assumption testing
+- `from statsmodels.stats.proportion import proportion_confint` - confidence intervals
+- `from scipy.stats import gaussian_kde` - kernel density estimation
+- `from scipy.stats import mannwhitneyu` - non-parametric tests
+
+## Git Workflow Specifics
+
+### What's Tracked vs Ignored
+**Tracked** (committed to git):
+- All `.ipynb` notebook files with outputs
+- Generated `.pdf` exports of assignments
+- Small reference CSVs: `age_bin_statistics.csv`
+- Assignment specification `.txt` files
+- Theory notes and formulas
+
+**Ignored** (`.gitignore`):
+- Large CSV files (most `*.csv` files)
+- Virtual environment (`.venv/`)
+- Jupyter checkpoints (`.ipynb_checkpoints/`)
+- LaTeX aux files (`*.aux`, `*.log`, `*.toc`)
+- Typst compiler binaries (`typst-x86_64-pc-windows-msvc/`)
+
+**Exception Pattern**: Use `!filename.csv` in `.gitignore` to force-track specific CSVs
+
+### Assignment Submission Checklist
+1. Complete notebook with all cells executed
+2. Export to PDF (File → Save and Export Notebook As → PDF)
+3. Format code: `./format_code.sh "Practical Assignments/Assignment N"`
+4. Verify PDF renders correctly (no broken markdown/LaTeX)
+5. Commit notebook + PDF (CSV datasets not committed unless exception)
+
+## Environment-Specific Commands
+
+This is a **Windows-based** repository with Git Bash as default shell.
+
+### Path Conventions
+- **In Code**: Use forward slashes: `pd.read_csv("Practical Assignments/Assignment 2/teacher_ratings.csv")`
+- **In Shell**: Windows paths work: `cd "c:/Users/ayana/Projects/Stats&AI/Statistical Foundation of Data Science"`
+- **Virtual Environment**: `.venv/` located at repository root (not per-assignment)
+
+### Activation Commands
+```bash
+# Git Bash (primary shell)
+source .venv/Scripts/activate
+
+# Windows CMD (alternative)
+.venv\Scripts\activate.bat
+
+# PowerShell (alternative)
+.venv\Scripts\Activate.ps1
+```
+
+## Statistical Rigor Requirements
+
+### Assumption Validation Workflow
+For any parametric test, **ALWAYS** check and report:
+```python
+# Example pattern from Assignment 4
+# 1. Normality check
+stat, p_normality = shapiro(data)
+print(f"Shapiro-Wilk: W={stat:.4f}, p={p_normality:.4f}")
+
+# 2. Homogeneity of variance (for group comparisons)
+stat, p_levene = levene(group1, group2)
+print(f"Levene's test: F={stat:.4f}, p={p_levene:.4f}")
+
+# 3. Proceed with appropriate test
+if p_normality > 0.05 and p_levene > 0.05:
+    # Use parametric test (t-test)
+    stat, p_value = ttest_ind(group1, group2)
+else:
+    # Use non-parametric alternative (Mann-Whitney U)
+    stat, p_value = mannwhitneyu(group1, group2)
+```
+
+### Reporting Standards (Academic Format)
+- **Statistical notation**: χ²(1, N=500) = 4.23, p = .040, V = 0.092
+  - NOT "chi-square = 4.23, p-value = 0.04"
+- **Effect sizes mandatory**: Always report Cohen's d, Cramér's V, or rank-biserial
+- **Interpretation required**: Don't just report numbers, explain practical significance
+- **Visual + Statistical**: Pair every hypothesis test with appropriate visualization
+
 ---
 
-*Last Updated: October 24, 2025 | Generated for GitHub Copilot, Cursor, Windsurf, Cline agents*
+*Last Updated: November 22, 2025 | Generated for GitHub Copilot, Cursor, Windsurf, Cline agents*

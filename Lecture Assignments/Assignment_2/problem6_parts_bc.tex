@@ -1,0 +1,195 @@
+
+\begin{explanation}
+\textbf{Understanding Logistic Regression MLEs:}
+
+The MLEs arise from the invariance property: since $\hat{\pi}_0 = a/(a+b)$ and $\hat{\pi}_1 = c/(c+d)$ maximize the likelihood, and logit is a one-to-one transformation, the MLEs for $\beta_0$ and $\beta_1$ follow directly. The odds ratio $OR = \exp(\beta_1) = \frac{bc}{ad}$ measures association: $OR=1$ means no association, $OR>1$ positive association, $OR<1$ negative association.
+\end{explanation}
+
+\subsubsection{Part (b): Variance and Confidence Interval}
+
+\begin{solution}
+We derive $\text{Var}(\hat{\beta}_1)$ using the delta method.
+
+\textbf{Delta Method Application:}
+
+Since $\hat{\beta}_1 = \log b + \log c - \log a - \log d$, the partial derivatives are:
+\[
+\frac{\partial \hat{\beta}_1}{\partial a} = -\frac{1}{a}, \quad \frac{\partial \hat{\beta}_1}{\partial b} = \frac{1}{b}, \quad \frac{\partial \hat{\beta}_1}{\partial c} = \frac{1}{c}, \quad \frac{\partial \hat{\beta}_1}{\partial d} = -\frac{1}{d}
+\]
+
+For large samples with $\text{Var}(a) \approx a$, $\text{Var}(b) \approx b$, $\text{Var}(c) \approx c$, $\text{Var}(d) \approx d$:
+
+\begin{align*}
+\text{Var}(\hat{\beta}_1) &\approx \left(-\frac{1}{a}\right)^2 a + \left(\frac{1}{b}\right)^2 b + \left(\frac{1}{c}\right)^2 c + \left(-\frac{1}{d}\right)^2 d \\
+&= \frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}
+\end{align*}
+
+\[
+\boxed{\text{Var}(\hat{\beta}_1) \approx \frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}}
+\]
+
+\textbf{95\% Wald CI for $\beta_1$:}
+
+With $SE(\hat{\beta}_1) = \sqrt{\frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}}$ and $z_{0.975} = 1.96$:
+
+\[
+\boxed{CI_{95\%}(\beta_1) = \hat{\beta}_1 \pm 1.96 \cdot SE(\hat{\beta}_1)}
+\]
+
+\textbf{95\% Wald CI for Odds Ratio $\exp(\beta_1)$:}
+
+By exponentiating the CI for $\beta_1$:
+
+\[
+\boxed{CI_{95\%}(OR) = \left[\exp\left(\hat{\beta}_1 - 1.96 \cdot SE\right), \exp\left(\hat{\beta}_1 + 1.96 \cdot SE\right)\right]}
+\]
+\end{solution}
+
+\begin{explanation}
+\textbf{Delta Method Intuition:}
+
+The variance formula shows smaller cell counts increase uncertainty. Zero cells make variance infinite (why all cells must be $>0$). Each cell contributes $1/\text{count}$ to the total variance. The Wald CI assumes normality of $\hat{\beta}_1$ for large samples.
+\end{explanation}
+
+\subsubsection{Part (c): Numerical Example}
+
+\begin{solution}
+Given: $a = 18$, $b = 12$, $c = 30$, $d = 10$.
+
+\textbf{Contingency Table:}
+
+\begin{center}
+\begin{tabular}{c|cc|c}
+& $Y=1$ & $Y=0$ & Total \\
+\hline
+$X=0$ & 18 & 12 & 30 \\
+$X=1$ & 30 & 10 & 40 \\
+\hline
+Total & 48 & 22 & 70
+\end{tabular}
+\end{center}
+
+\textbf{Step 1: Compute $\hat{\beta}_0$}
+
+\begin{align*}
+\hat{\beta}_0 &= \log\frac{18}{12} = \log 1.5 \approx 0.4055
+\end{align*}
+
+\[
+\boxed{\hat{\beta}_0 \approx 0.4055}
+\]
+
+The odds of $Y=1$ for $X=0$ are $\exp(0.4055) = 1.5$ (i.e., 3:2 odds).
+
+\textbf{Step 2: Compute $\hat{\beta}_1$}
+
+\begin{align*}
+\hat{\beta}_1 &= \log\frac{12 \times 30}{18 \times 10} = \log\frac{360}{180} = \log 2 \approx 0.6931
+\end{align*}
+
+Verification: $\log(30/10) - \log(18/12) = \log 3 - \log 1.5 = \log 2$ ✓
+
+\[
+\boxed{\hat{\beta}_1 = \log 2 \approx 0.6931}
+\]
+
+\textbf{Step 3: Odds Ratio}
+
+\[
+\widehat{OR} = \exp(0.6931) = 2.0
+\]
+
+\[
+\boxed{\widehat{OR} = 2.0}
+\]
+
+The odds of $Y=1$ for $X=1$ are twice those for $X=0$.
+
+\textbf{Step 4: Variance and SE}
+
+\begin{align*}
+\text{Var}(\hat{\beta}_1) &= \frac{1}{18} + \frac{1}{12} + \frac{1}{30} + \frac{1}{10} \\
+&= 0.0556 + 0.0833 + 0.0333 + 0.1000 = 0.2722
+\end{align*}
+
+\[
+SE(\hat{\beta}_1) = \sqrt{0.2722} \approx 0.5218
+\]
+
+\[
+\boxed{SE(\hat{\beta}_1) \approx 0.522}
+\]
+
+\textbf{Step 5: 95\% CI for $\beta_1$}
+
+Margin of error: $1.96 \times 0.5218 = 1.023$
+
+\begin{align*}
+CI_{95\%}(\beta_1) &= [0.693 - 1.023, \, 0.693 + 1.023] \\
+&= [-0.330, \, 1.716]
+\end{align*}
+
+\[
+\boxed{CI_{95\%}(\beta_1) = [-0.330, \, 1.716]}
+\]
+
+\textbf{Step 6: 95\% CI for OR}
+
+\begin{align*}
+CI_{95\%}(OR) &= [\exp(-0.330), \, \exp(1.716)] \\
+&= [0.719, \, 5.560]
+\end{align*}
+
+\[
+\boxed{CI_{95\%}(OR) = [0.719, \, 5.560]}
+\]
+
+\textbf{Step 7: Hypothesis Test}
+
+Test $H_0: \beta_1 = 0$ (equivalently, $OR = 1$):
+
+\[
+z = \frac{0.6931}{0.5218} = 1.328, \quad p\text{-value} = 2P(Z > 1.328) \approx 0.184
+\]
+
+\textbf{Conclusion:} Not statistically significant at $\alpha = 0.05$ (since $p = 0.184 > 0.05$ and CI includes 1).
+
+\textbf{Summary Table:}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Parameter} & \textbf{Estimate} & \textbf{SE} & \textbf{95\% CI} & \textbf{p-value} \\
+\hline
+$\beta_0$ & 0.406 & -- & -- & -- \\
+$\beta_1$ & 0.693 & 0.522 & [-0.330, 1.716] & 0.184 \\
+OR & 2.000 & -- & [0.719, 5.560] & 0.184 \\
+\hline
+\end{tabular}
+\end{center}
+\end{solution}
+
+\begin{explanation}
+\textbf{Interpretation:}
+
+Despite $OR = 2.0$ (doubling of odds), the result is not statistically significant due to:
+\begin{itemize}
+\item Small sample size ($n=70$)
+\item Large SE (0.522) relative to estimate (0.693)
+\item Wide CI including null value (OR = 1)
+\end{itemize}
+
+\textbf{Practical vs. Statistical Significance:}
+
+The observed risks are $P(Y=1|X=0) = 18/30 = 0.60$ and $P(Y=1|X=1) = 30/40 = 0.75$.
+
+Risk difference: $0.75 - 0.60 = 0.15$ (15 percentage points)
+
+Relative risk: $RR = 0.75/0.60 = 1.25$
+
+Note: $RR = 1.25 \neq OR = 2.0$ because baseline risk is high (60\%). OR and RR only agree when outcomes are rare.
+
+\textbf{Power:} The smallest cell ($d=10$) contributes most to variance ($0.10$ of $0.272$), showing importance of adequate cell counts.
+\end{explanation}
+
+\newpage

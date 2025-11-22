@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\DeclareMathOperator{\logit}{logit}
+
+\title{ASSIGNMENT 2}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+\textbf{SUBJECT CODE:} CSU1658 \\
+\textbf{SUBJECT NAME:} Statistical Foundation of Data Sciences \\
+\textbf{TOTAL POINTS:} 100 \\
+\textbf{DEADLINE:} NOVEMBER 14TH 2025 4PM
+
+\section*{PROBLEM 1.}
+
+Let \( X \) be a zero-inflated normal:
+
+\[\mathbb{P}(X = 0) = \alpha, \quad X \mid (X \neq 0) \sim \mathcal{N}(\mu, \sigma^2)\]
+
+with prob. \((1 - \alpha)\).
+
+\begin{enumerate}
+\item Write the PMF/PDF and CDF of \( X \).
+\item Derive \(\mathbb{E}[X]\) and \(\text{Var}(X)\).
+\item Numerically evaluate \(\mathbb{P}(X \leq 0)\) for \(\alpha = 0.3\), \(\mu = 2\), \(\sigma = 1\).
+\end{enumerate}
+
+\section*{PROBLEM 2.}
+
+Let \( X \sim \text{Bin}(n, p) \) with \( n = 10, \, p = 0.3 \).
+\begin{enumerate}
+\item Compute exactly \(\mathbb{P}(X \geq 6)\).
+\item Approximate \(\mathbb{P}(X \geq 6)\) by a normal approximation with continuity correction and compare.
+\end{enumerate}
+
+\section*{PROBLEM 3.}
+
+Suppose \( N \sim \text{Poisson}(\lambda) \). Conditional on \( N \), each of the \( N \) events is independently tagged "A" with probability \( q \) (and "B" otherwise). Let \( K \) be the number of "A" events.
+\begin{enumerate}
+\item Show \( K \sim \text{Poisson}(\lambda q) \) (the thinning property).
+\item Show that, conditional on \( N = n, \, K \mid N = n \sim \text{Bin}(n, q) \).
+\item For \( \lambda = 12, \, q = 0.2 \), compute \(\mathbb{P}(K = 0)\) and \(\mathbb{P}(K \leq 2)\) exactly (closed form).
+\end{enumerate}
+
+\newpage
+
+\section*{PROBLEM 4.}
+
+Let \(X=(X_{1},\ldots,X_{n})\) be nonconstant real data with population mean \(\mu=\frac{1}{n}\sum_{i}X_{i}\) and population standard deviation \(\sigma=\sqrt{\frac{1}{n}\sum_{i}(X_{i}-\mu)^{2}}\). Define:
+
+\begin{itemize}
+\item \textbf{z-score standardization:} \(Z_{i}=\frac{X_{i}-\mu}{\sigma}\).
+\item \textbf{min-max normalization to \([0,1]\):} \(M_{i}=\frac{X_{i}-\min X}{\max X-\min X}\).
+\item \textbf{robust scaling (median/IQR):} \(R_{i}=\frac{X_{i}-\mathrm{med}(X)}{\mathrm{IQR}(X)}\).
+\end{itemize}
+
+\begin{enumerate}
+\item[(a)] Prove for z-scores that \(\bar{Z}=0\) and \(\mathrm{Var}(Z)=1\).
+
+\item[(b)] Show that Pearson correlation is invariant to positive affine transforms of either variable: for constants \(a>0,b\in\mathbb{R}\).
+
+\[\rho(X,aY+b)=\rho(X,Y),\qquad\rho(aX+b,Y)=\rho(X,Y).\]
+
+(For \(a<0\), \(\rho\) flips sign.)
+
+\item[(c)] Give the inverse transforms to recover \(X\) from \(Z\) and \(M\).
+
+\item[(d)] Numerical check on \(x=(3,7,7,19,21)\).
+\end{enumerate}
+
+\section*{PROBLEM 5.}
+
+You collect \(n=200\) observations: 199 are approximately \(N(0,1)\) and one extreme outlier at value 8. Compare three binning rules:
+
+\begin{itemize}
+\item \textbf{Sturges:} \(K=\lceil\log_{2}n\rceil+1\) bins (equal width).
+\item \textbf{Scott:} bin width \(h_{S}=3.5\,s\,n^{-1/3}\), where \(s\) is the sample standard deviation.
+\item \textbf{Freedman-Diaconis (FD):} \(h_{FD}=2\,\mathrm{IQR}\,n^{-1/3}\).
+\end{itemize}
+
+Assume the 199 near-normal points have mean 0 and variance 1 exactly (so \(\sum_{i=1}^{199}x_{i}=0\) and \(\sum x_{i}^{2}=199\)) and add \(x_{200}=8\).
+
+\begin{enumerate}
+\item[(a)] Compute the new mean and population variance \(s^{2}\).
+\item[(b)] Compute \(h_{S}\) and \(h_{FD}\). (Use \(\mathrm{IQR}\approx 1.349\) for a standard normal: a single outlier scarcely affects IQR.)
+\item[(c)] Suppose you display data on \([-4,8]\) (range = 12). Report the \textbf{effective bin counts} under Sturges, Scott, and FD, and interpret robustness.
+\end{enumerate}
+
+\newpage
+
+\section*{PROBLEM 6.}
+
+Two groups, \(X \in \{0,1\}\), with outcomes \(Y \in \{0,1\}\). Counts:
+
+\[\begin{array}{c|cc}
+& Y = 1 & Y = 0 \\
+\hline
+X = 0 & a & b \\
+X = 1 & c & d \\
+\end{array}\]
+
+Model: \(\logit\{P(Y = 1 | X)\} = \beta_0 + \beta_1 X\).
+
+\begin{enumerate}
+\item[(a)] Show
+
+\[\hat{\beta}_0 = \log \frac{a}{b}, \quad \hat{\beta}_1 = \log \frac{c/b}{a/d} = \log \frac{cb}{ad}\]
+
+(provided all cells > 0).
+
+\item[(b)] Show \(\text{Var}(\hat{\beta}_1) \approx \frac{1}{a} + \frac{1}{b} + \frac{1}{c} + \frac{1}{d}\) and give a 95\% Wald CI for \(\exp(\beta_1)\) (odds ratio).
+
+\item[(c)] Numerical example: \(a = 18, b = 12, c = 30, d = 10\).
+\end{enumerate}
+
+\section*{PROBLEM 7.}
+
+Five subjects each measured under three conditions (within-subject). Subject means and condition means are:
+
+Raw data (responses):
+
+\[\begin{array}{c|ccc}
+\text{Subject} & C1 & C2 & C3 \\
+\hline
+1 & 10 & 12 & 13 \\
+2 & 9 & 11 & 12 \\
+3 & 8 & 10 & 11 \\
+4 & 9 & 10 & 12 \\
+5 & 11 & 12 & 14 \\
+\end{array}\]
+
+Let's test the condition effect with the standard within-subjects ANOVA (assuming sphericity).
+
+\section*{PROBLEM 8.}
+
+For binary class probability \(p \in [0,1]\), define
+
+\[H(p) = -p \log_2 p - (1 - p) \log_2 (1 - p), \quad G(p) = 2p(1 - p), \quad E(p) = \min\{p, 1 - p\}.\]
+
+\begin{enumerate}
+\item[(a)] Prove \(H(p) \geq G(p)\) for all \(p\).
+\item[(b)] Prove \(G(p) \geq E(p)\) for all \(p\).
+\item[(c)] Provide a small table of values to compare scales.
+\end{enumerate}
+
+\newpage
+
+\section*{PROBLEM 9.}
+
+You have 12 training rows with binary target \(Y\in\{0,1\}\) (6 positives, 6 negatives). Consider two candidate attributes:
+
+\begin{itemize}
+\item \textbf{Attribute A} has three values \(v_{1},v_{2},v_{3}\) with class counts:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+A level & Count & Positives & Negatives \\
+\hline
+\(v_{1}\) & 5 & 4 & 1 \\
+\(v_{2}\) & 3 & 1 & 2 \\
+\(v_{3}\) & 4 & 1 & 3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\item \textbf{Attribute B} is binary with class counts:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+B level & Count & Positives & Negatives \\
+\hline
+\(b_{0}\) & 6 & 4 & 2 \\
+\(b_{1}\) & 6 & 2 & 4 \\
+\hline
+\end{tabular}
+\end{center}
+\end{itemize}
+
+\begin{enumerate}
+\item Compute the \textbf{parent entropy} \(H(S)\) and \textbf{parent Gini} \(G(S)\).
+\item For A, compute the \textbf{weighted entropy after split}, the \textbf{Information Gain} \(\text{IG}(S;A)\), the \textbf{weighted Gini after split}, and the \textbf{Gini decrease}.
+\item Repeat (2) for B.
+\item Which attribute would ID3 (entropy) and CART (Gini) choose?
+\end{enumerate}
+
+\section*{PROBLEM 10.}
+
+Data (\(n=5\)):
+
+\[\begin{array}{c|c|c|c|c|c}
+x & 0 & 1 & 2 & 3 & 4 \\
+\hline
+y & 1.0 & 2.9 & 5.1 & 5.9 & 9.2 \\
+\end{array}\]
+
+Fit the simple linear model \(y=\beta_{0}+\beta_{1}x+\epsilon\).
+
+\textbf{Tasks}
+
+\begin{enumerate}
+\item Compute \(\hat{\beta}_{1}\), \(\hat{\beta}_{0}\).
+\item Compute residuals, SSE, \(R^{2}\), residual standard error \(s\).
+\item Test \(H_{0}:\beta_{1}=0\) (two-sided) and give a 95\% CI for \(\beta_{1}\).
+\item Give a 95\% prediction interval for \(y\) at \(x_{0}=5\).
+\end{enumerate}
+
+\end{document}

@@ -140,3 +140,5 @@ temp_analysis/
 
 # Typst compiler
 typst-x86_64-pc-windows-msvc/
+# Node modules
+node_modules

@@ -1,0 +1,24 @@
+Statistical Foundation of Data Sciences
+
+Start Date 28th Oct 2025, Tuesday 10:00 AM Due Date 4th Nov 2025 Time 5:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+GRADED | Max Marks 20
+
+Lets have fun with building Decision Trees:
+
+You are building the decision tree classifier with the Scikit learn.
+Downlaod the data of Pima Indian diabetes from Kaggle.
+Feature Selection - you need to divide given columns into two types of variables dependent(or target variable) and independent variable(or feature variables).
+Split the data and then build decision tree.
+Use visualisation to showcase the pictorial representation.
+Find the Entropy, Information gain and Gini Index to support why you choose the specific root node.
+
+Course Outcomes
+
+BT Level
+
+--
+
+Topic Level Outcomes(TLOs)
