@@ -3,6 +3,8 @@
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable}
@@ -8914,4 +8916,3374 @@ SE (prediction) & 0.866 & Uncertainty in individual \\
 The 95\% prediction interval $(7.88, 13.40)$ for a new observation at $x_0 = 5$ is substantially wider than the confidence interval for the mean because it must account for three sources of uncertainty: (1) individual variation around the regression line ($\sigma^2$, contributing 47.7\%), (2) uncertainty from finite sample size ($\sigma^2/n$, contributing 9.5\%), and (3) extrapolation beyond the observed data range ($\sigma^2(x_0-\bar{x})^2/S_{xx}$, contributing 42.8\%). The large extrapolation penalty—nearly half the total variance—arises because $x_0 = 5$ is 3 units from the data center $\bar{x} = 2$ and lies outside the observed range $[0, 4]$. This prediction should be used cautiously, as it assumes the linear relationship continues to hold at $x = 5$ despite having no empirical data to validate this assumption. The interval width of 5.51 units (compared to 4.14 at the data center) reflects the compounding of all these uncertainties.
 \end{explanation}
 
+\newpage
+\section{Problem 9: Naive Bayes Classification}
+
+\subsection{Problem Statement - Question 1}
+
+Consider a binary classification problem where we want to predict whether an email is spam ($C = 1$) or not spam ($C = 0$) based on the presence of two words: "free" ($X_1$) and "winner" ($X_2$), where $X_i = 1$ if word $i$ is present and $X_i = 0$ otherwise.
+
+Given the following training data:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Email} & $X_1$ (free) & $X_2$ (winner) & $C$ (spam) \\
+\hline
+1 & 1 & 1 & 1 \\
+2 & 1 & 0 & 1 \\
+3 & 0 & 1 & 1 \\
+4 & 1 & 1 & 1 \\
+5 & 0 & 0 & 0 \\
+6 & 0 & 0 & 0 \\
+7 & 1 & 0 & 0 \\
+8 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Derive the maximum likelihood estimates (MLEs) for all parameters of the Naive Bayes classifier: $P(C = 1)$, $P(X_1 = 1 \mid C = 1)$, $P(X_1 = 1 \mid C = 0)$, $P(X_2 = 1 \mid C = 1)$, and $P(X_2 = 1 \mid C = 0)$.
+
+\item Using the Naive Bayes assumption, classify a new email with features $(X_1 = 1, X_2 = 1)$. Show all calculations and posterior probabilities.
+
+\item Apply Laplace smoothing with $\alpha = 1$ and recompute all parameters. How does this affect the classification of an email with features $(X_1 = 0, X_2 = 0)$?
+
+\item Derive the decision boundary for this Naive Bayes classifier in the feature space $(X_1, X_2)$ and explain its geometric interpretation.
+
+\item Calculate the log-likelihood of the training data under the fitted Naive Bayes model (without smoothing).
+
+\item Prove that under the Naive Bayes assumption, the posterior odds ratio can be expressed as a product of likelihood ratios.
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsubsection{Part (a): Maximum Likelihood Estimates}
+
+\begin{solution}
+We need to estimate the class prior and conditional probabilities from the training data.
+
+\textbf{Step 1: Count the data}
+
+From the 8 training examples:
+\begin{itemize}
+    \item Number of spam emails: $n_1 = 4$ (emails 1, 2, 3, 4)
+    \item Number of non-spam emails: $n_0 = 4$ (emails 5, 6, 7, 8)
+    \item Total emails: $n = 8$
+\end{itemize}
+
+For spam emails ($C = 1$):
+\begin{itemize}
+    \item $X_1 = 1$ appears in: emails 1, 2, 4 $\Rightarrow$ count = 3
+    \item $X_2 = 1$ appears in: emails 1, 3, 4 $\Rightarrow$ count = 3
+\end{itemize}
+
+For non-spam emails ($C = 0$):
+\begin{itemize}
+    \item $X_1 = 1$ appears in: email 7 $\Rightarrow$ count = 1
+    \item $X_2 = 1$ appears in: none $\Rightarrow$ count = 0
+\end{itemize}
+
+\textbf{Step 2: Compute MLEs}
+
+The MLE for the class prior:
+\[
+\hat{P}(C = 1) = \frac{n_1}{n} = \frac{4}{8} = 0.5
+\]
+
+The MLE for conditional probabilities (spam class):
+\begin{align}
+\hat{P}(X_1 = 1 \mid C = 1) &= \frac{\text{count of } X_1 = 1 \text{ in spam}}{n_1} = \frac{3}{4} = 0.75 \\
+\hat{P}(X_2 = 1 \mid C = 1) &= \frac{\text{count of } X_2 = 1 \text{ in spam}}{n_1} = \frac{3}{4} = 0.75
+\end{align}
+
+The MLE for conditional probabilities (non-spam class):
+\begin{align}
+\hat{P}(X_1 = 1 \mid C = 0) &= \frac{\text{count of } X_1 = 1 \text{ in non-spam}}{n_0} = \frac{1}{4} = 0.25 \\
+\hat{P}(X_2 = 1 \mid C = 0) &= \frac{\text{count of } X_2 = 1 \text{ in non-spam}}{n_0} = \frac{0}{4} = 0
+\end{align}
+
+\textbf{Summary of MLEs:}
+\[
+\boxed{
+\begin{aligned}
+\hat{P}(C = 1) &= 0.5 \\
+\hat{P}(X_1 = 1 \mid C = 1) &= 0.75 \\
+\hat{P}(X_2 = 1 \mid C = 1) &= 0.75 \\
+\hat{P}(X_1 = 1 \mid C = 0) &= 0.25 \\
+\hat{P}(X_2 = 1 \mid C = 0) &= 0
+\end{aligned}
+}
+\]
+
+\textbf{Note:} The zero probability for $P(X_2 = 1 \mid C = 0)$ is problematic and motivates the use of smoothing (addressed in part c).
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Maximum Likelihood Estimation for Naive Bayes}
+
+\textbf{1. Theoretical Foundation}
+
+The Naive Bayes classifier is based on Bayes' theorem with the "naive" assumption of conditional independence:
+
+\[
+P(C \mid X_1, \ldots, X_d) = \frac{P(C) \prod_{i=1}^{d} P(X_i \mid C)}{P(X_1, \ldots, X_d)}
+\]
+
+For classification, we only need to compare numerators since the denominator is constant across classes.
+
+\textit{Likelihood function for Naive Bayes:}
+
+Given $n$ training examples $\{(\mathbf{x}^{(i)}, c^{(i)})\}_{i=1}^{n}$, the likelihood is:
+
+\[
+\mathcal{L}(\theta) = \prod_{i=1}^{n} P(c^{(i)}) \prod_{j=1}^{d} P(x_j^{(i)} \mid c^{(i)})
+\]
+
+Taking the log-likelihood:
+\[
+\ell(\theta) = \sum_{i=1}^{n} \left[\log P(c^{(i)}) + \sum_{j=1}^{d} \log P(x_j^{(i)} \mid c^{(i)})\right]
+\]
+
+\textit{Separability of parameters:}
+
+The log-likelihood decomposes into separate terms for:
+\begin{enumerate}
+    \item Class priors: $\log P(C)$
+    \item Conditional probabilities for each feature-class pair: $\log P(X_j \mid C)$
+\end{enumerate}
+
+This allows us to maximize each set of parameters independently.
+
+\textbf{2. Derivation of MLE for Class Prior}
+
+For binary classification, let $\pi = P(C = 1)$. The contribution to the log-likelihood from class labels is:
+
+\[
+\ell_{\text{prior}}(\pi) = n_1 \log \pi + n_0 \log(1 - \pi)
+\]
+
+where $n_1$ is the number of examples with $C = 1$ and $n_0$ is the number with $C = 0$.
+
+Taking the derivative and setting to zero:
+\begin{align}
+\frac{d\ell_{\text{prior}}}{d\pi} &= \frac{n_1}{\pi} - \frac{n_0}{1-\pi} = 0 \\
+\Rightarrow n_1(1-\pi) &= n_0 \pi \\
+\Rightarrow n_1 &= (n_0 + n_1)\pi \\
+\Rightarrow \hat{\pi} &= \frac{n_1}{n_0 + n_1} = \frac{n_1}{n}
+\end{align}
+
+This is simply the empirical frequency of class 1 in the training data.
+
+\textbf{3. Derivation of MLE for Conditional Probabilities}
+
+For a binary feature $X_j$ and class $c$, let $\theta_{jc} = P(X_j = 1 \mid C = c)$.
+
+The contribution to the log-likelihood from feature $j$ in class $c$ is:
+
+\[
+\ell_{jc}(\theta_{jc}) = n_{jc}^{(1)} \log \theta_{jc} + n_{jc}^{(0)} \log(1 - \theta_{jc})
+\]
+
+where:
+\begin{itemize}
+    \item $n_{jc}^{(1)}$ = count of examples with $X_j = 1$ and $C = c$
+    \item $n_{jc}^{(0)}$ = count of examples with $X_j = 0$ and $C = c$
+\end{itemize}
+
+Taking the derivative:
+\begin{align}
+\frac{d\ell_{jc}}{d\theta_{jc}} &= \frac{n_{jc}^{(1)}}{\theta_{jc}} - \frac{n_{jc}^{(0)}}{1-\theta_{jc}} = 0 \\
+\Rightarrow \hat{\theta}_{jc} &= \frac{n_{jc}^{(1)}}{n_{jc}^{(1)} + n_{jc}^{(0)}} = \frac{n_{jc}^{(1)}}{n_c}
+\end{align}
+
+where $n_c$ is the total number of examples in class $c$.
+
+\textbf{4. Numerical Verification for Our Problem}
+
+Let's verify our calculations systematically:
+
+\textit{Class prior:}
+\begin{itemize}
+    \item Spam emails: \{1, 2, 3, 4\} $\Rightarrow n_1 = 4$
+    \item Non-spam emails: \{5, 6, 7, 8\} $\Rightarrow n_0 = 4$
+    \item $\hat{P}(C = 1) = 4/8 = 0.5$ $\checkmark$
+\end{itemize}
+
+\textit{For $X_1$ (word "free"):}
+
+Spam class ($C = 1$):
+\begin{itemize}
+    \item Email 1: $X_1 = 1$ $\checkmark$
+    \item Email 2: $X_1 = 1$ $\checkmark$
+    \item Email 3: $X_1 = 0$
+    \item Email 4: $X_1 = 1$ $\checkmark$
+    \item Count: 3 out of 4 $\Rightarrow \hat{P}(X_1 = 1 \mid C = 1) = 3/4 = 0.75$ $\checkmark$
+\end{itemize}
+
+Non-spam class ($C = 0$):
+\begin{itemize}
+    \item Email 5: $X_1 = 0$
+    \item Email 6: $X_1 = 0$
+    \item Email 7: $X_1 = 1$ $\checkmark$
+    \item Email 8: $X_1 = 0$
+    \item Count: 1 out of 4 $\Rightarrow \hat{P}(X_1 = 1 \mid C = 0) = 1/4 = 0.25$ $\checkmark$
+\end{itemize}
+
+\textit{For $X_2$ (word "winner"):}
+
+Spam class ($C = 1$):
+\begin{itemize}
+    \item Email 1: $X_2 = 1$ $\checkmark$
+    \item Email 2: $X_2 = 0$
+    \item Email 3: $X_2 = 1$ $\checkmark$
+    \item Email 4: $X_2 = 1$ $\checkmark$
+    \item Count: 3 out of 4 $\Rightarrow \hat{P}(X_2 = 1 \mid C = 1) = 3/4 = 0.75$ $\checkmark$
+\end{itemize}
+
+Non-spam class ($C = 0$):
+\begin{itemize}
+    \item Email 5: $X_2 = 0$
+    \item Email 6: $X_2 = 0$
+    \item Email 7: $X_2 = 0$
+    \item Email 8: $X_2 = 0$
+    \item Count: 0 out of 4 $\Rightarrow \hat{P}(X_2 = 1 \mid C = 0) = 0/4 = 0$ $\checkmark$
+\end{itemize}
+
+\textbf{5. The Zero-Probability Problem}
+
+The MLE $\hat{P}(X_2 = 1 \mid C = 0) = 0$ creates a serious issue:
+
+\textit{Problem:} If we ever see a non-spam email with $X_2 = 1$ in the test set, the likelihood $P(\mathbf{x} \mid C = 0)$ becomes zero, making it impossible to classify as non-spam regardless of other features.
+
+\textit{Mathematical consequence:}
+\[
+P(C = 0 \mid X_2 = 1, \ldots) \propto P(C = 0) \cdot 0 \cdot \prod_{j \neq 2} P(X_j \mid C = 0) = 0
+\]
+
+This forces the classifier to always predict spam when $X_2 = 1$, which is overfitting to the training data.
+
+\textit{Solutions:}
+\begin{enumerate}
+    \item \textbf{Laplace smoothing} (add-one smoothing): Add pseudocounts
+    \item \textbf{Lidstone smoothing}: Generalized version with parameter $\alpha$
+    \item \textbf{Bayesian approach}: Use a prior distribution (e.g., Beta prior)
+\end{enumerate}
+
+We'll explore Laplace smoothing in part (c).
+
+\textbf{6. Properties of MLE for Naive Bayes}
+
+\textit{Consistency:} As $n \to \infty$, $\hat{\theta} \to \theta_{\text{true}}$ (under correct model)
+
+\textit{Efficiency:} MLEs achieve the Cramér-Rao lower bound asymptotically
+
+\textit{Invariance:} If $\hat{\theta}$ is MLE of $\theta$, then $g(\hat{\theta})$ is MLE of $g(\theta)$
+
+\textit{Computational simplicity:} Closed-form solutions (just counting!)
+
+\textit{Weakness:} Can overfit with small samples, especially with many features
+\end{explanation}
+
+\subsubsection{Part (b): Classification with Naive Bayes}
+
+\begin{solution}
+We want to classify a new email with features $(X_1 = 1, X_2 = 1)$.
+
+\textbf{Step 1: Apply Bayes' theorem}
+
+By Bayes' theorem:
+\[
+P(C \mid X_1, X_2) = \frac{P(C) \cdot P(X_1, X_2 \mid C)}{P(X_1, X_2)}
+\]
+
+Under the Naive Bayes assumption:
+\[
+P(X_1, X_2 \mid C) = P(X_1 \mid C) \cdot P(X_2 \mid C)
+\]
+
+\textbf{Step 2: Calculate posterior for spam ($C = 1$)}
+
+\begin{align}
+P(C = 1 \mid X_1 = 1, X_2 = 1) &\propto P(C = 1) \cdot P(X_1 = 1 \mid C = 1) \cdot P(X_2 = 1 \mid C = 1) \\
+&= 0.5 \times 0.75 \times 0.75 \\
+&= 0.28125
+\end{align}
+
+\textbf{Step 3: Calculate posterior for non-spam ($C = 0$)}
+
+\begin{align}
+P(C = 0 \mid X_1 = 1, X_2 = 1) &\propto P(C = 0) \cdot P(X_1 = 1 \mid C = 0) \cdot P(X_2 = 1 \mid C = 0) \\
+&= 0.5 \times 0.25 \times 0 \\
+&= 0
+\end{align}
+
+\textbf{Step 4: Normalize to get true probabilities}
+
+The normalization constant is:
+\[
+Z = 0.28125 + 0 = 0.28125
+\]
+
+Therefore:
+\begin{align}
+P(C = 1 \mid X_1 = 1, X_2 = 1) &= \frac{0.28125}{0.28125} = 1.0 \\
+P(C = 0 \mid X_1 = 1, X_2 = 1) &= \frac{0}{0.28125} = 0
+\end{align}
+
+\textbf{Classification decision:}
+
+Since $P(C = 1 \mid X_1 = 1, X_2 = 1) = 1.0 > P(C = 0 \mid X_1 = 1, X_2 = 1) = 0$, we classify this email as:
+
+\[
+\boxed{\text{Spam (Class 1)} \quad \text{with posterior probability } 1.0}
+\]
+
+\textbf{Alternative: Log-odds approach}
+
+We can also compute the log-odds ratio:
+\begin{align}
+\log \frac{P(C = 1 \mid \mathbf{x})}{P(C = 0 \mid \mathbf{x})} &= \log \frac{P(C = 1)}{P(C = 0)} + \sum_{j} \log \frac{P(X_j \mid C = 1)}{P(X_j \mid C = 0)} \\
+&= \log \frac{0.5}{0.5} + \log \frac{0.75}{0.25} + \log \frac{0.75}{0} \\
+&= 0 + \log 3 + \infty \\
+&= \infty
+\end{align}
+
+This confirms the classification as spam with certainty (due to the zero probability issue).
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Naive Bayes Classification Mechanics}
+
+\textbf{1. The Naive Bayes Decision Rule}
+
+The optimal Bayes classifier assigns the class with maximum posterior probability:
+\[
+\hat{c} = \arg\max_{c} P(C = c \mid \mathbf{x})
+\]
+
+Using Bayes' theorem:
+\[
+P(C = c \mid \mathbf{x}) = \frac{P(C = c) \cdot P(\mathbf{x} \mid C = c)}{P(\mathbf{x})}
+\]
+
+Since $P(\mathbf{x})$ is constant across classes, we can equivalently maximize:
+\[
+\hat{c} = \arg\max_{c} P(C = c) \cdot P(\mathbf{x} \mid C = c)
+\]
+
+The "naive" assumption is that features are conditionally independent given the class:
+\[
+P(\mathbf{x} \mid C = c) = \prod_{j=1}^{d} P(X_j = x_j \mid C = c)
+\]
+
+\textbf{2. Why "Naive"?}
+
+The conditional independence assumption is often violated in practice:
+
+\textit{Example in our problem:}
+\begin{itemize}
+    \item Words "free" and "winner" might be correlated in spam emails
+    \item If one appears, the other is more likely to appear
+    \item True joint distribution: $P(X_1, X_2 \mid C) \neq P(X_1 \mid C) \cdot P(X_2 \mid C)$
+\end{itemize}
+
+\textit{Despite this violation, Naive Bayes often works well because:}
+\begin{enumerate}
+    \item We only need correct ranking of classes, not accurate probabilities
+    \item Errors in probability estimates can cancel out
+    \item Simplicity prevents overfitting
+    \item Computational efficiency allows use of many features
+\end{enumerate}
+
+\textbf{3. Detailed Calculation Breakdown}
+
+Let's trace through the calculation step-by-step for $(X_1 = 1, X_2 = 1)$:
+
+\textit{For spam class ($C = 1$):}
+
+Prior: $P(C = 1) = 0.5$
+
+Likelihood of $X_1 = 1$: $P(X_1 = 1 \mid C = 1) = 0.75$
+\begin{itemize}
+    \item This means: "If email is spam, there's a 75\% chance it contains 'free'"
+    \item Evidence: 3 out of 4 spam emails contained "free"
+\end{itemize}
+
+Likelihood of $X_2 = 1$: $P(X_2 = 1 \mid C = 1) = 0.75$
+\begin{itemize}
+    \item This means: "If email is spam, there's a 75\% chance it contains 'winner'"
+    \item Evidence: 3 out of 4 spam emails contained "winner"
+\end{itemize}
+
+Joint likelihood (under independence):
+\[
+P(X_1 = 1, X_2 = 1 \mid C = 1) = 0.75 \times 0.75 = 0.5625
+\]
+
+Unnormalized posterior:
+\[
+P(C = 1) \cdot P(\mathbf{x} \mid C = 1) = 0.5 \times 0.5625 = 0.28125
+\]
+
+\textit{For non-spam class ($C = 0$):}
+
+Prior: $P(C = 0) = 0.5$
+
+Likelihood of $X_1 = 1$: $P(X_1 = 1 \mid C = 0) = 0.25$
+\begin{itemize}
+    \item This means: "If email is non-spam, there's a 25\% chance it contains 'free'"
+    \item Evidence: 1 out of 4 non-spam emails contained "free"
+\end{itemize}
+
+Likelihood of $X_2 = 1$: $P(X_2 = 1 \mid C = 0) = 0$
+\begin{itemize}
+    \item This means: "If email is non-spam, we've never seen 'winner'"
+    \item Evidence: 0 out of 4 non-spam emails contained "winner"
+    \item \textbf{Problem:} This is an MLE artifact, not a true probability!
+\end{itemize}
+
+Joint likelihood:
+\[
+P(X_1 = 1, X_2 = 1 \mid C = 0) = 0.25 \times 0 = 0
+\]
+
+Unnormalized posterior:
+\[
+P(C = 0) \cdot P(\mathbf{x} \mid C = 0) = 0.5 \times 0 = 0
+\]
+
+\textbf{4. Normalization}
+
+The normalization constant ensures probabilities sum to 1:
+\[
+Z = \sum_{c} P(C = c) \cdot P(\mathbf{x} \mid C = c) = 0.28125 + 0 = 0.28125
+\]
+
+Normalized posteriors:
+\begin{align}
+P(C = 1 \mid \mathbf{x}) &= \frac{0.28125}{0.28125} = 1.0 \\
+P(C = 0 \mid \mathbf{x}) &= \frac{0}{0.28125} = 0
+\end{align}
+
+\textbf{5. Interpretation of Results}
+
+The classifier is 100\% confident this is spam because:
+\begin{enumerate}
+    \item Both words ("free" and "winner") are strong spam indicators
+    \item The word "winner" was \textit{never} seen in non-spam training emails
+    \item The zero probability creates an absolute barrier to non-spam classification
+\end{enumerate}
+
+\textit{Is this reasonable?}
+\begin{itemize}
+    \item \textbf{Pro:} Both words are indeed spam-associated in our training data
+    \item \textbf{Con:} 100\% confidence is overconfident given only 8 training examples
+    \item \textbf{Issue:} The zero probability is an artifact of limited data, not a true impossibility
+\end{itemize}
+
+\textbf{6. Decision Boundary Perspective}
+
+The decision boundary is where $P(C = 1 \mid \mathbf{x}) = P(C = 0 \mid \mathbf{x})$, or equivalently:
+\[
+P(C = 1) \prod_j P(X_j \mid C = 1) = P(C = 0) \prod_j P(X_j \mid C = 0)
+\]
+
+Taking logs:
+\[
+\log P(C = 1) + \sum_j \log P(X_j \mid C = 1) = \log P(C = 0) + \sum_j \log P(X_j \mid C = 0)
+\]
+
+For our binary features, this creates a linear decision boundary in the log-odds space.
+
+\textbf{7. Comparison with All Possible Feature Combinations}
+
+Let's classify all four possible feature combinations:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$X_1$ & $X_2$ & $P(\mathbf{x} \mid C=1)$ & $P(\mathbf{x} \mid C=0)$ & Prediction \\
+\hline
+0 & 0 & $0.25 \times 0.25 = 0.0625$ & $0.75 \times 1.0 = 0.75$ & Non-spam \\
+0 & 1 & $0.25 \times 0.75 = 0.1875$ & $0.75 \times 0 = 0$ & Spam \\
+1 & 0 & $0.75 \times 0.25 = 0.1875$ & $0.25 \times 1.0 = 0.25$ & Non-spam \\
+1 & 1 & $0.75 \times 0.75 = 0.5625$ & $0.25 \times 0 = 0$ & Spam \\
+\hline
+\end{tabular}
+\end{center}
+
+\textit{Observations:}
+\begin{itemize}
+    \item Any email with $X_2 = 1$ is classified as spam (due to zero probability)
+    \item When $X_2 = 0$, classification depends on $X_1$ and relative likelihoods
+    \item The classifier is deterministic but overly confident
+\end{itemize}
+\end{explanation}
+
+\subsubsection{Part (c): Laplace Smoothing}
+
+\begin{solution}
+Laplace smoothing (add-one smoothing) adds a pseudocount of $\alpha$ to each feature-class combination to avoid zero probabilities.
+
+\textbf{Step 1: Laplace smoothing formula}
+
+For binary features with smoothing parameter $\alpha = 1$:
+\[
+\hat{P}_{\text{smooth}}(X_j = 1 \mid C = c) = \frac{n_{jc}^{(1)} + \alpha}{n_c + 2\alpha}
+\]
+
+where:
+\begin{itemize}
+    \item $n_{jc}^{(1)}$ = count of $X_j = 1$ in class $c$
+    \item $n_c$ = total count in class $c$
+    \item Factor of $2\alpha$ in denominator accounts for both $X_j = 0$ and $X_j = 1$
+\end{itemize}
+
+\textbf{Step 2: Recompute all parameters with $\alpha = 1$}
+
+\textit{Class prior (unchanged):}
+\[
+\hat{P}(C = 1) = \frac{4 + 1}{8 + 2} = \frac{5}{10} = 0.5
+\]
+
+Actually, for class priors with $K$ classes:
+\[
+\hat{P}_{\text{smooth}}(C = c) = \frac{n_c + \alpha}{n + K\alpha}
+\]
+
+With $K = 2$ classes:
+\[
+\hat{P}_{\text{smooth}}(C = 1) = \frac{4 + 1}{8 + 2} = \frac{5}{10} = 0.5
+\]
+
+\textit{Conditional probabilities for spam ($C = 1$):}
+\begin{align}
+\hat{P}_{\text{smooth}}(X_1 = 1 \mid C = 1) &= \frac{3 + 1}{4 + 2} = \frac{4}{6} = \frac{2}{3} \approx 0.667 \\
+\hat{P}_{\text{smooth}}(X_2 = 1 \mid C = 1) &= \frac{3 + 1}{4 + 2} = \frac{4}{6} = \frac{2}{3} \approx 0.667
+\end{align}
+
+\textit{Conditional probabilities for non-spam ($C = 0$):}
+\begin{align}
+\hat{P}_{\text{smooth}}(X_1 = 1 \mid C = 0) &= \frac{1 + 1}{4 + 2} = \frac{2}{6} = \frac{1}{3} \approx 0.333 \\
+\hat{P}_{\text{smooth}}(X_2 = 1 \mid C = 0) &= \frac{0 + 1}{4 + 2} = \frac{1}{6} \approx 0.167
+\end{align}
+
+\textbf{Step 3: Classify $(X_1 = 0, X_2 = 0)$ with smoothed parameters}
+
+For spam ($C = 1$):
+\begin{align}
+P(C = 1 \mid X_1 = 0, X_2 = 0) &\propto P(C = 1) \cdot P(X_1 = 0 \mid C = 1) \cdot P(X_2 = 0 \mid C = 1) \\
+&= 0.5 \times (1 - 2/3) \times (1 - 2/3) \\
+&= 0.5 \times (1/3) \times (1/3) \\
+&= 0.5 \times \frac{1}{9} \\
+&= \frac{1}{18} \approx 0.0556
+\end{align}
+
+For non-spam ($C = 0$):
+\begin{align}
+P(C = 0 \mid X_1 = 0, X_2 = 0) &\propto P(C = 0) \cdot P(X_1 = 0 \mid C = 0) \cdot P(X_2 = 0 \mid C = 0) \\
+&= 0.5 \times (1 - 1/3) \times (1 - 1/6) \\
+&= 0.5 \times (2/3) \times (5/6) \\
+&= 0.5 \times \frac{10}{18} \\
+&= \frac{10}{36} = \frac{5}{18} \approx 0.2778
+\end{align}
+
+\textbf{Step 4: Normalize}
+
+Normalization constant:
+\[
+Z = \frac{1}{18} + \frac{5}{18} = \frac{6}{18} = \frac{1}{3}
+\]
+
+Normalized posteriors:
+\begin{align}
+P(C = 1 \mid X_1 = 0, X_2 = 0) &= \frac{1/18}{1/3} = \frac{1}{18} \times \frac{3}{1} = \frac{3}{18} = \frac{1}{6} \approx 0.167 \\
+P(C = 0 \mid X_1 = 0, X_2 = 0) &= \frac{5/18}{1/3} = \frac{5}{18} \times \frac{3}{1} = \frac{15}{18} = \frac{5}{6} \approx 0.833
+\end{align}
+
+\textbf{Classification decision:}
+
+Since $P(C = 0 \mid X_1 = 0, X_2 = 0) = 5/6 > P(C = 1 \mid X_1 = 0, X_2 = 0) = 1/6$, we classify as:
+
+\[
+\boxed{\text{Non-spam (Class 0)} \quad \text{with posterior probability } 0.833}
+\]
+
+\textbf{Comparison with unsmoothed classifier:}
+
+Without smoothing:
+\begin{itemize}
+    \item $P(\mathbf{x} \mid C = 1) = 0.25 \times 0.25 = 0.0625$
+    \item $P(\mathbf{x} \mid C = 0) = 0.75 \times 1.0 = 0.75$
+    \item Prediction: Non-spam with $P(C = 0 \mid \mathbf{x}) = 0.75/(0.0625 + 0.75) \approx 0.923$
+\end{itemize}
+
+With smoothing:
+\begin{itemize}
+    \item Prediction: Non-spam with $P(C = 0 \mid \mathbf{x}) = 0.833$
+    \item The confidence decreased slightly (from 92.3\% to 83.3\%)
+    \item This is expected: smoothing reduces extreme probabilities
+\end{itemize}
+
+\textbf{Summary of smoothed parameters:}
+\[
+\boxed{
+\begin{aligned}
+\hat{P}_{\text{smooth}}(C = 1) &= 0.5 \\
+\hat{P}_{\text{smooth}}(X_1 = 1 \mid C = 1) &= 2/3 \approx 0.667 \\
+\hat{P}_{\text{smooth}}(X_2 = 1 \mid C = 1) &= 2/3 \approx 0.667 \\
+\hat{P}_{\text{smooth}}(X_1 = 1 \mid C = 0) &= 1/3 \approx 0.333 \\
+\hat{P}_{\text{smooth}}(X_2 = 1 \mid C = 0) &= 1/6 \approx 0.167
+\end{aligned}
+}
+\]
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Laplace Smoothing and Regularization}
+
+\textbf{1. The Zero-Frequency Problem}
+
+In the original MLE estimates, we had $\hat{P}(X_2 = 1 \mid C = 0) = 0$. This creates several problems:
+
+\textit{Mathematical issues:}
+\begin{itemize}
+    \item Multiplying by zero makes entire likelihood zero
+    \item Cannot compute log-probabilities: $\log 0 = -\infty$
+    \item Decision boundary becomes degenerate
+\end{itemize}
+
+\textit{Statistical issues:}
+\begin{itemize}
+    \item Overfitting to training data
+    \item Assumes impossible events have exactly zero probability
+    \item Ignores uncertainty from limited sample size
+\end{itemize}
+
+\textbf{2. Laplace Smoothing: Bayesian Interpretation}
+
+Laplace smoothing can be derived from a Bayesian perspective using a Beta prior.
+
+\textit{For binary features:}
+
+Prior: $\theta \sim \text{Beta}(\alpha, \alpha)$
+
+Likelihood: $X_1, \ldots, X_n \mid \theta \sim \text{Bernoulli}(\theta)$
+
+Posterior: $\theta \mid X_1, \ldots, X_n \sim \text{Beta}(\alpha + n_1, \alpha + n_0)$
+
+MAP estimate:
+\[
+\hat{\theta}_{\text{MAP}} = \frac{\alpha + n_1 - 1}{2\alpha + n - 2}
+\]
+
+For $\alpha = 1$ (uniform prior), this simplifies to:
+\[
+\hat{\theta}_{\text{MAP}} = \frac{n_1}{n} \quad \text{(MLE)}
+\]
+
+But the posterior mean (which is often preferred) is:
+\[
+\mathbb{E}[\theta \mid \text{data}] = \frac{\alpha + n_1}{2\alpha + n}
+\]
+
+For $\alpha = 1$:
+\[
+\mathbb{E}[\theta \mid \text{data}] = \frac{1 + n_1}{2 + n}
+\]
+
+This is exactly the Laplace smoothing formula!
+
+\textbf{3. Effect of Smoothing Parameter $\alpha$}
+
+The parameter $\alpha$ controls the strength of regularization:
+
+\textit{$\alpha \to 0$:}
+\begin{itemize}
+    \item Approaches MLE
+    \item No smoothing
+    \item Can still have zero probabilities
+\end{itemize}
+
+\textit{$\alpha = 1$ (Laplace):}
+\begin{itemize}
+    \item Uniform prior (no preference)
+    \item Moderate smoothing
+    \item Standard choice
+\end{itemize}
+
+\textit{$\alpha > 1$:}
+\begin{itemize}
+    \item Stronger regularization
+    \item Pulls probabilities toward 0.5
+    \item Useful with very small samples
+\end{itemize}
+
+\textit{$\alpha \to \infty$:}
+\begin{itemize}
+    \item All probabilities approach 0.5
+    \item Maximum uncertainty
+    \item Classifier becomes random
+\end{itemize}
+
+\textbf{4. Detailed Calculation Verification}
+
+Let's verify the smoothed probability for $X_2 = 1 \mid C = 0$:
+
+Original counts:
+\begin{itemize}
+    \item $n_{20}^{(1)} = 0$ (no non-spam emails with "winner")
+    \item $n_{20}^{(0)} = 4$ (all 4 non-spam emails without "winner")
+    \item $n_0 = 4$ (total non-spam emails)
+\end{itemize}
+
+Smoothed estimate:
+\[
+\hat{P}_{\text{smooth}}(X_2 = 1 \mid C = 0) = \frac{0 + 1}{4 + 2} = \frac{1}{6}
+\]
+
+\textit{Interpretation:}
+\begin{itemize}
+    \item We add 1 pseudocount to "winner" appearing in non-spam
+    \item We add 1 pseudocount to "winner" not appearing in non-spam
+    \item Total pseudocounts: 2
+    \item This gives a small but non-zero probability
+\end{itemize}
+
+\textbf{5. Impact on Classification}
+
+Let's compare all four feature combinations with and without smoothing:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$X_1$ & $X_2$ & \multicolumn{2}{c|}{Without Smoothing} & \multicolumn{2}{c|}{With Smoothing} \\
+\cline{3-6}
+ &  & $P(C=1\mid\mathbf{x})$ & Pred. & $P(C=1\mid\mathbf{x})$ & Pred. \\
+\hline
+0 & 0 & 0.077 & Non-spam & 0.167 & Non-spam \\
+0 & 1 & 1.000 & Spam & 0.800 & Spam \\
+1 & 0 & 0.429 & Non-spam & 0.500 & Tie \\
+1 & 1 & 1.000 & Spam & 0.889 & Spam \\
+\hline
+\end{tabular}
+\end{center}
+
+\textit{Key observations:}
+\begin{enumerate}
+    \item Smoothing eliminates certainty (no more 0.0 or 1.0 probabilities)
+    \item Classification changes for $(1, 0)$: from non-spam to tie
+    \item Confidence decreases for all predictions
+    \item More realistic uncertainty quantification
+\end{enumerate}
+
+\textbf{6. Theoretical Properties}
+
+\textit{Consistency:} As $n \to \infty$, smoothed estimates converge to true probabilities (if model is correct)
+
+\textit{Bias-variance tradeoff:}
+\begin{itemize}
+    \item Smoothing introduces bias (pulls estimates away from MLE)
+    \item But reduces variance (more stable estimates)
+    \item For small $n$, variance reduction outweighs bias
+\end{itemize}
+
+\textit{Computational cost:} Negligible (just add constants)
+
+\textbf{7. Alternative Smoothing Methods}
+
+\textit{Lidstone smoothing:} Generalization with parameter $\alpha$
+\[
+\hat{P}(X_j = 1 \mid C = c) = \frac{n_{jc}^{(1)} + \alpha}{n_c + 2\alpha}
+\]
+
+\textit{Good-Turing smoothing:} Uses frequency of frequencies
+
+\textit{Kneser-Ney smoothing:} Popular in NLP, uses backoff
+
+\textit{Bayesian with informative prior:} If we have domain knowledge about likely probabilities
+\end{explanation}
+
+\subsubsection{Part (d): Decision Boundary}
+
+\begin{solution}
+We derive the decision boundary where the classifier is indifferent between classes.
+
+\textbf{Step 1: Set up the decision boundary equation}
+
+The decision boundary occurs when:
+\[
+P(C = 1 \mid \mathbf{x}) = P(C = 0 \mid \mathbf{x})
+\]
+
+Equivalently:
+\[
+P(C = 1) \cdot P(\mathbf{x} \mid C = 1) = P(C = 0) \cdot P(\mathbf{x} \mid C = 0)
+\]
+
+\textbf{Step 2: Apply Naive Bayes assumption}
+
+\[
+P(C = 1) \prod_{j=1}^{2} P(X_j \mid C = 1) = P(C = 0) \prod_{j=1}^{2} P(X_j \mid C = 0)
+\]
+
+\textbf{Step 3: Take logarithms}
+
+\[
+\log P(C = 1) + \sum_{j=1}^{2} \log P(X_j \mid C = 1) = \log P(C = 0) + \sum_{j=1}^{2} \log P(X_j \mid C = 0)
+\]
+
+Rearranging:
+\[
+\sum_{j=1}^{2} \log \frac{P(X_j \mid C = 1)}{P(X_j \mid C = 0)} = \log \frac{P(C = 0)}{P(C = 1)}
+\]
+
+\textbf{Step 4: Expand for binary features}
+
+For each binary feature $X_j \in \{0, 1\}$:
+\[
+\log P(X_j \mid C) = X_j \log \theta_{j,C} + (1 - X_j) \log(1 - \theta_{j,C})
+\]
+
+where $\theta_{j,C} = P(X_j = 1 \mid C)$.
+
+The log-likelihood ratio for feature $j$ is:
+\begin{align}
+\log \frac{P(X_j \mid C = 1)}{P(X_j \mid C = 0)} &= X_j \log \frac{\theta_{j,1}}{\theta_{j,0}} + (1-X_j) \log \frac{1-\theta_{j,1}}{1-\theta_{j,0}} \\
+&= X_j \left(\log \frac{\theta_{j,1}}{\theta_{j,0}} - \log \frac{1-\theta_{j,1}}{1-\theta_{j,0}}\right) + \log \frac{1-\theta_{j,1}}{1-\theta_{j,0}}
+\end{align}
+
+\textbf{Step 5: Write decision boundary as linear function}
+
+Let:
+\begin{align}
+w_j &= \log \frac{\theta_{j,1}}{\theta_{j,0}} - \log \frac{1-\theta_{j,1}}{1-\theta_{j,0}} = \log \frac{\theta_{j,1}(1-\theta_{j,0})}{\theta_{j,0}(1-\theta_{j,1})} \\
+b_j &= \log \frac{1-\theta_{j,1}}{1-\theta_{j,0}} \\
+b_0 &= \log \frac{P(C = 0)}{P(C = 1)}
+\end{align}
+
+The decision boundary is:
+\[
+\sum_{j=1}^{2} w_j X_j + \sum_{j=1}^{2} b_j = b_0
+\]
+
+Or more compactly:
+\[
+w_1 X_1 + w_2 X_2 = b_0 - b_1 - b_2 = b
+\]
+
+This is a \textbf{linear decision boundary} in the feature space!
+
+\textbf{Step 6: Compute numerical values (without smoothing)}
+
+Using our MLE estimates:
+\begin{itemize}
+    \item $\theta_{1,1} = 0.75$, $\theta_{1,0} = 0.25$
+    \item $\theta_{2,1} = 0.75$, $\theta_{2,0} = 0$ (problematic!)
+\end{itemize}
+
+For $X_1$:
+\[
+w_1 = \log \frac{0.75 \times 0.75}{0.25 \times 0.25} = \log \frac{0.5625}{0.0625} = \log 9 \approx 2.197
+\]
+
+For $X_2$:
+\[
+w_2 = \log \frac{0.75 \times 1}{0 \times 0.25} = \log \frac{0.75}{0} = \infty
+\]
+
+The zero probability makes $w_2 = \infty$, so any $X_2 = 1$ guarantees spam classification.
+
+\textbf{Step 7: Compute with smoothing}
+
+Using smoothed estimates:
+\begin{itemize}
+    \item $\theta_{1,1} = 2/3$, $\theta_{1,0} = 1/3$
+    \item $\theta_{2,1} = 2/3$, $\theta_{2,0} = 1/6$
+\end{itemize}
+
+For $X_1$:
+\[
+w_1 = \log \frac{(2/3)(2/3)}{(1/3)(1/3)} = \log \frac{4/9}{1/9} = \log 4 \approx 1.386
+\]
+
+For $X_2$:
+\[
+w_2 = \log \frac{(2/3)(5/6)}{(1/6)(1/3)} = \log \frac{10/18}{1/18} = \log 10 \approx 2.303
+\]
+
+Intercept terms:
+\begin{align}
+b_1 &= \log \frac{1/3}{2/3} = \log 0.5 \approx -0.693 \\
+b_2 &= \log \frac{1/3}{5/6} = \log 0.4 \approx -0.916 \\
+b_0 &= \log \frac{0.5}{0.5} = 0
+\end{align}
+
+Decision boundary:
+\[
+1.386 X_1 + 2.303 X_2 = 0 - (-0.693) - (-0.916) = 1.609
+\]
+
+\textbf{Geometric interpretation:}
+
+The decision boundary is the line:
+\[
+\boxed{1.386 X_1 + 2.303 X_2 = 1.609}
+\]
+
+In the $(X_1, X_2)$ space (which is discrete with only 4 points):
+\begin{itemize}
+    \item Points above/to the right of this line: classified as spam
+    \item Points below/to the left: classified as non-spam
+    \item The line has negative slope: $X_2 = 0.699 - 0.602 X_1$
+\end{itemize}
+
+\textbf{Classification of the four points:}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$(X_1, X_2)$ & $w_1 X_1 + w_2 X_2$ & Compare to 1.609 & Classification \\
+\hline
+$(0, 0)$ & $0$ & $< 1.609$ & Non-spam \\
+$(0, 1)$ & $2.303$ & $> 1.609$ & Spam \\
+$(1, 0)$ & $1.386$ & $< 1.609$ & Non-spam \\
+$(1, 1)$ & $3.689$ & $> 1.609$ & Spam \\
+\hline
+\end{tabular}
+\end{center}
+
+This matches our earlier classifications!
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Decision Boundaries in Naive Bayes}
+
+\textbf{1. Why Linear Decision Boundaries?}
+
+Despite the "naive" assumption, Naive Bayes produces linear decision boundaries in log-probability space.
+
+\textit{General form:}
+\[
+\log \frac{P(C = 1 \mid \mathbf{x})}{P(C = 0 \mid \mathbf{x})} = \mathbf{w}^T \mathbf{x} + b
+\]
+
+This is a \textbf{linear discriminant function}, similar to:
+\begin{itemize}
+    \item Logistic regression
+    \item Linear discriminant analysis (LDA)
+    \item Perceptron
+\end{itemize}
+
+\textit{Key difference:} The weights $\mathbf{w}$ are determined by generative modeling (estimating $P(\mathbf{x} \mid C)$) rather than discriminative modeling (directly estimating $P(C \mid \mathbf{x})$).
+
+\textbf{2. Comparison with Other Classifiers}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Classifier} & \textbf{Decision Boundary} & \textbf{Approach} \\
+\hline
+Naive Bayes & Linear (in log-space) & Generative \\
+Logistic Regression & Linear & Discriminative \\
+LDA & Linear & Generative \\
+QDA & Quadratic & Generative \\
+SVM (linear) & Linear & Discriminative \\
+Decision Tree & Axis-aligned rectangles & Discriminative \\
+Neural Network & Nonlinear & Discriminative \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{3. Geometric Visualization}
+
+For our binary features, the feature space is discrete with only 4 points:
+
+\begin{verbatim}
+X_2
+ 1  |  (0,1) [Spam]     (1,1) [Spam]
+    |
+    |        Decision boundary
+ 0  |  (0,0) [Non-spam] (1,0) [Non-spam]
+    |________________________
+       0                 1           X_1
+\end{verbatim}
+
+The decision boundary $1.386 X_1 + 2.303 X_2 = 1.609$ separates the space:
+\begin{itemize}
+    \item Slope: $-w_1/w_2 = -1.386/2.303 \approx -0.602$
+    \item Intercept: $b/w_2 = 1.609/2.303 \approx 0.699$
+\end{itemize}
+
+\textbf{4. Interpretation of Weights}
+
+The weight $w_j$ represents the log-odds ratio contribution of feature $j$:
+
+\[
+w_j = \log \frac{P(X_j = 1 \mid C = 1) / P(X_j = 0 \mid C = 1)}{P(X_j = 1 \mid C = 0) / P(X_j = 0 \mid C = 0)}
+\]
+
+\textit{For our problem:}
+\begin{itemize}
+    \item $w_1 \approx 1.386$: "free" moderately increases spam odds
+    \item $w_2 \approx 2.303$: "winner" strongly increases spam odds
+    \item $w_2 > w_1$: "winner" is a stronger spam indicator
+\end{itemize}
+
+\textbf{5. Effect of Feature Correlation}
+
+The Naive Bayes assumption ignores feature correlations, which can affect the decision boundary:
+
+\textit{If features are positively correlated:}
+\begin{itemize}
+    \item Naive Bayes "double counts" evidence
+    \item Decision boundary may be too confident
+    \item But classification accuracy often remains good
+\end{itemize}
+
+\textit{If features are negatively correlated:}
+\begin{itemize}
+    \item Naive Bayes underestimates evidence
+    \item May miss important patterns
+\end{itemize}
+
+\textbf{6. Comparison with Logistic Regression}
+
+Both Naive Bayes and Logistic Regression have linear decision boundaries, but:
+
+\textit{Naive Bayes:}
+\begin{itemize}
+    \item Estimates $P(\mathbf{x} \mid C)$ and $P(C)$
+    \item Weights determined by generative model
+    \item Faster training (closed-form)
+    \item More assumptions (conditional independence)
+    \item Better with small data
+\end{itemize}
+
+\textit{Logistic Regression:}
+\begin{itemize}
+    \item Directly estimates $P(C \mid \mathbf{x})$
+    \item Weights optimized discriminatively
+    \item Requires iterative optimization
+    \item Fewer assumptions
+    \item Better with large data and correlated features
+\end{itemize}
+
+\textbf{7. Multi-class Extension}
+
+For $K > 2$ classes, Naive Bayes creates $K-1$ decision boundaries:
+
+\[
+\log \frac{P(C = k \mid \mathbf{x})}{P(C = K \mid \mathbf{x})} = \mathbf{w}_k^T \mathbf{x} + b_k \quad \text{for } k = 1, \ldots, K-1
+\]
+
+The decision regions are convex polytopes in the feature space.
+\end{explanation}
+
+\subsubsection{Part (e): Log-Likelihood of Training Data}
+
+\begin{solution}
+We calculate the log-likelihood of the training data under the fitted Naive Bayes model (without smoothing).
+
+\textbf{Step 1: Write the likelihood function}
+
+For a single training example $(\mathbf{x}^{(i)}, c^{(i)})$, the likelihood is:
+\[
+\mathcal{L}_i = P(c^{(i)}) \prod_{j=1}^{2} P(x_j^{(i)} \mid c^{(i)})
+\]
+
+For all $n = 8$ training examples:
+\[
+\mathcal{L} = \prod_{i=1}^{8} P(c^{(i)}) \prod_{j=1}^{2} P(x_j^{(i)} \mid c^{(i)})
+\]
+
+\textbf{Step 2: Take the logarithm}
+
+\[
+\ell = \log \mathcal{L} = \sum_{i=1}^{8} \left[\log P(c^{(i)}) + \sum_{j=1}^{2} \log P(x_j^{(i)} \mid c^{(i)})\right]
+\]
+
+\textbf{Step 3: Decompose by class}
+
+We can separate the log-likelihood into contributions from each class:
+\[
+\ell = \sum_{i: c^{(i)} = 1} \left[\log P(C=1) + \sum_{j=1}^{2} \log P(x_j^{(i)} \mid C=1)\right] + \sum_{i: c^{(i)} = 0} \left[\log P(C=0) + \sum_{j=1}^{2} \log P(x_j^{(i)} \mid C=0)\right]
+\]
+
+\textbf{Step 4: Calculate for spam class ($C = 1$)}
+
+Spam emails: $\{1, 2, 3, 4\}$
+
+\textit{Email 1: $(X_1=1, X_2=1, C=1)$}
+\begin{align}
+\ell_1 &= \log(0.5) + \log(0.75) + \log(0.75) \\
+&= -0.693 + (-0.288) + (-0.288) \\
+&= -1.269
+\end{align}
+
+\textit{Email 2: $(X_1=1, X_2=0, C=1)$}
+\begin{align}
+\ell_2 &= \log(0.5) + \log(0.75) + \log(0.25) \\
+&= -0.693 + (-0.288) + (-1.386) \\
+&= -2.367
+\end{align}
+
+\textit{Email 3: $(X_1=0, X_2=1, C=1)$}
+\begin{align}
+\ell_3 &= \log(0.5) + \log(0.25) + \log(0.75) \\
+&= -0.693 + (-1.386) + (-0.288) \\
+&= -2.367
+\end{align}
+
+\textit{Email 4: $(X_1=1, X_2=1, C=1)$}
+\begin{align}
+\ell_4 &= \log(0.5) + \log(0.75) + \log(0.75) \\
+&= -1.269
+\end{align}
+
+\textbf{Spam class total:}
+\[
+\ell_{\text{spam}} = -1.269 + (-2.367) + (-2.367) + (-1.269) = -7.272
+\]
+
+\textbf{Step 5: Calculate for non-spam class ($C = 0$)}
+
+Non-spam emails: $\{5, 6, 7, 8\}$
+
+\textit{Email 5: $(X_1=0, X_2=0, C=0)$}
+\begin{align}
+\ell_5 &= \log(0.5) + \log(0.75) + \log(1.0) \\
+&= -0.693 + (-0.288) + 0 \\
+&= -0.981
+\end{align}
+
+\textit{Email 6: $(X_1=0, X_2=0, C=0)$}
+\[
+\ell_6 = -0.981
+\]
+
+\textit{Email 7: $(X_1=1, X_2=0, C=0)$}
+\begin{align}
+\ell_7 &= \log(0.5) + \log(0.25) + \log(1.0) \\
+&= -0.693 + (-1.386) + 0 \\
+&= -2.079
+\end{align}
+
+\textit{Email 8: $(X_1=0, X_2=0, C=0)$}
+\[
+\ell_8 = -0.981
+\]
+
+\textbf{Non-spam class total:}
+\[
+\ell_{\text{non-spam}} = -0.981 + (-0.981) + (-2.079) + (-0.981) = -5.022
+\]
+
+\textbf{Step 6: Total log-likelihood}
+
+\[
+\ell = \ell_{\text{spam}} + \ell_{\text{non-spam}} = -7.272 + (-5.022) = -12.294
+\]
+
+\[
+\boxed{\ell = -12.294}
+\]
+
+\textbf{Alternative calculation using sufficient statistics:}
+
+We can also compute this using counts:
+\begin{align}
+\ell &= n_1 \log P(C=1) + n_0 \log P(C=0) \\
+&\quad + \sum_{j,c} \left[n_{jc}^{(1)} \log P(X_j=1 \mid C=c) + n_{jc}^{(0)} \log P(X_j=0 \mid C=c)\right]
+\end{align}
+
+\textit{Class prior terms:}
+\[
+4 \log(0.5) + 4 \log(0.5) = 8(-0.693) = -5.545
+\]
+
+\textit{Feature $X_1$ in spam:}
+\[
+3 \log(0.75) + 1 \log(0.25) = 3(-0.288) + 1(-1.386) = -2.250
+\]
+
+\textit{Feature $X_2$ in spam:}
+\[
+3 \log(0.75) + 1 \log(0.25) = -2.250
+\]
+
+\textit{Feature $X_1$ in non-spam:}
+\[
+1 \log(0.25) + 3 \log(0.75) = -1.386 + (-0.864) = -2.250
+\]
+
+\textit{Feature $X_2$ in non-spam:}
+\[
+0 \log(0) + 4 \log(1.0) = -\infty + 0 = -\infty
+\]
+
+\textbf{Problem:} The zero probability for $P(X_2=1 \mid C=0)$ causes $\log(0) = -\infty$, but since we never observe $X_2=1$ in non-spam emails, this term doesn't actually appear in the sum. The correct calculation uses only observed combinations.
+
+\textbf{Verification:}
+\[
+\ell = -5.545 + (-2.250) + (-2.250) + (-2.250) + 0 = -12.295 \approx -12.294
+\]
+
+(Small difference due to rounding)
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Log-Likelihood and Model Evaluation}
+
+\textbf{1. Why Log-Likelihood?}
+
+The log-likelihood is preferred over raw likelihood for several reasons:
+
+\textit{Numerical stability:}
+\begin{itemize}
+    \item Probabilities are often very small (e.g., $10^{-10}$)
+    \item Products of many small numbers underflow to zero
+    \item Logs convert products to sums: $\log(ab) = \log a + \log b$
+\end{itemize}
+
+\textit{Computational efficiency:}
+\begin{itemize}
+    \item Addition is faster than multiplication
+    \item Easier to compute derivatives for optimization
+\end{itemize}
+
+\textit{Statistical interpretation:}
+\begin{itemize}
+    \item Log-likelihood is additive across independent observations
+    \item Related to information theory (bits of information)
+    \item Asymptotically normal (central limit theorem)
+\end{itemize}
+
+\textbf{2. Decomposition of Log-Likelihood}
+
+For Naive Bayes, the log-likelihood has a special structure:
+
+\[
+\ell(\theta) = \underbrace{\sum_i \log P(c^{(i)})}_{\text{Class prior}} + \underbrace{\sum_i \sum_j \log P(x_j^{(i)} \mid c^{(i)})}_{\text{Conditional probabilities}}
+\]
+
+This decomposition allows us to:
+\begin{enumerate}
+    \item Estimate parameters independently
+    \item Identify which components contribute most to likelihood
+    \item Debug model issues (e.g., zero probabilities)
+\end{enumerate}
+
+\textbf{3. Interpretation of Our Result}
+
+Our log-likelihood is $\ell = -12.294$.
+
+\textit{What does this mean?}
+
+\begin{itemize}
+    \item The likelihood itself is $\mathcal{L} = e^{-12.294} \approx 4.6 \times 10^{-6}$
+    \item This is the probability of observing our exact training data under the model
+    \item Seems small, but this is expected for discrete data with 8 observations
+\end{itemize}
+
+\textit{Per-example average log-likelihood:}
+\[
+\bar{\ell} = \frac{\ell}{n} = \frac{-12.294}{8} \approx -1.537
+\]
+
+This is the average "surprise" per observation.
+
+\textbf{4. Comparison with Alternative Models}
+
+Log-likelihood is useful for model comparison:
+
+\textit{Baseline model (random guessing):}
+\begin{itemize}
+    \item Always predict $P(C=1) = P(C=0) = 0.5$
+    \item Always predict $P(X_j=1) = P(X_j=0) = 0.5$ for all $j$
+    \item Log-likelihood: $8 \times [\log(0.5) + 2\log(0.5)] = 8 \times 3(-0.693) = -16.632$
+\end{itemize}
+
+Our model ($\ell = -12.294$) is better than random guessing!
+
+\textit{Perfect model (memorization):}
+\begin{itemize}
+    \item Assign probability 1 to observed combinations
+    \item Log-likelihood: $0$ (but this overfits)
+\end{itemize}
+
+\textbf{5. Connection to Cross-Entropy}
+
+The negative log-likelihood is equivalent to cross-entropy:
+
+\[
+H(p, q) = -\sum_i p(x_i) \log q(x_i)
+\]
+
+where:
+\begin{itemize}
+    \item $p$ = true distribution (empirical)
+    \item $q$ = model distribution
+\end{itemize}
+
+For our training data:
+\[
+H = -\frac{1}{n} \sum_{i=1}^{n} \log P(\mathbf{x}^{(i)}, c^{(i)}) = \frac{12.294}{8} = 1.537 \text{ nats}
+\]
+
+Converting to bits: $1.537 / \log 2 \approx 2.22$ bits per example.
+
+\textbf{6. Likelihood Ratio Tests}
+
+We can use log-likelihood to test hypotheses:
+
+\textit{Likelihood ratio statistic:}
+\[
+\Lambda = -2(\ell_0 - \ell_1)
+\]
+
+where $\ell_0$ is log-likelihood under null model and $\ell_1$ under alternative.
+
+Under the null hypothesis, $\Lambda \sim \chi^2_k$ where $k$ is the difference in number of parameters.
+
+\textbf{7. Regularization and Log-Likelihood}
+
+With Laplace smoothing, the log-likelihood changes:
+
+\textit{Smoothed log-likelihood:}
+
+Using $\alpha = 1$ smoothing, we would recalculate with smoothed probabilities:
+\begin{itemize}
+    \item $P(C=1) = 0.5$ (unchanged)
+    \item $P(X_1=1 \mid C=1) = 2/3$
+    \item $P(X_2=1 \mid C=1) = 2/3$
+    \item $P(X_1=1 \mid C=0) = 1/3$
+    \item $P(X_2=1 \mid C=0) = 1/6$
+\end{itemize}
+
+The smoothed log-likelihood would be slightly lower (worse fit to training data) but would generalize better to test data.
+
+\textit{Bias-variance tradeoff:}
+\begin{itemize}
+    \item Unsmoothed: higher training log-likelihood, lower test log-likelihood
+    \item Smoothed: lower training log-likelihood, higher test log-likelihood
+\end{itemize}
+
+\textbf{8. Perplexity}
+
+In NLP, perplexity is often used instead of log-likelihood:
+
+\[
+\text{Perplexity} = \exp\left(-\frac{1}{n} \sum_{i=1}^{n} \log P(\mathbf{x}^{(i)}, c^{(i)})\right) = e^{1.537} \approx 4.65
+\]
+
+\textit{Interpretation:} On average, the model is as "surprised" as if it had to choose uniformly from 4.65 equally likely outcomes.
+\end{explanation}
+
+\subsubsection{Part (f): Posterior Odds Ratio as Product of Likelihood Ratios}
+
+\begin{solution}
+We prove that under the Naive Bayes assumption, the posterior odds ratio can be expressed as a product of likelihood ratios.
+
+\textbf{Step 1: Define the posterior odds ratio}
+
+The posterior odds ratio is:
+\[
+\text{Odds}(C=1 \mid \mathbf{x}) = \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})}
+\]
+
+\textbf{Step 2: Apply Bayes' theorem}
+
+Using Bayes' theorem for both classes:
+\begin{align}
+P(C=1 \mid \mathbf{x}) &= \frac{P(\mathbf{x} \mid C=1) P(C=1)}{P(\mathbf{x})} \\
+P(C=0 \mid \mathbf{x}) &= \frac{P(\mathbf{x} \mid C=0) P(C=0)}{P(\mathbf{x})}
+\end{align}
+
+\textbf{Step 3: Form the ratio}
+
+\begin{align}
+\frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} &= \frac{P(\mathbf{x} \mid C=1) P(C=1) / P(\mathbf{x})}{P(\mathbf{x} \mid C=0) P(C=0) / P(\mathbf{x})} \\
+&= \frac{P(\mathbf{x} \mid C=1)}{P(\mathbf{x} \mid C=0)} \cdot \frac{P(C=1)}{P(C=0)}
+\end{align}
+
+This shows:
+\[
+\boxed{\text{Posterior odds} = \text{Likelihood ratio} \times \text{Prior odds}}
+\]
+
+\textbf{Step 4: Apply Naive Bayes assumption}
+
+Under the Naive Bayes assumption:
+\[
+P(\mathbf{x} \mid C) = \prod_{j=1}^{d} P(X_j = x_j \mid C)
+\]
+
+Therefore, the likelihood ratio becomes:
+\begin{align}
+\frac{P(\mathbf{x} \mid C=1)}{P(\mathbf{x} \mid C=0)} &= \frac{\prod_{j=1}^{d} P(X_j = x_j \mid C=1)}{\prod_{j=1}^{d} P(X_j = x_j \mid C=0)} \\
+&= \prod_{j=1}^{d} \frac{P(X_j = x_j \mid C=1)}{P(X_j = x_j \mid C=0)}
+\end{align}
+
+\textbf{Step 5: Final result}
+
+Combining steps 3 and 4:
+\[
+\boxed{
+\frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = \frac{P(C=1)}{P(C=0)} \prod_{j=1}^{d} \frac{P(X_j = x_j \mid C=1)}{P(X_j = x_j \mid C=0)}
+}
+\]
+
+This proves that the posterior odds ratio is the product of:
+\begin{enumerate}
+    \item The prior odds ratio: $P(C=1)/P(C=0)$
+    \item Individual likelihood ratios for each feature: $P(X_j=x_j \mid C=1)/P(X_j=x_j \mid C=0)$
+\end{enumerate}
+
+\textbf{Step 6: Numerical verification}
+
+For our example with $(X_1=1, X_2=1)$:
+
+\textit{Prior odds:}
+\[
+\frac{P(C=1)}{P(C=0)} = \frac{0.5}{0.5} = 1
+\]
+
+\textit{Likelihood ratio for $X_1=1$:}
+\[
+\frac{P(X_1=1 \mid C=1)}{P(X_1=1 \mid C=0)} = \frac{0.75}{0.25} = 3
+\]
+
+\textit{Likelihood ratio for $X_2=1$:}
+\[
+\frac{P(X_2=1 \mid C=1)}{P(X_2=1 \mid C=0)} = \frac{0.75}{0} = \infty
+\]
+
+\textit{Posterior odds:}
+\[
+\text{Odds}(C=1 \mid X_1=1, X_2=1) = 1 \times 3 \times \infty = \infty
+\]
+
+This means $P(C=1 \mid \mathbf{x}) = 1$, which matches our earlier result!
+
+\textbf{Step 7: Log-odds formulation}
+
+Taking logarithms gives an additive form:
+\[
+\boxed{
+\log \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = \log \frac{P(C=1)}{P(C=0)} + \sum_{j=1}^{d} \log \frac{P(X_j = x_j \mid C=1)}{P(X_j = x_j \mid C=0)}
+}
+\]
+
+This is the \textbf{log-odds} or \textbf{logit} form, which is linear in the log-likelihood ratios.
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Odds Ratios and Bayesian Updating}
+
+\textbf{1. Understanding Odds and Odds Ratios}
+
+\textit{Odds:} The ratio of probability of an event to probability of its complement
+\[
+\text{Odds}(A) = \frac{P(A)}{P(A^c)} = \frac{P(A)}{1-P(A)}
+\]
+
+\textit{Relationship to probability:}
+\begin{align}
+P(A) &= \frac{\text{Odds}(A)}{1 + \text{Odds}(A)} \\
+\text{Odds}(A) &= \frac{P(A)}{1-P(A)}
+\end{align}
+
+\textit{Examples:}
+\begin{itemize}
+    \item $P = 0.5 \Rightarrow \text{Odds} = 1$ ("even odds")
+    \item $P = 0.75 \Rightarrow \text{Odds} = 3$ ("3 to 1 odds")
+    \item $P = 0.9 \Rightarrow \text{Odds} = 9$ ("9 to 1 odds")
+\end{itemize}
+
+\textbf{2. Bayesian Updating via Odds Ratios}
+
+The formula we proved:
+\[
+\frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = \frac{P(C=1)}{P(C=0)} \prod_{j=1}^{d} \frac{P(X_j \mid C=1)}{P(X_j \mid C=0)}
+\]
+
+can be interpreted as:
+\[
+\text{Posterior odds} = \text{Prior odds} \times \text{Bayes factor}
+\]
+
+where the Bayes factor is:
+\[
+\text{BF} = \frac{P(\mathbf{x} \mid C=1)}{P(\mathbf{x} \mid C=0)} = \prod_{j=1}^{d} \frac{P(X_j \mid C=1)}{P(X_j \mid C=0)}
+\]
+
+\textit{Interpretation:}
+\begin{itemize}
+    \item Start with prior odds (before seeing data)
+    \item Multiply by Bayes factor (evidence from data)
+    \item Get posterior odds (after seeing data)
+\end{itemize}
+
+\textbf{3. Sequential Bayesian Updating}
+
+The product form allows sequential updating:
+
+\textit{After observing $X_1$:}
+\[
+\text{Odds}(C=1 \mid X_1) = \text{Odds}(C=1) \times \frac{P(X_1 \mid C=1)}{P(X_1 \mid C=0)}
+\]
+
+\textit{After additionally observing $X_2$:}
+\[
+\text{Odds}(C=1 \mid X_1, X_2) = \text{Odds}(C=1 \mid X_1) \times \frac{P(X_2 \mid C=1)}{P(X_2 \mid C=2)}
+\]
+
+This is valid under the Naive Bayes assumption!
+
+\textbf{4. Interpretation of Likelihood Ratios}
+
+Each likelihood ratio $\text{LR}_j = P(X_j \mid C=1)/P(X_j \mid C=0)$ represents:
+
+\textit{$\text{LR}_j > 1$:} Feature $X_j$ is evidence FOR class 1
+\begin{itemize}
+    \item The feature is more likely under class 1
+    \item Increases odds of class 1
+    \item Stronger evidence as $\text{LR}_j$ increases
+\end{itemize}
+
+\textit{$\text{LR}_j = 1$:} Feature $X_j$ is neutral
+\begin{itemize}
+    \item Equally likely under both classes
+    \item Doesn't change odds
+    \item Uninformative feature
+\end{itemize}
+
+\textit{$\text{LR}_j < 1$:} Feature $X_j$ is evidence AGAINST class 1
+\begin{itemize}
+    \item The feature is less likely under class 1
+    \item Decreases odds of class 1
+    \item Stronger evidence against as $\text{LR}_j \to 0$
+\end{itemize}
+
+\textbf{5. Numerical Example with Our Data}
+
+For $(X_1=1, X_2=1)$:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Component} & \textbf{Value} & \textbf{Interpretation} & \textbf{Cumulative Odds} \\
+\hline
+Prior odds & 1.0 & Equal prior & 1.0 \\
+$\times$ LR for $X_1=1$ & 3.0 & "free" favors spam & 3.0 \\
+$\times$ LR for $X_2=1$ & $\infty$ & "winner" strongly favors spam & $\infty$ \\
+\hline
+Posterior odds &  &  & $\infty$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\textit{Interpretation:}
+\begin{enumerate}
+    \item Start with even odds (50-50 chance)
+    \item "free" triples the odds in favor of spam (now 75\% spam)
+    \item "winner" makes it certain spam (100\% spam)
+\end{enumerate}
+
+\textbf{6. Connection to Logistic Regression}
+
+The log-odds form:
+\[
+\log \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = \log \frac{P(C=1)}{P(C=0)} + \sum_{j=1}^{d} \log \frac{P(X_j \mid C=1)}{P(X_j \mid C=0)}
+\]
+
+is similar to logistic regression:
+\[
+\log \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = \beta_0 + \sum_{j=1}^{d} \beta_j x_j
+\]
+
+\textit{Key difference:}
+\begin{itemize}
+    \item Naive Bayes: weights determined by generative model
+    \item Logistic regression: weights optimized discriminatively
+\end{itemize}
+
+\textbf{7. Advantages of Odds Ratio Formulation}
+
+\textit{Interpretability:}
+\begin{itemize}
+    \item Each feature's contribution is multiplicative
+    \item Easy to see which features are most important
+    \item Natural for sequential decision-making
+\end{itemize}
+
+\textit{Computational efficiency:}
+\begin{itemize}
+    \item Can compute in log-space (addition instead of multiplication)
+    \item Avoids numerical underflow
+    \item Enables efficient online learning
+\end{itemize}
+
+\textit{Theoretical elegance:}
+\begin{itemize}
+    \item Separates prior knowledge from evidence
+    \item Connects to information theory
+    \item Generalizes to multi-class case
+\end{itemize}
+
+\textbf{8. Limitations and Caveats}
+
+\textit{Requires conditional independence:}
+\begin{itemize}
+    \item Product form only valid under Naive Bayes assumption
+    \item If features are correlated, likelihood ratios are not independent
+    \item May "double count" evidence
+\end{itemize}
+
+\textit{Zero probabilities:}
+\begin{itemize}
+    \item If $P(X_j \mid C=0) = 0$, likelihood ratio is undefined
+    \item Requires smoothing or careful handling
+    \item Can lead to overconfident predictions
+\end{itemize}
+
+\textit{Calibration:}
+\begin{itemize}
+    \item Posterior probabilities may not be well-calibrated
+    \item Odds ratios are correct for ranking, not absolute probabilities
+    \item May need calibration for decision-making with costs
+\end{itemize}
+\end{explanation}
+
+\newpage
+\subsection{Problem Statement - Question 2: Gaussian Naive Bayes}
+
+Consider a binary classification problem with continuous features. You have the following training data for classifying flowers into two species based on petal length ($X_1$) and petal width ($X_2$) in centimeters:
+
+\textbf{Species A ($C = 0$):}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Sample} & $X_1$ (length) & $X_2$ (width) \\
+\hline
+1 & 1.4 & 0.2 \\
+2 & 1.5 & 0.3 \\
+3 & 1.3 & 0.2 \\
+4 & 1.6 & 0.4 \\
+5 & 1.4 & 0.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Species B ($C = 1$):}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Sample} & $X_1$ (length) & $X_2$ (width) \\
+\hline
+1 & 4.7 & 1.4 \\
+2 & 4.5 & 1.5 \\
+3 & 4.9 & 1.5 \\
+4 & 4.6 & 1.3 \\
+5 & 4.8 & 1.6 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Assuming each feature follows a Gaussian distribution within each class, derive the maximum likelihood estimates (MLEs) for all parameters: $\mu_{jc}$ and $\sigma_{jc}^2$ for $j \in \{1, 2\}$ and $c \in \{0, 1\}$.
+
+\item Classify a new flower with measurements $(X_1 = 3.0, X_2 = 1.0)$ using Gaussian Naive Bayes. Show all probability density calculations.
+
+\item Derive the decision boundary equation for this Gaussian Naive Bayes classifier. Is it linear or nonlinear? Explain.
+
+\item Calculate the Mahalanobis distance from the test point $(3.0, 1.0)$ to each class center under the Naive Bayes assumption.
+
+\item Prove that if all features have equal variance within each class ($\sigma_{1c}^2 = \sigma_{2c}^2 = \sigma_c^2$), the decision boundary simplifies to a specific form.
+
+\item Compare Gaussian Naive Bayes with Linear Discriminant Analysis (LDA). Under what conditions do they produce the same decision boundary?
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsubsection{Part (a): Maximum Likelihood Estimates for Gaussian Parameters}
+
+\begin{solution}
+For Gaussian Naive Bayes, we assume each feature $X_j$ follows a Gaussian distribution within each class:
+\[
+X_j \mid C = c \sim \mathcal{N}(\mu_{jc}, \sigma_{jc}^2)
+\]
+
+\textbf{Step 1: MLE formulas for Gaussian parameters}
+
+For a sample $\{x_1, \ldots, x_n\}$ from $\mathcal{N}(\mu, \sigma^2)$, the MLEs are:
+\begin{align}
+\hat{\mu} &= \frac{1}{n} \sum_{i=1}^{n} x_i \quad \text{(sample mean)} \\
+\hat{\sigma}^2 &= \frac{1}{n} \sum_{i=1}^{n} (x_i - \hat{\mu})^2 \quad \text{(sample variance)}
+\end{align}
+
+\textbf{Step 2: Calculate for Species A ($C = 0$)}
+
+Data: $n_0 = 5$ samples
+
+\textit{Feature $X_1$ (petal length):}
+
+Values: $\{1.4, 1.5, 1.3, 1.6, 1.4\}$
+
+Mean:
+\begin{align}
+\hat{\mu}_{10} &= \frac{1.4 + 1.5 + 1.3 + 1.6 + 1.4}{5} \\
+&= \frac{7.2}{5} = 1.44
+\end{align}
+
+Variance:
+\begin{align}
+\hat{\sigma}_{10}^2 &= \frac{1}{5}\left[(1.4-1.44)^2 + (1.5-1.44)^2 + (1.3-1.44)^2 + (1.6-1.44)^2 + (1.4-1.44)^2\right] \\
+&= \frac{1}{5}\left[(-0.04)^2 + (0.06)^2 + (-0.14)^2 + (0.16)^2 + (-0.04)^2\right] \\
+&= \frac{1}{5}\left[0.0016 + 0.0036 + 0.0196 + 0.0256 + 0.0016\right] \\
+&= \frac{0.052}{5} = 0.0104
+\end{align}
+
+\textit{Feature $X_2$ (petal width):}
+
+Values: $\{0.2, 0.3, 0.2, 0.4, 0.3\}$
+
+Mean:
+\begin{align}
+\hat{\mu}_{20} &= \frac{0.2 + 0.3 + 0.2 + 0.4 + 0.3}{5} \\
+&= \frac{1.4}{5} = 0.28
+\end{align}
+
+Variance:
+\begin{align}
+\hat{\sigma}_{20}^2 &= \frac{1}{5}\left[(0.2-0.28)^2 + (0.3-0.28)^2 + (0.2-0.28)^2 + (0.4-0.28)^2 + (0.3-0.28)^2\right] \\
+&= \frac{1}{5}\left[(-0.08)^2 + (0.02)^2 + (-0.08)^2 + (0.12)^2 + (0.02)^2\right] \\
+&= \frac{1}{5}\left[0.0064 + 0.0004 + 0.0064 + 0.0144 + 0.0004\right] \\
+&= \frac{0.028}{5} = 0.0056
+\end{align}
+
+\textbf{Step 3: Calculate for Species B ($C = 1$)}
+
+Data: $n_1 = 5$ samples
+
+\textit{Feature $X_1$ (petal length):}
+
+Values: $\{4.7, 4.5, 4.9, 4.6, 4.8\}$
+
+Mean:
+\begin{align}
+\hat{\mu}_{11} &= \frac{4.7 + 4.5 + 4.9 + 4.6 + 4.8}{5} \\
+&= \frac{23.5}{5} = 4.70
+\end{align}
+
+Variance:
+\begin{align}
+\hat{\sigma}_{11}^2 &= \frac{1}{5}\left[(4.7-4.7)^2 + (4.5-4.7)^2 + (4.9-4.7)^2 + (4.6-4.7)^2 + (4.8-4.7)^2\right] \\
+&= \frac{1}{5}\left[0 + (-0.2)^2 + (0.2)^2 + (-0.1)^2 + (0.1)^2\right] \\
+&= \frac{1}{5}\left[0 + 0.04 + 0.04 + 0.01 + 0.01\right] \\
+&= \frac{0.10}{5} = 0.02
+\end{align}
+
+\textit{Feature $X_2$ (petal width):}
+
+Values: $\{1.4, 1.5, 1.5, 1.3, 1.6\}$
+
+Mean:
+\begin{align}
+\hat{\mu}_{21} &= \frac{1.4 + 1.5 + 1.5 + 1.3 + 1.6}{5} \\
+&= \frac{7.3}{5} = 1.46
+\end{align}
+
+Variance:
+\begin{align}
+\hat{\sigma}_{21}^2 &= \frac{1}{5}\left[(1.4-1.46)^2 + (1.5-1.46)^2 + (1.5-1.46)^2 + (1.3-1.46)^2 + (1.6-1.46)^2\right] \\
+&= \frac{1}{5}\left[(-0.06)^2 + (0.04)^2 + (0.04)^2 + (-0.16)^2 + (0.14)^2\right] \\
+&= \frac{1}{5}\left[0.0036 + 0.0016 + 0.0016 + 0.0256 + 0.0196\right] \\
+&= \frac{0.052}{5} = 0.0104
+\end{align}
+
+\textbf{Step 4: Class prior}
+
+\[
+\hat{P}(C = 0) = \frac{5}{10} = 0.5, \quad \hat{P}(C = 1) = \frac{5}{10} = 0.5
+\]
+
+\textbf{Summary of all MLEs:}
+
+\[
+\boxed{
+\begin{aligned}
+\text{Species A (C=0):} \quad &\mu_{10} = 1.44, \quad \sigma_{10}^2 = 0.0104 \\
+&\mu_{20} = 0.28, \quad \sigma_{20}^2 = 0.0056 \\
+\text{Species B (C=1):} \quad &\mu_{11} = 4.70, \quad \sigma_{11}^2 = 0.02 \\
+&\mu_{21} = 1.46, \quad \sigma_{21}^2 = 0.0104 \\
+\text{Priors:} \quad &P(C=0) = 0.5, \quad P(C=1) = 0.5
+\end{aligned}
+}
+\]
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Maximum Likelihood Estimation for Gaussian Distributions}
+
+\textbf{1. Theoretical Foundation}
+
+For a univariate Gaussian distribution $X \sim \mathcal{N}(\mu, \sigma^2)$, the probability density function is:
+\[
+f(x \mid \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+\]
+
+\textit{Likelihood function for $n$ i.i.d. observations:}
+\[
+\mathcal{L}(\mu, \sigma^2 \mid x_1, \ldots, x_n) = \prod_{i=1}^{n} \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x_i-\mu)^2}{2\sigma^2}\right)
+\]
+
+\textit{Log-likelihood:}
+\begin{align}
+\ell(\mu, \sigma^2) &= \sum_{i=1}^{n} \log f(x_i \mid \mu, \sigma^2) \\
+&= -\frac{n}{2}\log(2\pi) - \frac{n}{2}\log(\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^{n}(x_i - \mu)^2
+\end{align}
+
+\textbf{2. Derivation of MLE for Mean}
+
+Taking the derivative with respect to $\mu$:
+\begin{align}
+\frac{\partial \ell}{\partial \mu} &= -\frac{1}{2\sigma^2} \cdot \frac{\partial}{\partial \mu}\sum_{i=1}^{n}(x_i - \mu)^2 \\
+&= -\frac{1}{2\sigma^2} \sum_{i=1}^{n} 2(x_i - \mu)(-1) \\
+&= \frac{1}{\sigma^2} \sum_{i=1}^{n} (x_i - \mu)
+\end{align}
+
+Setting to zero:
+\begin{align}
+\sum_{i=1}^{n} (x_i - \hat{\mu}) &= 0 \\
+\sum_{i=1}^{n} x_i &= n\hat{\mu} \\
+\hat{\mu} &= \frac{1}{n}\sum_{i=1}^{n} x_i
+\end{align}
+
+\textit{Second derivative (to verify maximum):}
+\[
+\frac{\partial^2 \ell}{\partial \mu^2} = -\frac{n}{\sigma^2} < 0
+\]
+
+This confirms $\hat{\mu}$ is a maximum.
+
+\textbf{3. Derivation of MLE for Variance}
+
+Taking the derivative with respect to $\sigma^2$:
+\begin{align}
+\frac{\partial \ell}{\partial \sigma^2} &= -\frac{n}{2\sigma^2} + \frac{1}{2(\sigma^2)^2}\sum_{i=1}^{n}(x_i - \mu)^2
+\end{align}
+
+Setting to zero:
+\begin{align}
+-\frac{n}{2\sigma^2} + \frac{1}{2(\sigma^2)^2}\sum_{i=1}^{n}(x_i - \mu)^2 &= 0 \\
+\frac{n}{\sigma^2} &= \frac{1}{(\sigma^2)^2}\sum_{i=1}^{n}(x_i - \mu)^2 \\
+n\sigma^2 &= \sum_{i=1}^{n}(x_i - \mu)^2 \\
+\hat{\sigma}^2 &= \frac{1}{n}\sum_{i=1}^{n}(x_i - \hat{\mu})^2
+\end{align}
+
+Note: We substitute $\hat{\mu}$ for $\mu$ since they're jointly optimized.
+
+\textbf{4. Properties of MLEs}
+
+\textit{Consistency:} As $n \to \infty$, $\hat{\mu} \to \mu$ and $\hat{\sigma}^2 \to \sigma^2$ (in probability)
+
+\textit{Asymptotic normality:}
+\[
+\sqrt{n}(\hat{\mu} - \mu) \xrightarrow{d} \mathcal{N}(0, \sigma^2)
+\]
+
+\textit{Efficiency:} MLEs achieve the Cramér-Rao lower bound asymptotically
+
+\textit{Bias of variance estimator:}
+\[
+\mathbb{E}[\hat{\sigma}^2] = \frac{n-1}{n}\sigma^2
+\]
+
+The MLE is biased! The unbiased estimator uses $n-1$ in the denominator:
+\[
+s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2
+\]
+
+However, for large $n$, the bias is negligible.
+
+\textbf{5. Numerical Verification for Species A, Feature $X_1$}
+
+Data: $\{1.4, 1.5, 1.3, 1.6, 1.4\}$
+
+\textit{Mean calculation (detailed):}
+\begin{align}
+\hat{\mu}_{10} &= \frac{1}{5}(1.4 + 1.5 + 1.3 + 1.6 + 1.4) \\
+&= \frac{1}{5} \times 7.2 = 1.44
+\end{align}
+
+\textit{Variance calculation (detailed):}
+
+First, compute deviations from mean:
+\begin{itemize}
+    \item $x_1 - \hat{\mu} = 1.4 - 1.44 = -0.04$
+    \item $x_2 - \hat{\mu} = 1.5 - 1.44 = 0.06$
+    \item $x_3 - \hat{\mu} = 1.3 - 1.44 = -0.14$
+    \item $x_4 - \hat{\mu} = 1.6 - 1.44 = 0.16$
+    \item $x_5 - \hat{\mu} = 1.4 - 1.44 = -0.04$
+\end{itemize}
+
+Square each deviation:
+\begin{itemize}
+    \item $(-0.04)^2 = 0.0016$
+    \item $(0.06)^2 = 0.0036$
+    \item $(-0.14)^2 = 0.0196$
+    \item $(0.16)^2 = 0.0256$
+    \item $(-0.04)^2 = 0.0016$
+\end{itemize}
+
+Sum of squared deviations:
+\[
+\text{SS} = 0.0016 + 0.0036 + 0.0196 + 0.0256 + 0.0016 = 0.052
+\]
+
+Variance:
+\[
+\hat{\sigma}_{10}^2 = \frac{0.052}{5} = 0.0104
+\]
+
+Standard deviation:
+\[
+\hat{\sigma}_{10} = \sqrt{0.0104} \approx 0.102
+\]
+
+\textbf{6. Interpretation of Results}
+
+\textit{Species A (small flowers):}
+\begin{itemize}
+    \item Petal length: $\mu_{10} = 1.44$ cm, $\sigma_{10} = 0.102$ cm
+    \item Petal width: $\mu_{20} = 0.28$ cm, $\sigma_{20} = 0.075$ cm
+    \item Relatively small measurements with low variability
+\end{itemize}
+
+\textit{Species B (large flowers):}
+\begin{itemize}
+    \item Petal length: $\mu_{11} = 4.70$ cm, $\sigma_{11} = 0.141$ cm
+    \item Petal width: $\mu_{21} = 1.46$ cm, $\sigma_{21} = 0.102$ cm
+    \item Much larger measurements, slightly higher variability
+\end{itemize}
+
+\textit{Separation between classes:}
+\begin{itemize}
+    \item Length difference: $4.70 - 1.44 = 3.26$ cm
+    \item Width difference: $1.46 - 0.28 = 1.18$ cm
+    \item Classes are well-separated (difference $\gg$ standard deviations)
+\end{itemize}
+
+\textbf{7. Computational Shortcuts}
+
+For variance, we can use the computational formula:
+\[
+\sigma^2 = \frac{1}{n}\sum_{i=1}^{n} x_i^2 - \left(\frac{1}{n}\sum_{i=1}^{n} x_i\right)^2 = \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+\]
+
+\textit{Example for Species A, Feature $X_1$:}
+\begin{align}
+\sum x_i^2 &= 1.4^2 + 1.5^2 + 1.3^2 + 1.6^2 + 1.4^2 \\
+&= 1.96 + 2.25 + 1.69 + 2.56 + 1.96 = 10.42 \\
+\hat{\sigma}_{10}^2 &= \frac{10.42}{5} - (1.44)^2 \\
+&= 2.084 - 2.0736 = 0.0104 \quad \checkmark
+\end{align}
+
+This method is more numerically stable for large datasets.
+\end{explanation}
+
+\subsubsection{Part (b): Classification with Gaussian Naive Bayes}
+
+\begin{solution}
+We classify the test point $(X_1 = 3.0, X_2 = 1.0)$ using Gaussian Naive Bayes.
+
+\textbf{Step 1: Gaussian probability density function}
+
+For $X \sim \mathcal{N}(\mu, \sigma^2)$:
+\[
+f(x \mid \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+\]
+
+\textbf{Step 2: Calculate likelihoods for Species A ($C = 0$)}
+
+\textit{For $X_1 = 3.0$:}
+\begin{align}
+f(3.0 \mid \mu_{10}, \sigma_{10}^2) &= \frac{1}{\sqrt{2\pi \times 0.0104}} \exp\left(-\frac{(3.0-1.44)^2}{2 \times 0.0104}\right) \\
+&= \frac{1}{\sqrt{0.0653}} \exp\left(-\frac{(1.56)^2}{0.0208}\right) \\
+&= \frac{1}{0.2555} \exp\left(-\frac{2.4336}{0.0208}\right) \\
+&= 3.914 \times \exp(-117.0) \\
+&\approx 3.914 \times 10^{-51} \\
+&\approx 0
+\end{align}
+
+This is essentially zero! The test point is extremely far from Species A's mean for $X_1$.
+
+\textit{For $X_2 = 1.0$:}
+\begin{align}
+f(1.0 \mid \mu_{20}, \sigma_{20}^2) &= \frac{1}{\sqrt{2\pi \times 0.0056}} \exp\left(-\frac{(1.0-0.28)^2}{2 \times 0.0056}\right) \\
+&= \frac{1}{\sqrt{0.0352}} \exp\left(-\frac{(0.72)^2}{0.0112}\right) \\
+&= \frac{1}{0.1876} \exp\left(-\frac{0.5184}{0.0112}\right) \\
+&= 5.331 \times \exp(-46.29) \\
+&\approx 5.331 \times 10^{-21} \\
+&\approx 0
+\end{align}
+
+\textit{Joint likelihood (under Naive Bayes):}
+\[
+P(\mathbf{x} \mid C=0) = f(3.0 \mid \mu_{10}, \sigma_{10}^2) \times f(1.0 \mid \mu_{20}, \sigma_{20}^2) \approx 0
+\]
+
+\textbf{Step 3: Calculate likelihoods for Species B ($C = 1$)}
+
+\textit{For $X_1 = 3.0$:}
+\begin{align}
+f(3.0 \mid \mu_{11}, \sigma_{11}^2) &= \frac{1}{\sqrt{2\pi \times 0.02}} \exp\left(-\frac{(3.0-4.70)^2}{2 \times 0.02}\right) \\
+&= \frac{1}{\sqrt{0.1257}} \exp\left(-\frac{(-1.70)^2}{0.04}\right) \\
+&= \frac{1}{0.3545} \exp\left(-\frac{2.89}{0.04}\right) \\
+&= 2.821 \times \exp(-72.25) \\
+&\approx 2.821 \times 10^{-32} \\
+&\approx 0
+\end{align}
+
+\textit{For $X_2 = 1.0$:}
+\begin{align}
+f(1.0 \mid \mu_{21}, \sigma_{21}^2) &= \frac{1}{\sqrt{2\pi \times 0.0104}} \exp\left(-\frac{(1.0-1.46)^2}{2 \times 0.0104}\right) \\
+&= \frac{1}{\sqrt{0.0653}} \exp\left(-\frac{(-0.46)^2}{0.0208}\right) \\
+&= \frac{1}{0.2555} \exp\left(-\frac{0.2116}{0.0208}\right) \\
+&= 3.914 \times \exp(-10.17) \\
+&\approx 3.914 \times 3.84 \times 10^{-5} \\
+&\approx 1.503 \times 10^{-4}
+\end{align}
+
+\textit{Joint likelihood:}
+\[
+P(\mathbf{x} \mid C=1) \approx 2.821 \times 10^{-32} \times 1.503 \times 10^{-4} \approx 4.24 \times 10^{-36}
+\]
+
+\textbf{Step 4: Calculate posteriors}
+
+\textit{Unnormalized posteriors:}
+\begin{align}
+P(C=0) \cdot P(\mathbf{x} \mid C=0) &\approx 0.5 \times 0 = 0 \\
+P(C=1) \cdot P(\mathbf{x} \mid C=1) &\approx 0.5 \times 4.24 \times 10^{-36} \approx 2.12 \times 10^{-36}
+\end{align}
+
+\textit{Normalized posteriors:}
+\begin{align}
+P(C=0 \mid \mathbf{x}) &\approx 0 \\
+P(C=1 \mid \mathbf{x}) &\approx 1.0
+\end{align}
+
+\textbf{Classification:}
+
+\[
+\boxed{\text{Species B (Class 1)} \quad \text{with posterior probability } \approx 1.0}
+\]
+
+\textbf{Interpretation:}
+
+The test point $(3.0, 1.0)$ is classified as Species B because:
+\begin{itemize}
+    \item $X_1 = 3.0$ is much closer to Species B's mean (4.70) than Species A's mean (1.44)
+    \item $X_2 = 1.0$ is much closer to Species B's mean (1.46) than Species A's mean (0.28)
+    \item The point lies in the intermediate region between the two classes
+    \item Despite being far from both class centers, it's relatively closer to Species B
+\end{itemize}
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Gaussian Naive Bayes Classification Mechanics}
+
+\textbf{1. The Gaussian Probability Density}
+
+The Gaussian (normal) distribution is fundamental to continuous Naive Bayes:
+
+\textit{Key properties:}
+\begin{itemize}
+    \item Bell-shaped, symmetric around mean $\mu$
+    \item Standard deviation $\sigma$ controls spread
+    \item $68\%$ of mass within $\mu \pm \sigma$
+    \item $95\%$ of mass within $\mu \pm 2\sigma$
+    \item $99.7\%$ of mass within $\mu \pm 3\sigma$
+\end{itemize}
+
+\textit{Standardized distance:}
+
+The exponent in the Gaussian PDF can be written as:
+\[
+-\frac{(x-\mu)^2}{2\sigma^2} = -\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2 = -\frac{1}{2}z^2
+\]
+
+where $z = (x-\mu)/\sigma$ is the z-score (number of standard deviations from mean).
+
+\textbf{2. Why the Test Point is Far from Both Classes}
+
+Let's compute z-scores for the test point $(3.0, 1.0)$:
+
+\textit{Species A:}
+\begin{align}
+z_{X_1} &= \frac{3.0 - 1.44}{0.102} = \frac{1.56}{0.102} \approx 15.3 \\
+z_{X_2} &= \frac{1.0 - 0.28}{0.075} = \frac{0.72}{0.075} \approx 9.6
+\end{align}
+
+The test point is $15.3\sigma$ away from Species A's mean for $X_1$! This is extraordinarily far (recall $99.7\%$ of data is within $3\sigma$).
+
+\textit{Species B:}
+\begin{align}
+z_{X_1} &= \frac{3.0 - 4.70}{0.141} = \frac{-1.70}{0.141} \approx -12.1 \\
+z_{X_2} &= \frac{1.0 - 1.46}{0.102} = \frac{-0.46}{0.102} \approx -4.5
+\end{align}
+
+Still very far, but less extreme than for Species A.
+
+\textbf{3. Understanding the Extremely Small Probabilities}
+
+The probability densities are not probabilities (they can exceed 1), but for points far from the mean, they become extremely small.
+
+\textit{Exponential decay:}
+
+For $z = 15.3$ (Species A, $X_1$):
+\[
+\exp\left(-\frac{z^2}{2}\right) = \exp\left(-\frac{(15.3)^2}{2}\right) = \exp(-117.0) \approx 10^{-51}
+\]
+
+This is essentially zero in floating-point arithmetic!
+
+\textit{Practical implication:}
+
+In real implementations, we work in log-space to avoid numerical underflow:
+\[
+\log P(\mathbf{x} \mid C) = \sum_j \log f(x_j \mid \mu_{jc}, \sigma_{jc}^2)
+\]
+
+\textbf{4. Log-Space Calculation (More Stable)}
+
+Let's redo the calculation in log-space:
+
+\textit{Log-density for Gaussian:}
+\[
+\log f(x \mid \mu, \sigma^2) = -\frac{1}{2}\log(2\pi) - \frac{1}{2}\log(\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}
+\]
+
+\textit{For Species A:}
+\begin{align}
+\log P(\mathbf{x} \mid C=0) &= \log f(3.0 \mid \mu_{10}, \sigma_{10}^2) + \log f(1.0 \mid \mu_{20}, \sigma_{20}^2) \\
+&= \left[-\frac{1}{2}\log(2\pi \times 0.0104) - \frac{(3.0-1.44)^2}{2 \times 0.0104}\right] \\
+&\quad + \left[-\frac{1}{2}\log(2\pi \times 0.0056) - \frac{(1.0-0.28)^2}{2 \times 0.0056}\right] \\
+&\approx [-2.26 - 117.0] + [-2.47 - 46.29] \\
+&\approx -119.26 + (-48.76) = -168.02
+\end{align}
+
+\textit{For Species B:}
+\begin{align}
+\log P(\mathbf{x} \mid C=1) &\approx [-1.90 - 72.25] + [-2.26 - 10.17] \\
+&\approx -74.15 + (-12.43) = -86.58
+\end{align}
+
+\textit{Log-posterior odds:}
+\begin{align}
+\log \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} &= \log \frac{P(C=1)}{P(C=0)} + \log \frac{P(\mathbf{x} \mid C=1)}{P(\mathbf{x} \mid C=0)} \\
+&= \log(1) + (-86.58 - (-168.02)) \\
+&= 0 + 81.44 = 81.44
+\end{align}
+
+This is hugely positive, confirming Species B classification with overwhelming confidence.
+
+\textbf{5. Geometric Interpretation}
+
+In the $(X_1, X_2)$ feature space:
+\begin{itemize}
+    \item Species A center: $(1.44, 0.28)$
+    \item Species B center: $(4.70, 1.46)$
+    \item Test point: $(3.0, 1.0)$
+\end{itemize}
+
+\textit{Euclidean distances:}
+\begin{align}
+d(\mathbf{x}, \boldsymbol{\mu}_0) &= \sqrt{(3.0-1.44)^2 + (1.0-0.28)^2} = \sqrt{2.434 + 0.518} = \sqrt{2.952} \approx 1.72 \\
+d(\mathbf{x}, \boldsymbol{\mu}_1) &= \sqrt{(3.0-4.70)^2 + (1.0-1.46)^2} = \sqrt{2.89 + 0.212} = \sqrt{3.102} \approx 1.76
+\end{align}
+
+Interestingly, the Euclidean distances are nearly equal! But Gaussian Naive Bayes doesn't use Euclidean distance—it uses a weighted distance that accounts for variance.
+
+\textbf{6. Why Species B Despite Similar Euclidean Distance?}
+
+The key is that Gaussian Naive Bayes weights each dimension by its variance:
+
+\textit{Weighted squared distance (Mahalanobis-like):}
+\begin{align}
+D_0^2 &= \frac{(3.0-1.44)^2}{0.0104} + \frac{(1.0-0.28)^2}{0.0056} \approx 234.0 + 92.6 = 326.6 \\
+D_1^2 &= \frac{(3.0-4.70)^2}{0.02} + \frac{(1.0-1.46)^2}{0.0104} \approx 144.5 + 20.3 = 164.8
+\end{align}
+
+Species B has a smaller weighted distance! This is because:
+\begin{itemize}
+    \item Species B has larger variance in $X_1$ (0.02 vs 0.0104)
+    \item Larger variance means less "penalty" for being far from mean
+    \item The test point is penalized less for its distance from Species B
+\end{itemize}
+
+\textbf{7. Practical Considerations}
+
+\textit{Outlier detection:}
+
+Both probabilities being extremely small suggests the test point might be an outlier or from a different distribution entirely. In practice, you might:
+\begin{itemize}
+    \item Set a threshold for minimum probability
+    \item Flag points with very low probabilities for manual review
+    \item Use a "reject" option for uncertain classifications
+\end{itemize}
+
+\textit{Numerical stability:}
+
+Always implement Gaussian Naive Bayes in log-space to avoid underflow.
+\end{explanation}
+
+\subsubsection{Part (c): Decision Boundary}
+
+\begin{solution}
+We derive the decision boundary equation for Gaussian Naive Bayes.
+
+\textbf{Step 1: Decision boundary condition}
+
+The decision boundary occurs where:
+\[
+P(C=0 \mid \mathbf{x}) = P(C=1 \mid \mathbf{x})
+\]
+
+Equivalently:
+\[
+P(C=0) \cdot P(\mathbf{x} \mid C=0) = P(C=1) \cdot P(\mathbf{x} \mid C=1)
+\]
+
+Taking logarithms:
+\[
+\log P(C=0) + \log P(\mathbf{x} \mid C=0) = \log P(C=1) + \log P(\mathbf{x} \mid C=1)
+\]
+
+\textbf{Step 2: Expand using Naive Bayes assumption}
+
+\begin{align}
+\log P(C=0) + \sum_{j=1}^{2} \log f(x_j \mid \mu_{j0}, \sigma_{j0}^2) &= \log P(C=1) + \sum_{j=1}^{2} \log f(x_j \mid \mu_{j1}, \sigma_{j1}^2)
+\end{align}
+
+\textbf{Step 3: Substitute Gaussian log-density}
+
+For each feature:
+\[
+\log f(x_j \mid \mu_{jc}, \sigma_{jc}^2) = -\frac{1}{2}\log(2\pi\sigma_{jc}^2) - \frac{(x_j - \mu_{jc})^2}{2\sigma_{jc}^2}
+\]
+
+The decision boundary equation becomes:
+\begin{align}
+&\log P(C=0) - \sum_{j=1}^{2} \frac{1}{2}\log(2\pi\sigma_{j0}^2) - \sum_{j=1}^{2} \frac{(x_j - \mu_{j0})^2}{2\sigma_{j0}^2} \\
+&= \log P(C=1) - \sum_{j=1}^{2} \frac{1}{2}\log(2\pi\sigma_{j1}^2) - \sum_{j=1}^{2} \frac{(x_j - \mu_{j1})^2}{2\sigma_{j1}^2}
+\end{align}
+
+\textbf{Step 4: Rearrange}
+
+Moving all terms to one side:
+\begin{align}
+&\sum_{j=1}^{2} \left[\frac{(x_j - \mu_{j1})^2}{2\sigma_{j1}^2} - \frac{(x_j - \mu_{j0})^2}{2\sigma_{j0}^2}\right] \\
+&= \log \frac{P(C=0)}{P(C=1)} + \sum_{j=1}^{2} \frac{1}{2}\log \frac{\sigma_{j1}^2}{\sigma_{j0}^2}
+\end{align}
+
+\textbf{Step 5: Expand the squared terms}
+
+For each $j$:
+\begin{align}
+&\frac{(x_j - \mu_{j1})^2}{2\sigma_{j1}^2} - \frac{(x_j - \mu_{j0})^2}{2\sigma_{j0}^2} \\
+&= \frac{x_j^2 - 2\mu_{j1}x_j + \mu_{j1}^2}{2\sigma_{j1}^2} - \frac{x_j^2 - 2\mu_{j0}x_j + \mu_{j0}^2}{2\sigma_{j0}^2} \\
+&= x_j^2\left(\frac{1}{2\sigma_{j1}^2} - \frac{1}{2\sigma_{j0}^2}\right) + x_j\left(\frac{\mu_{j0}}{\sigma_{j0}^2} - \frac{\mu_{j1}}{\sigma_{j1}^2}\right) + \left(\frac{\mu_{j1}^2}{2\sigma_{j1}^2} - \frac{\mu_{j0}^2}{2\sigma_{j0}^2}\right)
+\end{align}
+
+\textbf{Step 6: General form}
+
+The decision boundary is:
+\[
+\boxed{\sum_{j=1}^{2} a_j x_j^2 + \sum_{j=1}^{2} b_j x_j + c = 0}
+\]
+
+where:
+\begin{align}
+a_j &= \frac{1}{2\sigma_{j1}^2} - \frac{1}{2\sigma_{j0}^2} \\
+b_j &= \frac{\mu_{j0}}{\sigma_{j0}^2} - \frac{\mu_{j1}}{\sigma_{j1}^2} \\
+c &= \sum_{j=1}^{2}\left(\frac{\mu_{j1}^2}{2\sigma_{j1}^2} - \frac{\mu_{j0}^2}{2\sigma_{j0}^2}\right) - \log \frac{P(C=0)}{P(C=1)} - \sum_{j=1}^{2} \frac{1}{2}\log \frac{\sigma_{j1}^2}{\sigma_{j0}^2}
+\end{align}
+
+\textbf{This is a QUADRATIC (nonlinear) decision boundary!}
+
+\textbf{Step 7: Numerical values for our problem}
+
+\textit{For $X_1$:}
+\begin{align}
+a_1 &= \frac{1}{2 \times 0.02} - \frac{1}{2 \times 0.0104} = 25 - 48.08 = -23.08 \\
+b_1 &= \frac{1.44}{0.0104} - \frac{4.70}{0.02} = 138.46 - 235 = -96.54
+\end{align}
+
+\textit{For $X_2$:}
+\begin{align}
+a_2 &= \frac{1}{2 \times 0.0104} - \frac{1}{2 \times 0.0056} = 48.08 - 89.29 = -41.21 \\
+b_2 &= \frac{0.28}{0.0056} - \frac{1.46}{0.0104} = 50 - 140.38 = -90.38
+\end{align}
+
+\textit{Constant term:}
+\begin{align}
+c &= \left(\frac{(4.70)^2}{2 \times 0.02} - \frac{(1.44)^2}{2 \times 0.0104}\right) + \left(\frac{(1.46)^2}{2 \times 0.0104} - \frac{(0.28)^2}{2 \times 0.0056}\right) \\
+&\quad - \log(1) - \frac{1}{2}\log\left(\frac{0.02}{0.0104}\right) - \frac{1}{2}\log\left(\frac{0.0104}{0.0056}\right) \\
+&\approx (552.5 - 99.69) + (102.5 - 7.0) - 0 - 0.309 - 0.313 \\
+&\approx 452.81 + 95.5 - 0.622 = 547.69
+\end{align}
+
+\textbf{Decision boundary equation:}
+\[
+\boxed{-23.08 x_1^2 - 41.21 x_2^2 - 96.54 x_1 - 90.38 x_2 + 547.69 = 0}
+\]
+
+This is an **ellipse** in the $(x_1, x_2)$ plane!
+\textbf{Conclusion:} The decision boundary is **NONLINEAR** (specifically, a conic section—in this case an ellipse).
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Decision Boundaries in Gaussian Naive Bayes}
+
+\textbf{1. Why Quadratic?}
+
+Unlike discrete Naive Bayes (which has linear decision boundaries), Gaussian Naive Bayes with different variances produces quadratic boundaries.
+
+\textit{Key insight:} The quadratic terms arise from the variance differences:
+\[
+a_j = \frac{1}{2\sigma_{j1}^2} - \frac{1}{2\sigma_{j0}^2}
+\]
+
+If $\sigma_{j1}^2 \neq \sigma_{j0}^2$, then $a_j \neq 0$, creating quadratic terms.
+
+\textbf{2. Special Case: Equal Variances}
+
+If all variances are equal ($\sigma_{j0}^2 = \sigma_{j1}^2 = \sigma^2$ for all $j$), then:
+\begin{itemize}
+    \item All $a_j = 0$ (no quadratic terms!)
+    \item Decision boundary becomes linear
+    \item This is equivalent to Linear Discriminant Analysis (LDA)
+\end{itemize}
+
+We'll explore this in part (e).
+
+\textbf{3. Geometric Interpretation}
+
+The decision boundary equation:
+\[
+-23.08 x_1^2 - 41.21 x_2^2 - 96.54 x_1 - 90.38 x_2 + 547.69 = 0
+\]
+
+This is a conic section. To determine which type, we examine the coefficients:
+
+\textit{General conic form:} $Ax^2 + Bxy + Cy^2 + Dx + Ey + F = 0$
+
+In our case:
+\begin{itemize}
+    \item $A = -23.08$, $B = 0$, $C = -41.21$
+    \item Discriminant: $B^2 - 4AC = 0 - 4(-23.08)(-41.21) = -3803.5 < 0$
+    \item Since $B^2 - 4AC < 0$ and $A, C$ have the same sign, this is an **ellipse**
+\end{itemize}
+
+\textbf{4. Comparison with Other Classifiers}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Classifier} & \textbf{Variance Assumption} & \textbf{Boundary} \\
+\hline
+Gaussian NB (general) & Different per feature-class & Quadratic \\
+Gaussian NB (equal var) & Same across classes & Linear \\
+LDA & Same covariance matrix & Linear \\
+QDA & Different covariance matrices & Quadratic \\
+Logistic Regression & N/A (discriminative) & Linear \\
+\hline
+\end{tabular}
+\end{center}
+\end{explanation}
+
+\subsubsection{Part (d): Mahalanobis Distance}
+
+\begin{solution}
+We calculate the Mahalanobis distance from the test point $(3.0, 1.0)$ to each class center under the Naive Bayes assumption.
+
+\textbf{Step 1: Mahalanobis distance definition}
+
+For a point $\mathbf{x}$ and a distribution with mean $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$:
+\[
+D_M(\mathbf{x}, \boldsymbol{\mu}) = \sqrt{(\mathbf{x} - \boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})}
+\]
+
+\textbf{Step 2: Naive Bayes assumption on covariance}
+
+Under Naive Bayes, features are independent, so the covariance matrix is diagonal:
+\[
+\boldsymbol{\Sigma}_c = \begin{pmatrix}
+\sigma_{1c}^2 & 0 \\
+0 & \sigma_{2c}^2
+\end{pmatrix}
+\]
+
+The inverse is:
+\[
+\boldsymbol{\Sigma}_c^{-1} = \begin{pmatrix}
+1/\sigma_{1c}^2 & 0 \\
+0 & 1/\sigma_{2c}^2
+\end{pmatrix}
+\]
+
+\textbf{Step 3: Simplified formula for diagonal covariance}
+
+For diagonal $\boldsymbol{\Sigma}$, the Mahalanobis distance simplifies to:
+\[
+D_M^2(\mathbf{x}, \boldsymbol{\mu}_c) = \sum_{j=1}^{2} \frac{(x_j - \mu_{jc})^2}{\sigma_{jc}^2}
+\]
+
+This is a weighted Euclidean distance where each dimension is scaled by its variance.
+
+\textbf{Step 4: Calculate for Species A ($C = 0$)}
+
+Test point: $(3.0, 1.0)$
+
+Class center: $\boldsymbol{\mu}_0 = (1.44, 0.28)$
+
+Variances: $\sigma_{10}^2 = 0.0104$, $\sigma_{20}^2 = 0.0056$
+
+\begin{align}
+D_M^2(\mathbf{x}, \boldsymbol{\mu}_0) &= \frac{(3.0 - 1.44)^2}{0.0104} + \frac{(1.0 - 0.28)^2}{0.0056} \\
+&= \frac{(1.56)^2}{0.0104} + \frac{(0.72)^2}{0.0056} \\
+&= \frac{2.4336}{0.0104} + \frac{0.5184}{0.0056} \\
+&= 234.0 + 92.57 \\
+&= 326.57
+\end{align}
+
+Mahalanobis distance:
+\[
+D_M(\mathbf{x}, \boldsymbol{\mu}_0) = \sqrt{326.57} \approx 18.07
+\]
+
+\textbf{Step 5: Calculate for Species B ($C = 1$)}
+
+Class center: $\boldsymbol{\mu}_1 = (4.70, 1.46)$
+
+Variances: $\sigma_{11}^2 = 0.02$, $\sigma_{21}^2 = 0.0104$
+
+\begin{align}
+D_M^2(\mathbf{x}, \boldsymbol{\mu}_1) &= \frac{(3.0 - 4.70)^2}{0.02} + \frac{(1.0 - 1.46)^2}{0.0104} \\
+&= \frac{(-1.70)^2}{0.02} + \frac{(-0.46)^2}{0.0104} \\
+&= \frac{2.89}{0.02} + \frac{0.2116}{0.0104} \\
+&= 144.5 + 20.35 \\
+&= 164.85
+\end{align}
+
+Mahalanobis distance:
+\[
+D_M(\mathbf{x}, \boldsymbol{\mu}_1) = \sqrt{164.85} \approx 12.84
+\]
+
+\textbf{Summary:}
+
+\[
+\boxed{
+\begin{aligned}
+D_M(\mathbf{x}, \boldsymbol{\mu}_0) &\approx 18.07 \quad \text{(Species A)} \\
+D_M(\mathbf{x}, \boldsymbol{\mu}_1) &\approx 12.84 \quad \text{(Species B)}
+\end{aligned}
+}
+\]
+
+The test point is closer to Species B in Mahalanobis distance, which aligns with our classification result!
+
+\textbf{Comparison with Euclidean distance:}
+
+Recall from part (b):
+\begin{itemize}
+    \item Euclidean distance to Species A: $\approx 1.72$
+    \item Euclidean distance to Species B: $\approx 1.76$
+    \item Nearly equal! Euclidean distance is misleading.
+\end{itemize}
+
+Mahalanobis distance accounts for variance:
+\begin{itemize}
+    \item Mahalanobis distance to Species A: $18.07$
+    \item Mahalanobis distance to Species B: $12.84$
+    \item Clear preference for Species B!
+\end{itemize}
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Mahalanobis Distance and Its Significance}
+
+\textbf{1. Motivation for Mahalanobis Distance}
+
+Euclidean distance treats all dimensions equally:
+\[
+D_E(\mathbf{x}, \boldsymbol{\mu}) = \sqrt{\sum_{j=1}^{d} (x_j - \mu_j)^2}
+\]
+
+\textit{Problems with Euclidean distance:}
+\begin{itemize}
+    \item Ignores variance (spread) of data
+    \item Sensitive to scale of features
+    \item Treats all directions equally
+    \item Can be misleading when features have different variances
+\end{itemize}
+
+\textbf{2. Mahalanobis Distance: A Better Metric}
+
+The Mahalanobis distance addresses these issues:
+\[
+D_M(\mathbf{x}, \boldsymbol{\mu}) = \sqrt{(\mathbf{x} - \boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\mathbf{x} - \boldsymbol{\mu})}
+\]
+
+\textit{Key properties:}
+\begin{itemize}
+    \item Scale-invariant (accounts for variance)
+    \item Accounts for correlations between features
+    \item Measures distance in units of standard deviations
+    \item Reduces to Euclidean distance when $\boldsymbol{\Sigma} = \mathbf{I}$
+\end{itemize}
+
+\textbf{3. Geometric Interpretation}
+
+Mahalanobis distance measures how many "standard deviations" away a point is from the mean.
+
+\textit{For our Species A calculation:}
+
+\begin{align}
+D_M^2 &= \frac{(3.0-1.44)^2}{0.0104} + \frac{(1.0-0.28)^2}{0.0056} \\
+&= \left(\frac{1.56}{0.102}\right)^2 + \left(\frac{0.72}{0.075}\right)^2 \\
+&= (15.3)^2 + (9.6)^2 \\
+&= 234.0 + 92.2 = 326.2
+\end{align}
+
+The test point is:
+\begin{itemize}
+    \item $15.3$ standard deviations away in the $X_1$ direction
+    \item $9.6$ standard deviations away in the $X_2$ direction
+    \item Combined Mahalanobis distance: $\sqrt{326.2} \approx 18.1$
+\end{itemize}
+
+This is extremely far! (Recall that $99.7\%$ of data is within $3\sigma$.)
+
+\textbf{4. Connection to Gaussian Likelihood}
+
+The Mahalanobis distance is directly related to the log-likelihood:
+
+For a multivariate Gaussian:
+\[
+\log p(\mathbf{x} \mid \boldsymbol{\mu}, \boldsymbol{\Sigma}) = -\frac{d}{2}\log(2\pi) - \frac{1}{2}\log|\boldsymbol{\Sigma}| - \frac{1}{2}D_M^2(\mathbf{x}, \boldsymbol{\mu})
+\]
+
+The Mahalanobis distance appears in the exponent! Points with smaller Mahalanobis distance have higher likelihood.
+
+\textbf{5. Why Species B Despite Larger Euclidean Distance?}
+
+Let's break down the contributions:
+
+\textit{Species A:}
+\begin{itemize}
+    \item $X_1$ contribution: $(1.56)^2 / 0.0104 = 234.0$
+    \item $X_2$ contribution: $(0.72)^2 / 0.0056 = 92.6$
+    \item Small variance in $X_1$ ($\sigma_{10}^2 = 0.0104$) heavily penalizes the large deviation
+\end{itemize}
+
+\textit{Species B:}
+\begin{itemize}
+    \item $X_1$ contribution: $(1.70)^2 / 0.02 = 144.5$
+    \item $X_2$ contribution: $(0.46)^2 / 0.0104 = 20.3$
+    \item Larger variance in $X_1$ ($\sigma_{11}^2 = 0.02$) reduces the penalty
+\end{itemize}
+
+The key: Species B has \textbf{twice the variance} in $X_1$, so it's more "forgiving" of deviations in that dimension.
+
+\textbf{6. Mahalanobis Distance in Classification}
+
+Many classifiers use Mahalanobis distance:
+
+\textit{Nearest centroid classifier:}
+\[
+\hat{c} = \arg\min_c D_M(\mathbf{x}, \boldsymbol{\mu}_c)
+\]
+
+\textit{Gaussian Naive Bayes (with equal priors):}
+\[
+\hat{c} = \arg\min_c \left[D_M^2(\mathbf{x}, \boldsymbol{\mu}_c) + \log|\boldsymbol{\Sigma}_c|\right]
+\]
+
+The $\log|\boldsymbol{\Sigma}_c|$ term accounts for different spreads.
+
+\textbf{7. Computational Considerations}
+
+For diagonal covariance (Naive Bayes assumption):
+\begin{itemize}
+    \item Computing $\boldsymbol{\Sigma}^{-1}$ is trivial: just invert diagonal elements
+    \item Complexity: $O(d)$ instead of $O(d^3)$ for general covariance
+    \item Storage: $O(d)$ instead of $O(d^2)$
+\end{itemize}
+
+This makes Naive Bayes very efficient for high-dimensional data.
+\end{explanation}
+
+\subsubsection{Part (e): Equal Variance Simplification}
+
+\begin{solution}
+We prove that if all features have equal variance within each class, the decision boundary simplifies to a specific form.
+
+\textbf{Step 1: State the assumption}
+
+Assume: $\sigma_{1c}^2 = \sigma_{2c}^2 = \sigma_c^2$ for each class $c \in \{0, 1\}$.
+
+That is, within each class, all features have the same variance (but variances can differ between classes).
+
+\textbf{Step 2: Recall the general decision boundary}
+
+From part (c), the decision boundary is:
+\[
+\sum_{j=1}^{2} a_j x_j^2 + \sum_{j=1}^{2} b_j x_j + c = 0
+\]
+
+where:
+\begin{align}
+a_j &= \frac{1}{2\sigma_{j1}^2} - \frac{1}{2\sigma_{j0}^2} \\
+b_j &= \frac{\mu_{j0}}{\sigma_{j0}^2} - \frac{\mu_{j1}}{\sigma_{j1}^2}
+\end{align}
+
+\textbf{Step 3: Apply the equal variance assumption}
+
+Under our assumption:
+\begin{itemize}
+    \item $\sigma_{10}^2 = \sigma_{20}^2 = \sigma_0^2$
+    \item $\sigma_{11}^2 = \sigma_{21}^2 = \sigma_1^2$
+\end{itemize}
+
+The quadratic coefficients become:
+\[
+a_j = \frac{1}{2\sigma_1^2} - \frac{1}{2\sigma_0^2} = a \quad \text{(same for all } j\text{)}
+\]
+
+The linear coefficients become:
+\begin{align}
+b_j &= \frac{\mu_{j0}}{\sigma_0^2} - \frac{\mu_{j1}}{\sigma_1^2}
+\end{align}
+
+\textbf{Step 4: Factor out the common quadratic coefficient}
+
+The decision boundary becomes:
+\[
+a(x_1^2 + x_2^2) + b_1 x_1 + b_2 x_2 + c = 0
+\]
+
+where $a = \frac{1}{2\sigma_1^2} - \frac{1}{2\sigma_0^2}$.
+
+This can be rewritten as:
+\[
+a\|\mathbf{x}\|^2 + \mathbf{b}^T\mathbf{x} + c = 0
+\]
+
+where $\|\mathbf{x}\|^2 = x_1^2 + x_2^2$ is the squared Euclidean norm.
+
+\textbf{Step 5: Special case - equal variances across classes}
+
+If additionally $\sigma_0^2 = \sigma_1^2 = \sigma^2$ (same variance for both classes), then:
+\[
+a = \frac{1}{2\sigma^2} - \frac{1}{2\sigma^2} = 0
+\]
+
+The quadratic terms vanish! The decision boundary becomes:
+\[
+\boxed{b_1 x_1 + b_2 x_2 + c' = 0}
+\]
+
+This is a \textbf{linear} decision boundary!
+
+\textbf{Step 6: Derive the linear form explicitly}
+
+With $\sigma_{jc}^2 = \sigma^2$ for all $j, c$:
+
+\begin{align}
+b_j &= \frac{\mu_{j0}}{\sigma^2} - \frac{\mu_{j1}}{\sigma^2} = \frac{\mu_{j0} - \mu_{j1}}{\sigma^2}
+\end{align}
+
+The decision boundary is:
+\[
+\sum_{j=1}^{2} \frac{\mu_{j0} - \mu_{j1}}{\sigma^2} x_j + c' = 0
+\]
+
+Multiplying by $\sigma^2$:
+\[
+\sum_{j=1}^{2} (\mu_{j0} - \mu_{j1}) x_j + \sigma^2 c' = 0
+\]
+
+Or in vector form:
+\[
+(\boldsymbol{\mu}_0 - \boldsymbol{\mu}_1)^T \mathbf{x} + \text{const} = 0
+\]
+
+\textbf{Conclusion:}
+
+\[
+\boxed{
+\begin{aligned}
+\text{Equal variance within classes:} &\quad \text{Quadratic boundary with } a(x_1^2 + x_2^2) \\
+\text{Equal variance across classes:} &\quad \text{Linear boundary}
+\end{aligned}
+}
+\]
+
+The linear case is equivalent to \textbf{Linear Discriminant Analysis (LDA)}!
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: The Geometry of Equal Variance Assumptions}
+
+\textbf{1. Isotropic vs. Anisotropic Distributions}
+
+\textit{Isotropic (equal variance):}
+\begin{itemize}
+    \item All features have the same variance: $\sigma_1^2 = \sigma_2^2 = \cdots = \sigma_d^2$
+    \item Contours of constant density are circles (in 2D) or hyperspheres (in higher dimensions)
+    \item No preferred direction
+\end{itemize}
+
+\textit{Anisotropic (unequal variance):}
+\begin{itemize}
+    \item Features have different variances
+    \item Contours are ellipses (in 2D) or hyperellipsoids
+    \item Preferred directions along principal axes
+\end{itemize}
+
+\textbf{2. Why Quadratic Terms Vanish}
+
+The quadratic coefficient is:
+\[
+a_j = \frac{1}{2\sigma_{j1}^2} - \frac{1}{2\sigma_{j0}^2}
+\]
+
+\textit{Interpretation:} This measures the difference in "curvature" between the two class distributions.
+
+When $\sigma_{j0}^2 = \sigma_{j1}^2$:
+\begin{itemize}
+    \item Both classes have the same spread in dimension $j$
+    \item Their density contours have the same curvature
+    \item The difference in log-likelihoods has no quadratic term
+    \item Decision boundary becomes linear
+\end{itemize}
+
+\textbf{3. Connection to LDA}
+
+Linear Discriminant Analysis (LDA) assumes:
+\begin{enumerate}
+    \item Each class has a multivariate Gaussian distribution
+    \item All classes share the same covariance matrix: $\boldsymbol{\Sigma}_0 = \boldsymbol{\Sigma}_1 = \boldsymbol{\Sigma}$
+\end{enumerate}
+
+Under these assumptions, LDA's decision boundary is:
+\[
+(\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)^T \boldsymbol{\Sigma}^{-1} \mathbf{x} = \text{const}
+\]
+
+For Naive Bayes with equal variances and diagonal covariance:
+\[
+\boldsymbol{\Sigma} = \sigma^2 \mathbf{I} \quad \Rightarrow \quad \boldsymbol{\Sigma}^{-1} = \frac{1}{\sigma^2}\mathbf{I}
+\]
+
+The decision boundary becomes:
+\[
+(\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)^T \mathbf{x} = \text{const}
+\]
+
+This is exactly what we derived!
+
+\textbf{4. Practical Implications}
+
+\textit{When to use Gaussian Naive Bayes with equal variance:}
+\begin{itemize}
+    \item Features are on similar scales
+    \item Domain knowledge suggests similar variability
+    \item Want linear decision boundary for interpretability
+    \item Limited data (fewer parameters to estimate)
+\end{itemize}
+
+\textit{When to allow different variances:}
+\begin{itemize}
+    \item Features have inherently different scales
+    \item Classes have different spreads
+    \item Sufficient data to estimate all variances reliably
+    \item Willing to accept quadratic boundaries
+\end{itemize}
+\end{explanation}
+
+\subsubsection{Part (f): Comparison with LDA}
+
+\begin{solution}
+We compare Gaussian Naive Bayes with Linear Discriminant Analysis (LDA) and identify conditions where they produce the same decision boundary.
+
+\textbf{Step 1: LDA assumptions}
+
+LDA assumes:
+\begin{enumerate}
+    \item Each class $c$ has a multivariate Gaussian distribution: $\mathbf{X} \mid C=c \sim \mathcal{N}(\boldsymbol{\mu}_c, \boldsymbol{\Sigma})$
+    \item \textbf{All classes share the same covariance matrix} $\boldsymbol{\Sigma}$
+    \item Features can be correlated (full covariance matrix)
+\end{enumerate}
+
+\textbf{Step 2: Gaussian Naive Bayes assumptions}
+
+Gaussian Naive Bayes assumes:
+\begin{enumerate}
+    \item Each class has a multivariate Gaussian distribution: $\mathbf{X} \mid C=c \sim \mathcal{N}(\boldsymbol{\mu}_c, \boldsymbol{\Sigma}_c)$
+    \item \textbf{Features are conditionally independent} given the class (diagonal covariance)
+    \item Covariance matrices can differ between classes
+\end{enumerate}
+
+\textbf{Step 3: LDA decision boundary}
+
+For LDA, the decision boundary between classes 0 and 1 is:
+\[
+\log \frac{P(C=1 \mid \mathbf{x})}{P(C=0 \mid \mathbf{x})} = (\boldsymbol{\mu}_1 - \boldsymbol{\mu}_0)^T \boldsymbol{\Sigma}^{-1} \mathbf{x} - \frac{1}{2}(\boldsymbol{\mu}_1^T \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu}_1 - \boldsymbol{\mu}_0^T \boldsymbol{\Sigma}^{-1} \boldsymbol{\mu}_0) + \log \frac{P(C=1)}{P(C=0)} = 0
+\]
+
+This is \textbf{linear} in $\mathbf{x}$.
+
+\textbf{Step 4: Gaussian Naive Bayes decision boundary}
+
+For Gaussian Naive Bayes with diagonal covariance $\boldsymbol{\Sigma}_c = \text{diag}(\sigma_{1c}^2, \sigma_{2c}^2)$:
+
+The decision boundary is generally \textbf{quadratic} (as shown in part c).
+
+\textbf{Step 5: Conditions for equivalence}
+
+Gaussian Naive Bayes produces the same decision boundary as LDA when:
+
+\[
+\boxed{
+\begin{aligned}
+\text{Condition 1:} &\quad \boldsymbol{\Sigma}_0 = \boldsymbol{\Sigma}_1 = \boldsymbol{\Sigma} \quad \text{(equal covariances)} \\
+\text{Condition 2:} &\quad \boldsymbol{\Sigma} = \text{diag}(\sigma_1^2, \sigma_2^2) \quad \text{(diagonal covariance)}
+\end{aligned}
+}
+\]
+
+Under these conditions:
+\begin{itemize}
+    \item Gaussian NB: Features independent, same variance across classes
+    \item LDA: Features can be correlated, but covariance is diagonal
+    \item Both produce the same linear decision boundary
+\end{itemize}
+
+\textbf{Step 6: Comparison table}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Property} & \textbf{Gaussian NB} & \textbf{LDA} \\
+\hline
+Covariance structure & Diagonal & Full (any structure) \\
+Covariance across classes & Can differ & Must be equal \\
+Decision boundary (general) & Quadratic & Linear \\
+Decision boundary (equal $\boldsymbol{\Sigma}_c$) & Linear & Linear \\
+Number of parameters & $O(cd)$ & $O(d^2 + cd)$ \\
+Computational complexity & $O(d)$ per prediction & $O(d^2)$ per prediction \\
+Sample complexity & Lower & Higher \\
+Handles correlations & No & Yes \\
+\hline
+\end{tabular}
+\end{center}
+
+where $c$ is number of classes and $d$ is number of features.
+
+\textbf{Conclusion:}
+
+Gaussian Naive Bayes and LDA produce the \textbf{same decision boundary} if and only if:
+\begin{enumerate}
+    \item All classes have the same covariance matrix
+    \item The covariance matrix is diagonal
+\end{enumerate}
+
+This is the intersection of their assumptions!
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Generative vs. Discriminative, Naive Bayes vs. LDA}
+
+\textbf{1. The Generative Modeling Spectrum}
+
+Both Gaussian Naive Bayes and LDA are \textbf{generative classifiers} that model $P(\mathbf{x} \mid C)$ and $P(C)$.
+
+\textit{Spectrum of assumptions:}
+\begin{enumerate}
+    \item \textbf{Naive Bayes}: Diagonal $\boldsymbol{\Sigma}_c$, can differ across classes
+    \item \textbf{Naive Bayes (equal var)}: Diagonal $\boldsymbol{\Sigma}$, same across classes
+    \item \textbf{LDA}: Full $\boldsymbol{\Sigma}$, same across classes
+    \item \textbf{QDA}: Full $\boldsymbol{\Sigma}_c$, can differ across classes
+\end{enumerate}
+
+\textbf{2. Parameter Counting}
+
+\textit{Gaussian Naive Bayes:}
+\begin{itemize}
+    \item Means: $c \times d$ parameters
+    \item Variances: $c \times d$ parameters (diagonal)
+    \item Total: $2cd$ parameters
+\end{itemize}
+
+\textit{LDA:}
+\begin{itemize}
+    \item Means: $c \times d$ parameters
+    \item Covariance: $d(d+1)/2$ parameters (symmetric matrix)
+    \item Total: $cd + d(d+1)/2$ parameters
+\end{itemize}
+
+For $d = 100$ features and $c = 2$ classes:
+\begin{itemize}
+    \item Gaussian NB: $2 \times 2 \times 100 = 400$ parameters
+    \item LDA: $2 \times 100 + 100 \times 101 / 2 = 5,250$ parameters
+\end{itemize}
+
+Naive Bayes is much more parameter-efficient!
+
+\textbf{3. Bias-Variance Tradeoff}
+
+\textit{Gaussian Naive Bayes:}
+\begin{itemize}
+    \item \textbf{Higher bias}: Assumes independence (often violated)
+    \item \textbf{Lower variance}: Fewer parameters, more stable estimates
+    \item Better with small datasets
+    \item Can underfit if features are highly correlated
+\end{itemize}
+
+\textit{LDA:}
+\begin{itemize}
+    \item \textbf{Lower bias}: Models correlations
+    \item \textbf{Higher variance}: More parameters, needs more data
+    \item Better with large datasets
+    \item Can overfit with small datasets
+\end{itemize}
+
+\textbf{4. When Naive Bayes Outperforms LDA}
+
+Despite its "naive" assumption, Gaussian NB often works well:
+
+\textit{Theoretical reasons:}
+\begin{enumerate}
+    \item \textbf{Classification only needs correct ranking}, not accurate probabilities
+    \item \textbf{Errors can cancel}: Overestimating one correlation may cancel underestimating another
+    \item \textbf{Regularization effect}: Independence assumption prevents overfitting
+\end{enumerate}
+
+\textit{Empirical observations:}
+\begin{itemize}
+    \item With limited data ($n < 100d$), NB often beats LDA
+    \item In high dimensions ($d > 1000$), NB is more stable
+    \item When features are weakly correlated, NB is competitive
+\end{itemize}
+
+\textbf{5. Practical Decision Guide}
+
+\textit{Use Gaussian Naive Bayes when:}
+\begin{itemize}
+    \item Limited training data
+    \item High-dimensional features
+    \item Features are approximately independent
+    \item Computational efficiency is critical
+    \item Interpretability is important (diagonal covariance)
+\end{itemize}
+
+\textit{Use LDA when:}
+\begin{itemize}
+    \item Sufficient training data ($n \gg d^2$)
+    \item Features are correlated
+    \item Classes have similar covariance structure
+    \item Linear boundary is desired
+    \item Willing to pay computational cost
+\end{itemize}
+
+\textit{Use QDA when:}
+\begin{itemize}
+    \item Abundant training data
+    \item Classes have different covariance structures
+    \item Nonlinear boundary is needed
+    \item Features are correlated
+\end{itemize}
+
+\textbf{6. Hybrid Approaches}
+
+\textit{Regularized LDA:}
+
+Add a regularization term to shrink the covariance estimate toward a diagonal matrix:
+\[
+\hat{\boldsymbol{\Sigma}}_{\text{reg}} = (1-\lambda)\hat{\boldsymbol{\Sigma}} + \lambda \text{diag}(\hat{\boldsymbol{\Sigma}})
+\]
+
+where $\lambda \in [0, 1]$ controls the shrinkage:
+\begin{itemize}
+    \item $\lambda = 0$: Standard LDA
+    \item $\lambda = 1$: Diagonal LDA (similar to Naive Bayes with equal variance)
+\end{itemize}
+
+This interpolates between LDA and Naive Bayes!
+
+\textbf{7. Historical Note}
+
+\textit{Naive Bayes:} Dates back to the 1960s, popularized for text classification in the 1990s
+
+\textit{LDA:} Developed by R.A. Fisher in 1936, one of the oldest classification methods
+
+Both remain widely used today due to their simplicity, interpretability, and effectiveness.
+\end{explanation}
+
+\newpage
+\subsection{Problem Statement - Question 3: Multinomial Naive Bayes}
+
+In text classification, the \textbf{Multinomial Naive Bayes} model is often preferred over the Bernoulli model when document length varies and word frequency matters.
+
+Consider a spam filter with a vocabulary of 4 words: $V = \{\text{"free"}, \text{"win"}, \text{"credit"}, \text{"call"}\}$.
+You have collected the following word counts from a training set of SMS messages:
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Class} & \textbf{"free"} & \textbf{"win"} & \textbf{"credit"} & \textbf{"call"} & \textbf{Total Words ($N_c$)} \\
+\hline
+Spam ($C=1$) & 20 & 25 & 15 & 0 & 60 \\
+Ham ($C=0$) & 5 & 2 & 3 & 50 & 60 \\
+\hline
+\end{tabular}
+\end{center}
+
+Assume the class priors are estimated as $\hat{P}(C=1) = 0.4$ and $\hat{P}(C=0) = 0.6$.
+
+\begin{enumerate}[label=(\alph*)]
+    \item Calculate the Maximum Likelihood Estimates (MLEs) for the conditional word probabilities $\hat{P}(w \mid c)$ using \textbf{Laplace smoothing} (add-1 smoothing). Why is smoothing particularly important here?
+
+    \item Classify a new message containing the sequence: \textbf{"win free credit"}. Show the calculation in log-space to avoid underflow.
+
+    \item Calculate the \textbf{log-odds ratio} for each word. Which word is the strongest indicator of Spam? Which is the strongest indicator of Ham?
+
+    \item Suppose we receive a message "win money now". The words "money" and "now" are \textbf{Out-of-Vocabulary (OOV)}. How should the model handle them? Discuss two common strategies.
+
+    \item Compare \textbf{Multinomial} vs. \textbf{Bernoulli} Naive Bayes. If the message was "win win win", how would the two models treat this differently?
+
+    \item Prove that the Multinomial Naive Bayes classifier is a \textbf{linear classifier} in the space of word counts (log-space). Derive the weight vector $\mathbf{w}$ and bias $b$.
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsubsection{Part (a): MLEs with Laplace Smoothing}
+
+\begin{solution}
+We calculate the smoothed probabilities for each word given the class.
+
+\textbf{Step 1: Theoretical Derivation of MLE (Optional but Rigorous)}
+
+Before plugging in numbers, let's derive why we count frequencies.
+We maximize the likelihood of the data given the parameters $\boldsymbol{\theta}_c = (\theta_{1c}, \dots, \theta_{|V|c})$ subject to $\sum_j \theta_{jc} = 1$.
+
+The log-likelihood for class $c$ is:
+\[
+\ell(\boldsymbol{\theta}_c) = \sum_{j=1}^{|V|} N_{jc} \log \theta_{jc}
+\]
+where $N_{jc}$ is the total count of word $j$ in class $c$.
+
+Using a Lagrange multiplier $\lambda$ for the constraint $\sum \theta_{jc} = 1$:
+\[
+\mathcal{L}(\boldsymbol{\theta}_c, \lambda) = \sum_{j=1}^{|V|} N_{jc} \log \theta_{jc} - \lambda \left( \sum_{j=1}^{|V|} \theta_{jc} - 1 \right)
+\]
+Taking the derivative w.r.t. $\theta_{jc}$ and setting to 0:
+\[
+\frac{\partial \mathcal{L}}{\partial \theta_{jc}} = \frac{N_{jc}}{\theta_{jc}} - \lambda = 0 \implies \theta_{jc} = \frac{N_{jc}}{\lambda}
+\]
+Summing over $j$:
+\[
+\sum_j \theta_{jc} = \sum_j \frac{N_{jc}}{\lambda} = \frac{1}{\lambda} \sum_j N_{jc} = \frac{N_c}{\lambda} = 1 \implies \lambda = N_c
+\]
+Thus, the MLE is $\hat{\theta}_{jc} = \frac{N_{jc}}{N_c}$.
+
+\textbf{Step 2: Applying Laplace Smoothing}
+
+To avoid zero probabilities (as seen with "call" in Spam), we add a pseudocount $\alpha$ to each word type. This corresponds to a \textbf{Dirichlet prior} with parameter $\alpha$.
+\[
+\hat{P}(w_j \mid c) = \frac{\text{count}(w_j, c) + \alpha}{N_c + \alpha |V|}
+\]
+Here $\alpha = 1$ and $|V| = 4$.
+
+\textbf{Step 3: Calculate Denominators}
+
+\begin{itemize}
+    \item For Spam ($C=1$): Denom $= N_1 + 1 \times 4 = 60 + 4 = 64$
+    \item For Ham ($C=0$): Denom $= N_0 + 1 \times 4 = 60 + 4 = 64$
+\end{itemize}
+
+\textbf{Step 4: Calculate Probabilities for Spam ($C=1$)}
+
+\begin{align*}
+\hat{P}(\text{"free"} \mid 1) &= \frac{20 + 1}{64} = \frac{21}{64} \approx 0.3281 \\
+\hat{P}(\text{"win"} \mid 1) &= \frac{25 + 1}{64} = \frac{26}{64} \approx 0.4063 \\
+\hat{P}(\text{"credit"} \mid 1) &= \frac{15 + 1}{64} = \frac{16}{64} = 0.2500 \\
+\hat{P}(\text{"call"} \mid 1) &= \frac{0 + 1}{64} = \frac{1}{64} \approx 0.0156
+\end{align*}
+
+\textit{Check sum:} $21+26+16+1 = 64$. Correct.
+
+\textbf{Step 5: Calculate Probabilities for Ham ($C=0$)}
+
+\begin{align*}
+\hat{P}(\text{"free"} \mid 0) &= \frac{5 + 1}{64} = \frac{6}{64} \approx 0.0938 \\
+\hat{P}(\text{"win"} \mid 0) &= \frac{2 + 1}{64} = \frac{3}{64} \approx 0.0469 \\
+\hat{P}(\text{"credit"} \mid 0) &= \frac{3 + 1}{64} = \frac{4}{64} = 0.0625 \\
+\hat{P}(\text{"call"} \mid 0) &= \frac{50 + 1}{64} = \frac{51}{64} \approx 0.7969
+\end{align*}
+
+\textit{Check sum:} $6+3+4+51 = 64$. Correct.
+
+\textbf{Step 6: Importance of Smoothing}
+
+Smoothing is critical because the word "call" has a count of \textbf{0} in the Spam class.
+\begin{itemize}
+    \item Without smoothing: $\hat{P}(\text{"call"} \mid 1) = 0/60 = 0$.
+    \item If we encounter a spam message with the word "call", the entire probability becomes 0 (since we multiply probabilities).
+    \item $\hat{P}(C=1 \mid \text{msg}) \propto \hat{P}(C=1) \times \dots \times 0 = 0$.
+    \item Smoothing assigns a small non-zero probability ($1/64$) to unseen events, preventing this "veto" effect.
+\end{itemize}
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: The Multinomial Event Model}
+
+\textbf{1. Generative Story}
+
+The Multinomial Naive Bayes model assumes the following generative process for a document $D$:
+\begin{enumerate}
+    \item Choose the document length $n$ (often assumed independent of class, or modeled as Poisson).
+    \item Choose the class $C \sim \text{Bernoulli}(\pi)$.
+    \item For each of the $n$ word positions $i=1 \dots n$:
+    \begin{itemize}
+        \item Generate word $w_i$ from the vocabulary $V$ by rolling a $|V|$-sided die specific to class $C$.
+        \item $P(w_i = w \mid C=c) = \theta_{wc}$.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{2. Bag of Words Assumption}
+
+This model assumes \textbf{positional independence}. The probability of generating "win" is the same whether it's the 1st word or the 100th word.
+\[
+P(D \mid C) = P(w_1, w_2, \dots, w_n \mid C) = \prod_{i=1}^{n} P(w_i \mid C)
+\]
+This is equivalent to representing the document as a "bag of words" (counts vector), ignoring order.
+
+\textbf{3. Why "Multinomial"?}
+
+The distribution of word counts $\mathbf{x} = (x_1, \dots, x_{|V|})$ in a document of length $n$ given class $c$ follows a \textbf{Multinomial distribution}:
+\[
+P(\mathbf{x} \mid n, C=c) = \frac{n!}{x_1! \dots x_{|V|}!} \prod_{j=1}^{|V|} \theta_{jc}^{x_j}
+\]
+In classification, the factorial term $\frac{n!}{x_1! \dots x_{|V|}!}$ is constant across classes for a given document, so we can ignore it and just focus on $\prod \theta_{jc}^{x_j}$.
+\end{explanation}
+
+\subsubsection{Part (b): Classification in Log-Space}
+
+\begin{solution}
+We classify the message $D = \text{"win free credit"}$.
+
+\textbf{Step 1: Identify Word Counts}
+The message has:
+\begin{itemize}
+    \item "win": 1
+    \item "free": 1
+    \item "credit": 1
+    \item "call": 0
+\end{itemize}
+
+\textbf{Step 2: Log-Posterior Formula}
+\[
+\log P(C=c \mid D) \propto \log P(C=c) + \sum_{w \in D} \text{count}(w) \cdot \log \hat{P}(w \mid c)
+\]
+
+\textbf{Step 3: Calculate for Spam ($C=1$)}
+Priors: $\log P(C=1) = \log(0.4) \approx -0.9163$
+
+Log-likelihoods (using values from Part a):
+\begin{itemize}
+    \item $\log \hat{P}(\text{"win"} \mid 1) = \log(26/64) \approx -0.9007$
+    \item $\log \hat{P}(\text{"free"} \mid 1) = \log(21/64) \approx -1.1144$
+    \item $\log \hat{P}(\text{"credit"} \mid 1) = \log(16/64) = \log(0.25) \approx -1.3863$
+\end{itemize}
+
+Total Log-Score (Spam):
+\begin{align*}
+S_1 &= -0.9163 + (-0.9007) + (-1.1144) + (-1.3863) \\
+&= -4.3177
+\end{align*}
+
+\textbf{Step 4: Calculate for Ham ($C=0$)}
+Priors: $\log P(C=0) = \log(0.6) \approx -0.5108$
+
+Log-likelihoods:
+\begin{itemize}
+    \item $\log \hat{P}(\text{"win"} \mid 0) = \log(3/64) \approx -3.0576$
+    \item $\log \hat{P}(\text{"free"} \mid 0) = \log(6/64) \approx -2.3671$
+    \item $\log \hat{P}(\text{"credit"} \mid 0) = \log(4/64) = \log(0.0625) \approx -2.7726$
+\end{itemize}
+
+Total Log-Score (Ham):
+\begin{align*}
+S_0 &= -0.5108 + (-3.0576) + (-2.3671) + (-2.7726) \\
+&= -8.7081
+\end{align*}
+
+\textbf{Step 5: Compare and Conclude}
+\[
+S_1 (-4.32) > S_0 (-8.71)
+\]
+Since the score for Spam is much higher (less negative), we classify the message as \textbf{SPAM}.
+
+\textbf{Note on Probability:}
+We can convert back to probabilities (normalizing):
+\begin{align*}
+P(C=1 \mid D) &= \frac{e^{S_1}}{e^{S_1} + e^{S_0}} = \frac{e^{-4.32}}{e^{-4.32} + e^{-8.71}} \\
+&= \frac{1}{1 + e^{-4.39}} \approx \frac{1}{1 + 0.012} \approx 0.988
+\end{align*}
+The model is $98.8\%$ confident it is Spam.
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Why Log-Space?}
+
+\textbf{1. Numerical Stability \& The Underflow Problem}
+
+Probabilities in text classification are often very small. For a vocabulary size $|V| = 50,000$, a typical word probability might be $10^{-4}$ or $10^{-5}$.
+Multiplying many such probabilities (one for each word in a document) quickly leads to \textbf{floating-point underflow}.
+
+\textit{Example:}
+Consider a document with 100 words, each with probability $0.01$.
+\[
+P(D \mid C) \approx (10^{-2})^{100} = 10^{-200}
+\]
+In standard IEEE 754 double-precision floating point:
+\begin{itemize}
+    \item Smallest normalized positive number: $\approx 2.2 \times 10^{-308}$
+    \item A document with just 200 words could easily exceed this limit and be rounded to \textbf{exact zero}.
+\end{itemize}
+
+Once a probability becomes 0, all relative information is lost. We cannot compare $0$ vs $0$.
+
+\textbf{2. The Log-Sum-Exp Trick}
+
+Taking logs turns multiplication into addition:
+\[
+\log \prod p_i = \sum \log p_i
+\]
+Adding small negative numbers (e.g., $-9.2 + -9.2$) is numerically stable.
+
+However, to get the final probability $P(C=1 \mid D)$, we need to normalize:
+\[
+P(C=1 \mid D) = \frac{e^{S_1}}{e^{S_1} + e^{S_0}}
+\]
+If $S_1$ and $S_0$ are very large negative numbers (e.g., $-1000$ and $-1005$), direct exponentiation $e^{-1000}$ underflows to 0.
+We use the \textbf{Log-Sum-Exp trick}:
+\[
+\frac{e^{S_1}}{e^{S_1} + e^{S_0}} = \frac{1}{1 + e^{S_0 - S_1}}
+\]
+Here, we only compute $e^{S_0 - S_1} = e^{-5}$, which is a reasonable number ($\approx 0.0067$). This guarantees stability.
+
+\textbf{3. Computational Efficiency}
+Addition is generally faster than multiplication on modern CPUs. Since $\log \hat{P}(w \mid c)$ terms are constant during testing, they can be pre-computed and stored in a lookup table, making classification extremely fast (just summing lookups).
+\end{explanation}
+
+\subsubsection{Part (c): Log-Odds Ratios}
+
+\begin{solution}
+We calculate the log-odds ratio for each word to determine its discriminative power.
+
+\textbf{Step 1: Definition}
+The log-odds ratio for a word $w$ is:
+\[
+\text{LOR}(w) = \log \left( \frac{\hat{P}(w \mid C=1)}{\hat{P}(w \mid C=0)} \right)
+\]
+\begin{itemize}
+    \item $\text{LOR} > 0$: Word indicates \textbf{Spam}
+    \item $\text{LOR} < 0$: Word indicates \textbf{Ham}
+    \item $\text{LOR} \approx 0$: Word is neutral
+\end{itemize}
+
+\textbf{Step 2: Calculations}
+
+\textbf{1. "free"}
+\[
+\text{LOR}(\text{"free"}) = \log \left( \frac{21/64}{6/64} \right) = \log(3.5) \approx \mathbf{1.25}
+\]
+Strong Spam indicator.
+
+\textbf{2. "win"}
+\[
+\text{LOR}(\text{"win"}) = \log \left( \frac{26/64}{3/64} \right) = \log(8.67) \approx \mathbf{2.16}
+\]
+Very strong Spam indicator.
+
+\textbf{3. "credit"}
+\[
+\text{LOR}(\text{"credit"}) = \log \left( \frac{16/64}{4/64} \right) = \log(4.0) \approx \mathbf{1.39}
+\]
+Strong Spam indicator.
+
+\textbf{4. "call"}
+\[
+\text{LOR}(\text{"call"}) = \log \left( \frac{1/64}{51/64} \right) = \log(1/51) \approx \mathbf{-3.93}
+\]
+Very strong \textbf{Ham} indicator.
+
+\textbf{Step 3: Ranking}
+
+\begin{center}
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Word} & \textbf{Log-Odds} & \textbf{Interpretation} \\
+\hline
+"win" & +2.16 & Strongest Spam signal \\
+"credit" & +1.39 & Strong Spam signal \\
+"free" & +1.25 & Strong Spam signal \\
+"call" & -3.93 & Strongest Ham signal \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Conclusion:}
+The word \textbf{"win"} is the strongest indicator of Spam. The word \textbf{"call"} is the strongest indicator of Ham.
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Feature Selection \& Information Theory}
+
+\textbf{1. Connection to Mutual Information}
+The log-odds ratio is closely related to \textbf{Pointwise Mutual Information (PMI)}.
+While LOR compares $P(w|C=1)$ vs $P(w|C=0)$, PMI measures the association between a word $w$ and a class $c$:
+\[
+\text{PMI}(w, c) = \log \frac{P(w, c)}{P(w)P(c)} = \log \frac{P(w \mid c)}{P(w)}
+\]
+Words with high $|\text{LOR}|$ typically have high Mutual Information with the class variable, making them the most "informative" features for classification.
+
+\textbf{2. Feature Selection Strategy}
+In high-dimensional text data (e.g., 50,000 words), we often want to select the top $k$ features to reduce noise and computational cost.
+Common metrics for ranking features:
+\begin{itemize}
+    \item \textbf{Mutual Information:} $\sum_c \sum_w P(w,c) \log \frac{P(w,c)}{P(w)P(c)}$
+    \item \textbf{Chi-Square $\chi^2$:} Measures independence between word occurrence and class.
+    \item \textbf{Frequency:} Simply keeping the most frequent words (often surprisingly effective).
+\end{itemize}
+
+\textbf{3. Stopwords and LOR}
+"Stopwords" (the, is, a) usually have $\text{LOR} \approx 0$ because they appear equally frequently in Spam and Ham.
+\[
+\log \frac{P(\text{"the"} \mid \text{Spam})}{P(\text{"the"} \mid \text{Ham})} \approx \log(1) = 0
+\]
+This mathematical property justifies why removing stopwords doesn't hurt (and often helps) classification accuracy—they contribute almost nothing to the decision boundary score $\sum w_j x_j$.
+\end{explanation}
+
 \end{document}
+
