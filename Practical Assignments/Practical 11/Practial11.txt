@@ -1,0 +1,26 @@
+Practical 11
+
+Statistical Foundation of Data Sciences
+
+Start Date 18th Nov 2025, Tuesday 9:20 AM Due Date 25th Nov 2025 Time 4:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+A sunspot is a region on the Sun's surface (photo-sphere) that is marked by a lower temperature than its environment. These reduced temperatures are caused by con
+centrations of magnetic field flux that inhibit convection by an effect similar to eddy current brakes. Sunspots usually appear in pairs of opposite magnetic polarity. Thei
+r number varies according to the approximately 11-year solar cycle.
+
+The data we will be working on is the "Monthly mean total sunspot number", for each month from January 1749 to November 2018. This data is collected, curated and
+made publicly available by the World Data Center for the production, preservation and dissemination of the international sunspot number.
+
+What you have to do:
+Step 1. Plot the data over the years to see what the distribution might be like
+Step 2. Model the phenomenon with a gamma distribution, with a new cycle resetting every 12 years
+Step 3. Histogram of sunspot counts
+Step 4. a=4, and b =10 so plot MNMC for groups: First 50 samples, All samples, Last 50 samples
+Step 5. Visualise the traces of and b and the histogram of the traces. [Here you are going to drop some values known as burn out]
+Step 6. Prediction time of a and b

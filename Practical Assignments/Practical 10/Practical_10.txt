@@ -1,0 +1,26 @@
+Practical 10
+
+Statistical Foundation of Data Sciences
+
+Start Date 18th Nov 2025, Tuesday 9:20 AM Due Date 24th Nov 2025 Time 4:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+Please work on wine dataset:
+
+1. Display the Basic Statistics using describe ()
+2. Boxplot by output labels/classes
+3. Scatterplot using two variable
+4. Plot Co-Variance Matrix
+5. Data Scaling
+6. Show better class separation using principal components
+
+Course Outcomes
+
+BT Level
+
+Topic Level Outcomes(TLOs)

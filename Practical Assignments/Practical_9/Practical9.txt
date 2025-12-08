@@ -1,0 +1,22 @@
+Practical 9
+
+Statistical Foundation of Data Sciences
+
+Start Date 12th Nov 2025, Wednesday 10:15 AM Due Date 18th Nov 2025 Time 4:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+Take the iris dataset and perform KNN.
+Step 1: EDA - head(), describe (), groupby()
+Step 2: Feature scaling
+Step 3: Training the K-NN model on the Training set
+Step 4: Making the Confusion Matrix & Predicting Accuracy Score
+Step 5: Making Classification Report
+Step 6: Comparing Error Rate with the K Value
+Step 7: Plot the error values against K values
+Step 8: Finding best K
+Step 9: Visualize Test Result of KNN
