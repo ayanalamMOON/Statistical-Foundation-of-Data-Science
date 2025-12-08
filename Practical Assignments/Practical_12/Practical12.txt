@@ -1,0 +1,14 @@
+Practical 12
+
+Statistical Foundation of Data Sciences
+
+Start Date 25th Nov 2025, Tuesday 9:20 AM Due Date 30th Nov 2025 Time 6:00 PM
+Minimum Marks 0 Maximum Marks 20
+Submission Type Online
+
+Class Assignment
+
+GRADED | Max Marks 20
+
+PART A: Implement Metropolis Algotihm
+PART B: Deterministic Model
