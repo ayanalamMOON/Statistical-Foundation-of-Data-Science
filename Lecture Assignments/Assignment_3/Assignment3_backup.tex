@@ -1,0 +1,650 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+
+\title{ASSIGNMENT 3}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+\textbf{SUBJECT CODE:} CSU1658 \\
+\textbf{SUBJECT NAME:} Statistical Foundation of Data Sciences \\
+\textbf{TOTAL POINTS:} 100 \\
+\textbf{DEADLINE:} DECEMBER 20TH 2025 4PM
+
+\section*{K-Nearest Neighbors (KNN)}
+
+\subsection*{PROBLEM 1: KNN Classification in 2D}
+
+You have a dataset with 7 training points in 2D space with binary labels:
+
+\[\begin{array}{c|cc|c}
+\text{Point} & x_1 & x_2 & \text{Label} \\
+\hline
+A & 1 & 2 & + \\
+B & 2 & 3 & + \\
+C & 3 & 1 & - \\
+D & 5 & 4 & - \\
+E & 5 & 6 & + \\
+F & 6 & 2 & - \\
+G & 7 & 5 & - \\
+\end{array}\]
+
+Consider a test point \(P = (4, 3)\).
+
+\begin{enumerate}
+\item[(a)] Calculate the Euclidean distance from \(P\) to each training point. Rank them from nearest to farthest.
+\item[(b)] Classify \(P\) using KNN with \(k = 3\). Show the complete decision process including majority voting.
+\item[(c)] Repeat classification for \(k = 1\) and \(k = 5\). Compare the three results and explain any differences.
+\end{enumerate}
+
+\subsection*{PROBLEM 2: Weighted KNN}
+
+Using the same dataset from Problem 1, consider weighted KNN where each neighbor's vote is weighted by \(w_i = 1/d_i\) (inverse distance).
+
+Test point: \(P = (4, 3)\).
+
+\begin{enumerate}
+\item[(a)] For \(k = 3\), calculate the weighted votes for each class using the three nearest neighbors.
+\item[(b)] Classify \(P\) using weighted KNN with \(k = 3\). Does the result differ from unweighted KNN?
+\item[(c)] Explain when weighted KNN might perform better than standard KNN. Give a practical example scenario.
+\end{enumerate}
+
+\subsection*{PROBLEM 3: KNN with Different Distance Metrics}
+
+Dataset of 5 points in 2D:
+
+\[\begin{array}{c|cc|c}
+\text{Point} & x_1 & x_2 & \text{Label} \\
+\hline
+1 & 0 & 0 & A \\
+2 & 3 & 0 & B \\
+3 & 0 & 4 & A \\
+4 & 3 & 4 & B \\
+5 & 6 & 3 & B \\
+\end{array}\]
+
+Test point: \(T = (2, 2)\).
+
+\begin{enumerate}
+\item[(a)] Calculate distances using Euclidean metric: \(d_E = \sqrt{(x_1-y_1)^2 + (x_2-y_2)^2}\).
+\item[(b)] Calculate distances using Manhattan metric: \(d_M = |x_1-y_1| + |x_2-y_2|\).
+\item[(c)] Classify \(T\) with \(k=3\) using both metrics. Are the results the same? Explain why different metrics might give different classifications.
+\end{enumerate}
+
+\subsection*{PROBLEM 4: KNN Decision Boundaries}
+
+Consider a 1D dataset: points at positions \(\{1, 3, 7\}\) with labels \(\{+, -, +\}\).
+
+\begin{enumerate}
+\item[(a)] For 1-NN, determine the decision boundary regions. At what points does the classification change?
+\item[(b)] Sketch the decision boundary and label the regions with their predicted classes.
+\item[(c)] Prove that the 1-NN decision boundary in 1D consists of midpoints between adjacent training points. Generalize this concept to Voronoi diagrams in higher dimensions.
+\end{enumerate}
+
+\subsection*{PROBLEM 5: KNN Computational Complexity}
+
+You have a training set of \(n = 1000\) points in \(d = 50\) dimensions.
+
+\begin{enumerate}
+\item[(a)] Calculate the number of distance computations needed to classify one test point using brute-force KNN.
+\item[(b)] What is the time complexity for classifying \(m\) test points? Express in Big-O notation.
+\item[(c)] Explain how KD-trees can reduce computational complexity. What is the expected query time using a KD-tree, and when does it degrade to linear?
+\end{enumerate}
+
+
+\newpage
+\section*{K-Means Clustering}
+
+\subsection*{PROBLEM 6: K-Means in 1D}
+
+Consider 8 data points in 1D: \(X = \{1, 2, 3, 10, 11, 12, 20, 21\}\).
+
+Run K-means with \(k = 3\) starting with initial centroids: \(\mu_1^{(0)} = 2, \mu_2^{(0)} = 11, \mu_3^{(0)} = 20\).
+
+\begin{enumerate}
+\item[(a)] Perform the assignment step for iteration 1. Which points are assigned to each cluster?
+\item[(b)] Perform the update step for iteration 1. Calculate the new centroid positions.
+\item[(c)] Continue until convergence. Report the final clusters and within-cluster sum of squares (WCSS).
+\end{enumerate}
+
+\subsection*{PROBLEM 7: K-Means Convergence}
+
+Using the dataset from Problem 6: \(X = \{1, 2, 3, 10, 11, 12, 20, 21\}\).
+
+\begin{enumerate}
+\item[(a)] Prove that the K-means objective function (WCSS) is non-increasing: show that \(\text{WCSS}^{(t+1)} \leq \text{WCSS}^{(t)}\) after each iteration.
+\item[(b)] Demonstrate with bad initialization \(\mu_1^{(0)} = 1, \mu_2^{(0)} = 2, \mu_3^{(0)} = 3\). Does it converge to the same clusters as Problem 6?
+\item[(c)] Calculate the WCSS for both final clusterings. Which initialization led to the better (lower) WCSS?
+\end{enumerate}
+
+\subsection*{PROBLEM 8: K-Means in 2D}
+
+Six points in 2D space:
+
+\[\begin{array}{c|cc}
+\text{Point} & x_1 & x_2 \\
+\hline
+1 & 1 & 1 \\
+2 & 1.5 & 2 \\
+3 & 3 & 4 \\
+4 & 5 & 7 \\
+5 & 3.5 & 5 \\
+6 & 4.5 & 5 \\
+\end{array}\]
+
+Initialize \(k = 2\) with centroids at points 1 and 4.
+
+\begin{enumerate}
+\item[(a)] Perform one complete K-means iteration (assignment + update). Show all distance calculations.
+\item[(b)] Calculate the WCSS after this iteration.
+\item[(c)] Continue to convergence. Report final cluster assignments and centroids.
+\end{enumerate}
+
+\subsection*{PROBLEM 9: Elbow Method}
+
+Using the 2D dataset from Problem 8.
+
+\begin{enumerate}
+\item[(a)] Run K-means for \(k = 1, 2, 3, 4\). Calculate WCSS for each \(k\).
+\item[(b)] Plot WCSS vs. \(k\). Identify the "elbow" point where adding more clusters provides diminishing returns.
+\item[(c)] Prove that for \(k = n\) (number of data points), \(\text{WCSS} = 0\). What does this tell us about choosing \(k\)?
+\end{enumerate}
+
+\subsection*{PROBLEM 10: K-Means Optimality}
+
+Consider the K-means update rule for centroids: \(\mu_k = \frac{1}{|C_k|}\sum_{x \in C_k} x\).
+
+\begin{enumerate}
+\item[(a)] Prove that this update minimizes the within-cluster sum of squares for cluster \(k\): \(\sum_{x \in C_k} \|x - \mu_k\|^2\).
+\item[(b)] Show that the sample mean minimizes the sum of squared deviations using calculus (take derivative and set to zero).
+\item[(c)] Explain why K-means can converge to a local minimum instead of the global minimum. Give an example scenario.
+\end{enumerate}
+
+\newpage
+\section*{Principal Component Analysis (PCA)}
+
+\subsection*{PROBLEM 11: PCA Basics}
+
+Dataset with 4 observations in 2D (centered):
+
+\[
+X = \begin{pmatrix}
+2 & 1 \\
+-1 & -1 \\
+-1 & 0 \\
+0 & 0
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Verify the data is centered (column means = 0). If not, center it.
+\item[(b)] Compute the covariance matrix \(\Sigma = \frac{1}{n-1} X^T X\).
+\item[(c)] Find the eigenvalues and eigenvectors of \(\Sigma\). Which eigenvector is the first principal component?
+\end{enumerate}
+
+\subsection*{PROBLEM 12: Variance Explained}
+
+Using the dataset and covariance matrix from Problem 11.
+
+\begin{enumerate}
+\item[(a)] Calculate the proportion of variance explained by each principal component: \(\text{PVE}_i = \frac{\lambda_i}{\sum_j \lambda_j}\).
+\item[(b)] What percentage of total variance is captured by the first principal component alone?
+\item[(c)] How many components are needed to explain at least 90\% of the variance?
+\end{enumerate}
+
+\subsection*{PROBLEM 13: PCA Projection and Reconstruction}
+
+Consider the perfectly correlated dataset (centered):
+
+\[
+X = \begin{pmatrix}
+1 & 2 \\
+2 & 4 \\
+3 & 6 \\
+4 & 8
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Compute the covariance matrix. What is its rank? What does this tell you about the data?
+\item[(b)] Find the principal components. How many non-zero eigenvalues are there?
+\item[(c)] Project the data onto the first principal component. Calculate the reconstruction error when using only PC1.
+\end{enumerate}
+
+\subsection*{PROBLEM 14: PCA Properties}
+
+Given a centered data matrix \(X \in \mathbb{R}^{n \times d}\) with SVD: \(X = U\Sigma V^T\).
+
+\begin{enumerate}
+\item[(a)] Prove that the total variance equals the trace of the covariance matrix: \(\sum_{i=1}^d \lambda_i = \Tr(X^TX/(n-1))\).
+\item[(b)] Show that the principal components (columns of \(V\)) are orthonormal: \(V^TV = I\).
+\item[(c)] Prove that PCA maximizes variance: the first PC \(v_1 = \argmax_{\|v\|=1} \text{Var}(Xv)\).
+\end{enumerate}
+
+\subsection*{PROBLEM 15: Whitening Transformation}
+
+You have data with covariance matrix:
+\[
+\Sigma = \begin{pmatrix} 4 & 2 \\ 2 & 3 \end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Find the eigenvalues \(\lambda_1, \lambda_2\) and eigenvectors \(v_1, v_2\) of \(\Sigma\).
+\item[(b)] Construct the whitening transformation matrix: \(W = V\Lambda^{-1/2}\) where \(\Lambda = \text{diag}(\lambda_1, \lambda_2)\).
+\item[(c)] Verify that the whitened data \(Z = XW\) has identity covariance matrix: \(\text{Cov}(Z) = I\).
+\end{enumerate}
+
+\newpage
+\section*{Gaussian Distribution}
+
+\subsection*{PROBLEM 16: Univariate Gaussian MLE}
+
+Sample data from \(\mathcal{N}(\mu, \sigma^2)\): \(X = \{98, 102, 100, 97, 103\}\).
+
+\begin{enumerate}
+\item[(a)] Derive the log-likelihood function \(\ell(\mu, \sigma^2 \mid X)\) for the Gaussian distribution.
+\item[(b)] Find the maximum likelihood estimators (MLEs) for \(\mu\) and \(\sigma^2\) by taking derivatives and setting them to zero.
+\item[(c)] Calculate \(\hat{\mu}_{\text{MLE}}\) and \(\hat{\sigma}^2_{\text{MLE}}\) for the given data. Is \(\hat{\sigma}^2_{\text{MLE}}\) biased?
+\end{enumerate}
+
+\subsection*{PROBLEM 17: Gaussian Probabilities}
+
+IQ scores follow \(\mathcal{N}(100, 15^2)\).
+
+\begin{enumerate}
+\item[(a)] Calculate \(\mathbb{P}(X > 130)\) (gifted threshold). Use the standard normal table.
+\item[(b)] Find the 95th percentile of the distribution (top 5\% cutoff).
+\item[(c)] What proportion of the population has IQ between 85 and 115 (within one standard deviation)?
+\end{enumerate}
+
+\subsection*{PROBLEM 18: Multivariate Gaussian}
+
+Let \(\mathbf{X} \sim \mathcal{N}(\boldsymbol{\mu}, \Sigma)\) where:
+\[
+\boldsymbol{\mu} = \begin{pmatrix} 1 \\ 2 \end{pmatrix}, \quad
+\Sigma = \begin{pmatrix} 4 & 2 \\ 2 & 3 \end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Write the probability density function explicitly. Calculate \(|\Sigma|\) and \(\Sigma^{-1}\).
+\item[(b)] Find the marginal distributions: \(X_1 \sim \mathcal{N}(?, ?)\) and \(X_2 \sim \mathcal{N}(?, ?)\).
+\item[(c)] Calculate the conditional distribution \(X_1 \mid X_2 = 3\). What are its mean and variance?
+\end{enumerate}
+
+\subsection*{PROBLEM 19: Mahalanobis Distance}
+
+Using the distribution from Problem 18 with \(\boldsymbol{\mu} = (1, 2)^T\) and \(\Sigma = \begin{pmatrix} 4 & 2 \\ 2 & 3 \end{pmatrix}\).
+
+\begin{enumerate}
+\item[(a)] Calculate the Mahalanobis distance from point \(\mathbf{x} = (2, 3)^T\) to \(\boldsymbol{\mu}\): \(D_M = \sqrt{(\mathbf{x}-\boldsymbol{\mu})^T\Sigma^{-1}(\mathbf{x}-\boldsymbol{\mu})}\).
+\item[(b)] Compare this with the Euclidean distance. Why is Mahalanobis distance more appropriate for multivariate Gaussian data?
+\item[(c)] Points with \(D_M = c\) form an ellipse. For \(c = 1\), describe the geometry of the 1-standard-deviation ellipse contour.
+\end{enumerate}
+
+\subsection*{PROBLEM 20: Gaussian Linear Combinations}
+
+Let \(X \sim \mathcal{N}(10, 4)\) and \(Y \sim \mathcal{N}(20, 9)\) be independent.
+
+\begin{enumerate}
+\item[(a)] Find the distribution of \(Z = 2X + 3Y\). State its mean and variance.
+\item[(b)] Calculate \(\mathbb{P}(Z > 100)\).
+\item[(c)] Prove the general result: if \(X_i \sim \mathcal{N}(\mu_i, \sigma_i^2)\) independently, then \(\sum a_i X_i \sim \mathcal{N}(\sum a_i\mu_i, \sum a_i^2\sigma_i^2)\).
+\end{enumerate}
+
+\newpage
+\section*{Ridge Regression}
+
+\subsection*{PROBLEM 21: Ridge Regression Basics}
+
+Small dataset with design matrix and response:
+\[
+X = \begin{pmatrix} 1 & 2 \\ 1 & 3 \\ 1 & 5 \end{pmatrix}, \quad
+y = \begin{pmatrix} 3 \\ 5 \\ 8 \end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Derive the ridge regression solution: \(\hat{\beta}^{\text{ridge}} = (X^TX + \lambda I)^{-1}X^Ty\) by minimizing \(\|y - X\beta\|^2 + \lambda\|\beta\|^2\).
+\item[(b)] Compute \(X^TX\) and \(X^Ty\) for the given data.
+\item[(c)] Calculate \(\hat{\beta}^{\text{ridge}}\) for \(\lambda = 1\). Compare with OLS solution (\(\lambda = 0\)).
+\end{enumerate}
+
+\subsection*{PROBLEM 22: Ridge Path}
+
+Using the dataset from Problem 21.
+
+\begin{enumerate}
+\item[(a)] Compute \(\hat{\beta}^{\text{ridge}}\) for \(\lambda = 0, 0.5, 1, 2, 5, 10\).
+\item[(b)] Plot the coefficient values versus \(\lambda\) (ridge path). What happens as \(\lambda\) increases?
+\item[(c)] Prove that as \(\lambda \to \infty\), all coefficients shrink to zero: \(\lim_{\lambda \to \infty} \hat{\beta}^{\text{ridge}} = 0\).
+\end{enumerate}
+
+\subsection*{PROBLEM 23: Ridge and Multicollinearity}
+
+Consider a design matrix with perfect multicollinearity:
+\[
+X = \begin{pmatrix}
+1 & 2 & 2 \\
+1 & 3 & 3 \\
+1 & 4 & 4
+\end{pmatrix}, \quad
+y = \begin{pmatrix} 5 \\ 7 \\ 9 \end{pmatrix}
+\]
+
+The second and third columns are identical.
+
+\begin{enumerate}
+\item[(a)] Show that \(X^TX\) is singular (not invertible). What is its rank?
+\item[(b)] Explain why OLS fails in this case.
+\item[(c)] Compute \(\hat{\beta}^{\text{ridge}}\) with \(\lambda = 0.1\). Show that \(X^TX + \lambda I\) is now invertible.
+\end{enumerate}
+
+\subsection*{PROBLEM 24: Bayesian Interpretation}
+
+Ridge regression has a Bayesian interpretation with Gaussian prior on coefficients.
+
+\begin{enumerate}
+\item[(a)] Show that ridge regression is equivalent to maximum a posteriori (MAP) estimation with prior \(\beta \sim \mathcal{N}(0, \frac{1}{\lambda}I)\).
+\item[(b)] Write the posterior distribution \(p(\beta \mid X, y)\) proportional to likelihood times prior.
+\item[(c)] Derive the MAP estimate by maximizing the log-posterior. Show it equals the ridge solution.
+\end{enumerate}
+
+\subsection*{PROBLEM 25: Effective Degrees of Freedom}
+
+The effective degrees of freedom for ridge regression is:
+\[
+\text{df}(\lambda) = \Tr[X(X^TX + \lambda I)^{-1}X^T]
+\]
+
+Using data from Problem 21.
+
+\begin{enumerate}
+\item[(a)] Calculate \(\text{df}(0)\) (OLS case). It should equal the number of predictors.
+\item[(b)] Calculate \(\text{df}(1)\) for \(\lambda = 1\). Is it less than \(\text{df}(0)\)?
+\item[(c)] Show that as \(\lambda \to \infty\), \(\text{df}(\lambda) \to 0\). Interpret this result.
+\end{enumerate}
+
+\newpage
+\section*{Controlling Standard Deviation}
+
+\subsection*{PROBLEM 26: Chi-Square Distribution for Variance}
+
+Sample of \(n = 10\) measurements from \(\mathcal{N}(\mu, \sigma^2)\) gives sample variance \(s^2 = 16\).
+
+\begin{enumerate}
+\item[(a)] State the distribution of \(\frac{(n-1)s^2}{\sigma^2}\). What are its degrees of freedom?
+\item[(b)] Construct a 95\% confidence interval for \(\sigma^2\) using \(\chi^2_{0.025,9} = 19.02\) and \(\chi^2_{0.975,9} = 2.70\).
+\item[(c)] Interpret the confidence interval. What does it tell us about the population variance?
+\end{enumerate}
+
+\subsection*{PROBLEM 27: Testing Variance}
+
+Quality control requires that product variance \(\sigma^2 \leq 10\). A sample of \(n = 15\) items gives \(s^2 = 14\).
+
+\begin{enumerate}
+\item[(a)] Set up the hypothesis test: \(H_0: \sigma^2 = 10\) vs \(H_a: \sigma^2 > 10\).
+\item[(b)] Calculate the test statistic: \(\chi^2 = \frac{(n-1)s^2}{\sigma_0^2}\).
+\item[(c)] Using \(\alpha = 0.05\) and \(\chi^2_{0.95,14} = 23.68\), make a decision. Does the variance exceed the requirement?
+\end{enumerate}
+
+\subsection*{PROBLEM 28: F-Test for Equal Variances}
+
+Two independent samples:
+\begin{itemize}
+    \item Sample 1: \(n_1 = 10, s_1^2 = 16\)
+    \item Sample 2: \(n_2 = 12, s_2^2 = 9\)
+\end{itemize}
+
+\begin{enumerate}
+\item[(a)] Test \(H_0: \sigma_1^2 = \sigma_2^2\) vs \(H_a: \sigma_1^2 \neq \sigma_2^2\) using the F-statistic: \(F = \frac{s_1^2}{s_2^2}\).
+\item[(b)] Calculate the F-statistic and its degrees of freedom.
+\item[(c)] Using critical values \(F_{0.025,9,11} = 3.59\) and \(F_{0.975,9,11} = 0.27\), decide at \(\alpha = 0.05\) level.
+\end{enumerate}
+
+\subsection*{PROBLEM 29: Variance Stabilizing Transformation - Poisson}
+
+Count data \(X \sim \text{Poisson}(\lambda)\) has \(\text{Var}(X) = \mathbb{E}[X] = \lambda\) (variance depends on mean).
+
+\begin{enumerate}
+\item[(a)] Use the delta method to show that \(Y = \sqrt{X}\) approximately stabilizes variance: \(\text{Var}(Y) \approx \frac{1}{4}\).
+\item[(b)] Given count data: \(\{5, 12, 8, 15, 20\}\), apply the square root transformation.
+\item[(c)] Compare the variance of original data vs. transformed data. Is it more stable?
+\end{enumerate}
+
+\subsection*{PROBLEM 30: Variance Stabilizing Transformation - Binomial}
+
+For binomial proportion \(\hat{p} = X/n\) where \(X \sim \text{Bin}(n, p)\), variance is \(\text{Var}(\hat{p}) = \frac{p(1-p)}{n}\).
+
+\begin{enumerate}
+\item[(a)] Derive the arcsine transformation: \(Y = \arcsin(\sqrt{\hat{p}})\) that stabilizes variance.
+\item[(b)] Show that \(\text{Var}(Y) \approx \frac{1}{4n}\) (approximately constant).
+\item[(c)] For \(n = 100\) with observed proportions \(\{0.2, 0.3, 0.5, 0.7\}\), apply the transformation and verify variance stabilization.
+\end{enumerate}
+
+\newpage
+\section*{Markov Chains}
+
+\subsection*{PROBLEM 31: Discrete-Time Markov Chain}
+
+A student's study habits follow a Markov chain with states: Studying (S), Gaming (G), Sleeping (Z).
+
+Transition matrix:
+\[
+P = \begin{pmatrix}
+0.6 & 0.3 & 0.1 \\
+0.2 & 0.5 & 0.3 \\
+0.1 & 0.2 & 0.7
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] If currently studying, what is the probability of gaming in exactly 2 hours? (Compute \(P^2\) and extract \(P^2_{SG}\)).
+\item[(b)] Verify that \(P\) is a stochastic matrix (rows sum to 1).
+\item[(c)] Is this chain irreducible? Is it aperiodic? Justify your answers.
+\end{enumerate}
+
+\subsection*{PROBLEM 32: Stationary Distribution}
+
+Using the Markov chain from Problem 31.
+
+\begin{enumerate}
+\item[(a)] Find the stationary distribution \(\pi\) by solving: \(\pi^T P = \pi^T\) with \(\sum_i \pi_i = 1\).
+\item[(b)] Interpret the stationary distribution. What does \(\pi_S\) represent in the long run?
+\item[(c)] Starting from state S, simulate 1000 steps. What proportion of time is spent in each state? Compare with \(\pi\).
+\end{enumerate}
+
+\subsection*{PROBLEM 33: Gambler's Ruin}
+
+A gambler starts with \$3. Each round: win \$1 with \(p = 0.4\) or lose \$1 with \(q = 0.6\). Game ends at \$0 (ruin) or \$5 (win).
+
+\begin{enumerate}
+\item[(a)] Draw the state diagram with states \(\{0, 1, 2, 3, 4, 5\}\). Identify absorbing states.
+\item[(b)] Write the system of equations for ruin probabilities \(P_i\): \(P_i = qP_{i-1} + pP_{i+1}\) with boundary conditions \(P_0 = 1, P_5 = 0\).
+\item[(c)] Solve for \(P_3\) (probability of ruin starting from \$3) using the general formula: \(P_i = \frac{(q/p)^i - (q/p)^N}{1 - (q/p)^N}\) where \(N = 5\).
+\end{enumerate}
+
+\subsection*{PROBLEM 34: Continuous-Time Markov Chain}
+
+A server has states: Working (W), Degraded (D), Failed (F). Generator matrix \(Q\) (rates per hour):
+\[
+Q = \begin{pmatrix}
+-3 & 2 & 1 \\
+1 & -4 & 3 \\
+2 & 1 & -3
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Verify that each row sums to zero. Why is this required for a generator matrix?
+\item[(b)] Calculate the mean holding time in state W: \(\tau_W = -1/Q_{WW}\).
+\item[(c)] Given the system is in W, calculate the conditional probabilities of transitioning to D or F.
+\end{enumerate}
+
+\subsection*{PROBLEM 35: Markov Chain Convergence}
+
+Consider a simple random walk on \(\{0, 1, 2, 3, 4\}\) with reflecting boundaries.
+
+Transition probabilities: \(P(i \to i+1) = 0.5\), \(P(i \to i-1) = 0.5\) for \(i \in \{1,2,3\}\). At boundaries: \(P(0 \to 1) = 1\) and \(P(4 \to 3) = 1\).
+
+\begin{enumerate}
+\item[(a)] Write the transition matrix \(P\).
+\item[(b)] Find the stationary distribution \(\pi\) (it will be uniform due to symmetry).
+\item[(c)] Calculate the rate of convergence using the second-largest eigenvalue of \(P\). How many steps until \(\|P^n - \mathbf{1}\pi^T\| < 0.01\)?
+\end{enumerate}
+
+\newpage
+\section*{Monte Carlo Methods}
+
+\subsection*{PROBLEM 36: Monte Carlo Integration}
+
+Estimate the integral: \(I = \int_0^1 e^{-x^2} dx\).
+
+\begin{enumerate}
+\item[(a)] Describe the crude Monte Carlo method: sample \(X_i \sim \text{Uniform}(0,1)\) and estimate \(\hat{I}_n = \frac{1}{n}\sum e^{-X_i^2}\).
+\item[(b)] Implement with \(n = 10000\). Calculate the estimate and its standard error: \(SE = s/\sqrt{n}\) where \(s^2 = \frac{1}{n-1}\sum(e^{-X_i^2} - \hat{I}_n)^2\).
+\item[(c)] Construct a 95\% confidence interval: \([\hat{I}_n - 1.96 \cdot SE, \hat{I}_n + 1.96 \cdot SE]\).
+\end{enumerate}
+
+\subsection*{PROBLEM 37: Estimating \(\pi\) with Monte Carlo}
+
+Use Monte Carlo to estimate \(\pi\) by random sampling in a unit square.
+
+\begin{enumerate}
+\item[(a)] Generate \((X, Y) \sim \text{Uniform}([0,1]^2)\). Count how many fall inside the quarter circle \(X^2 + Y^2 \leq 1\). Show that \(\mathbb{P}(\text{inside}) = \pi/4\).
+\item[(b)] For \(n = 1000, 10000, 100000\), estimate \(\hat{\pi}_n = 4 \times \frac{\text{count inside}}{n}\).
+\item[(c)] Calculate the standard error: \(SE(\hat{\pi}_n) = 4\sqrt{\frac{p(1-p)}{n}}\) where \(p = \pi/4\). How does error decrease with \(n\)?
+\end{enumerate}
+
+\subsection*{PROBLEM 38: Variance Reduction - Antithetic Variates}
+
+Estimate \(I = \int_0^1 x^2 dx\) using antithetic variates.
+
+\begin{enumerate}
+\item[(a)] Standard MC: sample \(U_i \sim \text{Uniform}(0,1)\) and estimate \(\hat{I}_1 = \frac{1}{n}\sum U_i^2\). Calculate its variance.
+\item[(b)] Antithetic MC: for each \(U_i\), also use \(1-U_i\). Estimate \(\hat{I}_2 = \frac{1}{2n}\sum[U_i^2 + (1-U_i)^2]\).
+\item[(c)] Compare variances of \(\hat{I}_1\) and \(\hat{I}_2\). Show that antithetic variates reduce variance when the function is monotonic.
+\end{enumerate}
+
+\subsection*{PROBLEM 39: Importance Sampling}
+
+Estimate \(I = \int_0^{\infty} e^{-x^2} dx\) using importance sampling.
+
+\begin{enumerate}
+\item[(a)] Explain why crude MC with uniform sampling is inefficient for this integral (infinite domain).
+\item[(b)] Use importance distribution \(g(x) = 2e^{-2x}\) on \([0,\infty)\). Estimate: \(\hat{I} = \frac{1}{n}\sum \frac{e^{-X_i^2}}{g(X_i)}\) where \(X_i \sim g\).
+\item[(c)] Compare the variance of importance sampling vs. crude MC (truncated to \([0, 5]\)). Which is more efficient?
+\end{enumerate}
+
+\subsection*{PROBLEM 40: Metropolis-Hastings MCMC}
+
+Sample from target distribution \(\pi(x) \propto e^{-x^2/2}\) (standard normal) using Metropolis-Hastings.
+
+Proposal: \(q(x' \mid x) = \mathcal{N}(x, \sigma^2)\).
+
+\begin{enumerate}
+\item[(a)] Describe the algorithm: propose \(x'\), accept with probability \(\alpha = \min(1, \pi(x')/\pi(x))\).
+\item[(b)] Implement for 5000 iterations with \(\sigma = 1\). Plot the trace (sequence of accepted values).
+\item[(c)] Calculate the acceptance rate. Theory suggests optimal rate \(\approx 0.234\) for 1D. Adjust \(\sigma\) to achieve this.
+\end{enumerate}
+
+\newpage
+\section*{Deterministic Models}
+
+\subsection*{PROBLEM 41: SIR Epidemic Model}
+
+The SIR model for disease spread:
+\[
+\begin{cases}
+\frac{dS}{dt} = -\beta SI \\
+\frac{dI}{dt} = \beta SI - \gamma I \\
+\frac{dR}{dt} = \gamma I
+\end{cases}
+\]
+
+Parameters: \(\beta = 0.0003\) (infection rate), \(\gamma = 0.1\) (recovery rate). Population: \(N = 1000\).
+
+\begin{enumerate}
+\item[(a)] Verify that total population is conserved: \(S(t) + I(t) + R(t) = N\) for all \(t\).
+\item[(b)] Calculate the basic reproduction number: \(R_0 = \frac{\beta N}{\gamma}\). Will an epidemic occur if \(R_0 > 1\)?
+\item[(c)] Simulate with initial conditions \(S(0) = 999, I(0) = 1, R(0) = 0\) for 100 days using Euler's method. Plot \(S(t), I(t), R(t)\).
+\end{enumerate}
+
+\subsection*{PROBLEM 42: Logistic Growth Model}
+
+Population growth with carrying capacity:
+\[
+\frac{dP}{dt} = rP\left(1 - \frac{P}{K}\right)
+\]
+
+Parameters: \(r = 0.5\) (growth rate), \(K = 1000\) (carrying capacity), \(P(0) = 50\).
+
+\begin{enumerate}
+\item[(a)] Solve the ODE analytically: \(P(t) = \frac{K}{1 + \left(\frac{K-P_0}{P_0}\right)e^{-rt}}\).
+\item[(b)] Find when the population reaches half the carrying capacity (\(P = K/2\)).
+\item[(c)] Calculate the inflection point (maximum growth rate): \(t^* = \frac{1}{r}\ln\left(\frac{K-P_0}{P_0}\right)\). What is \(P(t^*)\)?
+\end{enumerate}
+
+\subsection*{PROBLEM 43: Predator-Prey Dynamics}
+
+Lotka-Volterra equations:
+\[
+\begin{cases}
+\frac{dx}{dt} = \alpha x - \beta xy \\
+\frac{dy}{dt} = \delta xy - \gamma y
+\end{cases}
+\]
+
+where \(x\) = prey, \(y\) = predator. Parameters: \(\alpha = 1.5, \beta = 0.1, \delta = 0.075, \gamma = 1.5\).
+
+\begin{enumerate}
+\item[(a)] Find the equilibrium points by solving \(\frac{dx}{dt} = 0\) and \(\frac{dy}{dt} = 0\).
+\item[(b)] Classify the non-trivial equilibrium. Is it a stable spiral, center, or saddle point?
+\item[(c)] Simulate from initial conditions \(x(0) = 10, y(0) = 5\) for 50 time units. Do the populations oscillate?
+\end{enumerate}
+
+\subsection*{PROBLEM 44: Deterministic vs Stochastic - Birth-Death}
+
+Compare deterministic and stochastic birth-death processes.
+
+\textbf{Deterministic:} \(\frac{dN}{dt} = (\lambda - \mu)N\) where \(\lambda = 0.3\) (birth rate), \(\mu = 0.2\) (death rate).
+
+\textbf{Stochastic:} Continuous-time Markov chain with transitions \(N \to N+1\) at rate \(\lambda N\) and \(N \to N-1\) at rate \(\mu N\).
+
+\begin{enumerate}
+\item[(a)] Solve the deterministic ODE with \(N(0) = 100\). What is \(N(t)\)?
+\item[(b)] For the stochastic model, show that \(\mathbb{E}[N(t)] = 100e^{0.1t}\) (matches deterministic solution).
+\item[(c)] Simulate 5 stochastic trajectories and plot with the deterministic curve. Explain why they differ despite same mean.
+\end{enumerate}
+
+\subsection*{PROBLEM 45: Compartmental Model - SEIR}
+
+Extended epidemic model with Exposed state:
+\[
+\begin{cases}
+\frac{dS}{dt} = -\beta SI \\
+\frac{dE}{dt} = \beta SI - \sigma E \\
+\frac{dI}{dt} = \sigma E - \gamma I \\
+\frac{dR}{dt} = \gamma I
+\end{cases}
+\]
+
+Parameters: \(\beta = 0.0005, \sigma = 0.2\) (incubation rate), \(\gamma = 0.1\).
+
+\begin{enumerate}
+\item[(a)] Explain the biological meaning of each compartment and parameter.
+\item[(b)] Find \(R_0\) for the SEIR model (it's more complex than SIR). Does it depend on \(\sigma\)?
+\item[(c)] Simulate with \(S(0) = 999, E(0) = 1, I(0) = 0, R(0) = 0\) for 200 days. Compare the peak infection time with the SIR model.
+\end{enumerate}
+
+\end{document}

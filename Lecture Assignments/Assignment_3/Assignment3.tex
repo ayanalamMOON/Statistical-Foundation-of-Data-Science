@@ -1,0 +1,713 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\DeclareMathOperator{\argmin}{argmin}
+\DeclareMathOperator{\argmax}{argmax}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+
+\title{ASSIGNMENT 3}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\noindent
+\textbf{SUBJECT CODE:} CSU1658 \\
+\textbf{SUBJECT NAME:} Statistical Foundation of Data Sciences \\
+\textbf{TOTAL POINTS:} 100 \\
+\textbf{DEADLINE:} DECEMBER 20TH 2025 4PM
+
+\section*{K-Nearest Neighbors (KNN)}
+
+\subsection*{PROBLEM 1: Medical Diagnosis Classification}
+
+A hospital classifies patients based on glucose level (\(x_1\)) and BMI (\(x_2\)) as diabetic (+) or non-diabetic (-).
+
+Training data:
+\[\begin{array}{c|cc|c}
+\text{Patient} & \text{Glucose} & \text{BMI} & \text{Class} \\
+\hline
+A & 85 & 22 & - \\
+B & 95 & 25 & - \\
+C & 140 & 32 & + \\
+D & 160 & 35 & + \\
+E & 120 & 28 & + \\
+F & 90 & 24 & - \\
+\end{array}\]
+
+New patient: \(P = (110, 27)\).
+
+\begin{enumerate}
+\item[(a)] Compute Euclidean distances from \(P\) to all training patients. Normalize features first using \(\tilde{x} = (x - \min)/(max - \min)\).
+\item[(b)] Classify using \(k=3\) with majority voting. Show the complete decision process.
+\item[(c)] Derive the decision boundary equation for 1-NN between two nearest neighbors algebraically.
+\end{enumerate}
+
+\subsection*{PROBLEM 2: Curse of Dimensionality Analysis}
+
+Consider KNN in high-dimensional spaces.
+
+\begin{enumerate}
+\item[(a)] Prove that in \(d\) dimensions, the volume of a hypersphere of radius \(r\) is \(V_d(r) = \frac{\pi^{d/2}}{\Gamma(d/2 + 1)}r^d\). Show that as \(d \to \infty\), most volume concentrates near the surface.
+\item[(b)] Given 1000 uniformly distributed points in \([0,1]^d\), derive the expected distance to the nearest neighbor as a function of \(d\). Calculate for \(d = 2, 10, 50\).
+\item[(c)] Explain why KNN performance degrades in high dimensions. Propose two methods to mitigate this issue.
+\end{enumerate}
+
+\subsection*{PROBLEM 3: Customer Segmentation with Manhattan Distance}
+
+E-commerce data: purchases per month (\(x_1\)) and average order value (\(x_2\)):
+
+\[\begin{array}{c|cc|c}
+\text{ID} & \text{Purchases} & \text{Avg Value} & \text{Segment} \\
+\hline
+1 & 2 & 50 & \text{Low} \\
+2 & 8 & 120 & \text{High} \\
+3 & 5 & 80 & \text{Medium} \\
+4 & 12 & 200 & \text{High} \\
+5 & 3 & 60 & \text{Low} \\
+6 & 7 & 90 & \text{Medium} \\
+\end{array}\]
+
+New customer: \(C = (6, 100)\).
+
+\begin{enumerate}
+\item[(a)] Calculate Manhattan distances: \(d_M(x,y) = |x_1-y_1| + |x_2-y_2|\). Why might Manhattan be better than Euclidean here?
+\item[(b)] Classify \(C\) using weighted KNN with \(k=4\) and weights \(w_i = e^{-d_i}\). Show all calculations.
+\item[(c)] Implement leave-one-out cross-validation to find optimal \(k \in \{1,3,5\}\). Which \(k\) minimizes error?
+\end{enumerate}
+
+\subsection*{PROBLEM 4: KNN Regression for Temperature Prediction}
+
+Weather stations record altitude (m) and temperature (°C):
+
+\[\begin{array}{c|c|c}
+\text{Station} & \text{Altitude} & \text{Temperature} \\
+\hline
+S_1 & 100 & 28 \\
+S_2 & 500 & 22 \\
+S_3 & 1000 & 15 \\
+S_4 & 1500 & 10 \\
+S_5 & 2000 & 5 \\
+\end{array}\]
+
+Predict temperature at altitude 1200m using KNN regression.
+
+\begin{enumerate}
+\item[(a)] Use \(k=3\) with inverse distance weighting: \(\hat{y} = \frac{\sum_{i=1}^k w_i y_i}{\sum_{i=1}^k w_i}\) where \(w_i = 1/d_i^2\). Calculate the predicted temperature.
+\item[(b)] Derive the bias-variance decomposition for KNN regression. How does \(k\) affect bias and variance?
+\item[(c)] Prove that as \(k \to n\), KNN regression converges to the global mean. What does this imply about underfitting?
+\end{enumerate}
+
+\subsection*{PROBLEM 5: KD-Tree Construction and Complexity}
+
+Dataset in 2D: \(\{(2,3), (5,4), (9,6), (4,7), (8,1), (7,2)\}\).
+
+\begin{enumerate}
+\item[(a)] Construct a KD-tree by recursively splitting on alternating dimensions. Draw the tree structure and partitioning regions.
+\item[(b)] Search for the nearest neighbor of query point \((6, 5)\) using the KD-tree. Show the pruning decisions and nodes visited.
+\item[(c)] Prove that KD-tree query time is \(O(\log n)\) on average for balanced trees. When does it degrade to \(O(n)\)?
+\end{enumerate}
+
+\newpage
+\section*{K-Means Clustering}
+
+\subsection*{PROBLEM 6: Image Color Quantization}
+
+Image has 9 pixels with RGB values (simplified):
+
+\[\begin{array}{c|ccc}
+\text{Pixel} & R & G & B \\
+\hline
+1 & 255 & 0 & 0 \\
+2 & 250 & 10 & 5 \\
+3 & 245 & 5 & 10 \\
+4 & 0 & 255 & 0 \\
+5 & 5 & 250 & 10 \\
+6 & 10 & 245 & 5 \\
+7 & 0 & 0 & 255 \\
+8 & 5 & 10 & 250 \\
+9 & 10 & 5 & 245 \\
+\end{array}\]
+
+\begin{enumerate}
+\item[(a)] Run K-means with \(k=3\) initialized at pixels 1, 4, 7. Show two complete iterations (assignment + update).
+\item[(b)] Calculate final WCSS and explain how this reduces image file size.
+\item[(c)] Derive the relationship between K-means and vector quantization in signal processing.
+\end{enumerate}
+
+\subsection*{PROBLEM 7: K-Means++ Initialization}
+
+Consider points: \(\{1, 4, 8, 12, 15, 18, 22\}\) in 1D, \(k=3\).
+
+\begin{enumerate}
+\item[(a)] Implement K-means++ initialization: choose first centroid randomly, then select subsequent centroids with probability proportional to \(D(x)^2\) (squared distance to nearest centroid). Show the probability distribution at each step.
+\item[(b)] Compare final WCSS from K-means++ vs random initialization \(\{\mu_1=1, \mu_2=4, \mu_3=8\}\).
+\item[(c)] Prove that K-means++ gives an \(O(\log k)\)-approximation to optimal clustering in expectation.
+\end{enumerate}
+
+\subsection*{PROBLEM 8: Soft K-Means (Gaussian Mixture Model)}
+
+Dataset: \(\{0.5, 1.5, 2.0, 8.5, 9.0, 9.5\}\), \(k=2\).
+
+\begin{enumerate}
+\item[(a)] Derive the soft K-means (EM for GMM) update equations: 
+\[
+r_{ik} = \frac{\exp(-\beta \|x_i - \mu_k\|^2)}{\sum_j \exp(-\beta \|x_i - \mu_j\|^2)}
+\]
+where \(\beta = 1/(2\sigma^2)\).
+\item[(b)] Run one EM iteration with \(\mu_1=1, \mu_2=9, \sigma^2=1\). Calculate responsibilities \(r_{ik}\) and update \(\mu_k = \frac{\sum_i r_{ik}x_i}{\sum_i r_{ik}}\).
+\item[(c)] Compare hard vs soft clustering. When is soft clustering preferred?
+\end{enumerate}
+
+\subsection*{PROBLEM 9: Spectral Clustering Foundation}
+
+Similarity graph with 5 nodes and adjacency matrix:
+\[
+W = \begin{pmatrix}
+0 & 8 & 2 & 0 & 0 \\
+8 & 0 & 7 & 0 & 0 \\
+2 & 7 & 0 & 1 & 1 \\
+0 & 0 & 1 & 0 & 9 \\
+0 & 0 & 1 & 9 & 0
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Compute the degree matrix \(D\) and Laplacian \(L = D - W\). Find eigenvalues and eigenvectors of \(L\).
+\item[(b)] Use the Fiedler vector (second smallest eigenvalue's eigenvector) to partition the graph into 2 clusters.
+\item[(c)] Explain why spectral clustering can find non-convex clusters while K-means cannot. Give a geometric example.
+\end{enumerate}
+
+\subsection*{PROBLEM 10: Hierarchical vs K-Means}
+
+Gene expression levels (simplified): \(\{2.1, 2.5, 2.3, 7.8, 8.2, 7.5, 15.1, 15.5\}\).
+
+\begin{enumerate}
+\item[(a)] Perform agglomerative hierarchical clustering with complete linkage. Draw the dendrogram.
+\item[(b)] Cut dendrogram to get 3 clusters. Run K-means with \(k=3\) (random init). Compare cluster assignments.
+\item[(c)] Prove that hierarchical clustering has time complexity \(O(n^3)\) for complete linkage while K-means is \(O(ikn)\). Discuss trade-offs.
+\end{enumerate}
+
+\newpage
+\section*{Principal Component Analysis (PCA)}
+
+\subsection*{PROBLEM 11: Stock Portfolio Dimensionality Reduction}
+
+Returns of 3 stocks over 4 days (percentages):
+\[
+X = \begin{pmatrix}
+2 & 3 & 2.5 \\
+1 & 2 & 1.5 \\
+-1 & -2 & -1.5 \\
+-2 & -3 & -2.5
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Center the data and compute covariance matrix \(\Sigma = \frac{1}{n-1}X^TX\). Interpret \(\Sigma_{12}\).
+\item[(b)] Find eigenvalues and eigenvectors. Calculate the first principal component direction and interpret it financially.
+\item[(c)] Project data onto PC1. What percentage of portfolio variance is explained by this single factor?
+\end{enumerate}
+
+\subsection*{PROBLEM 12: PCA via SVD for Tall Matrix}
+
+Data matrix (8 observations, 2 features):
+\[
+X = \begin{pmatrix}
+1 & 2 \\
+2 & 4 \\
+3 & 5 \\
+4 & 7 \\
+5 & 9 \\
+6 & 11 \\
+7 & 12 \\
+8 & 14
+\end{pmatrix}
+\]
+(assume centered)
+
+\begin{enumerate}
+\item[(a)] Compute SVD: \(X = U\Sigma V^T\). Show that principal components are columns of \(V\).
+\item[(b)] Derive the relationship: eigenvalues of \(X^TX\) equal \(\sigma_i^2\) (squared singular values).
+\item[(c)] Calculate reconstruction error when approximating \(X\) with rank-1 matrix: \(\|X - X_1\|_F^2\). Verify it equals \(\sigma_2^2\).
+\end{enumerate}
+
+\subsection*{PROBLEM 13: Kernel PCA for Nonlinear Data}
+
+1D data: \(X = \{-3, -1, 0, 1, 3\}\) with nonlinear relationship.
+
+\begin{enumerate}
+\item[(a)] Map to 2D using \(\phi(x) = (x, x^2)\). Compute the mapped data matrix and its covariance.
+\item[(b)] Derive the kernel matrix \(K_{ij} = \phi(x_i)^T\phi(x_j) = x_ix_j + x_i^2x_j^2\) without explicit feature mapping.
+\item[(c)] Perform kernel PCA by eigendecomposition of centered kernel matrix. Compare with standard PCA on original data.
+\end{enumerate}
+
+\subsection*{PROBLEM 14: PCA for Face Recognition (Eigenfaces)}
+
+Grayscale 2×2 face images (vectorized to 4D):
+\[
+X = \begin{pmatrix}
+200 & 180 & 190 & 185 \\
+180 & 200 & 185 & 195 \\
+80 & 90 & 85 & 88 \\
+20 & 30 & 25 & 28
+\end{pmatrix}
+\]
+(rows are pixels, columns are different faces)
+
+\begin{enumerate}
+\item[(a)] Compute mean face \(\bar{x}\) and center data. Find eigenfaces (principal components).
+\item[(b)] Represent a new face \(f_{\text{new}} = [195, 188, 82, 22]^T\) using top 2 eigenfaces.
+\item[(c)] Derive the reconstruction and compare with original. Calculate mean squared error.
+\end{enumerate}
+
+\subsection*{PROBLEM 15: Probabilistic PCA}
+
+Observed data: \(x \in \mathbb{R}^d\) generated from latent variable \(z \in \mathbb{R}^q\) where \(q < d\).
+
+Model: \(x = Wz + \mu + \epsilon\) where \(z \sim \mathcal{N}(0, I)\), \(\epsilon \sim \mathcal{N}(0, \sigma^2I)\).
+
+\begin{enumerate}
+\item[(a)] Derive the marginal distribution: \(x \sim \mathcal{N}(\mu, WW^T + \sigma^2I)\).
+\item[(b)] Show that maximum likelihood estimate of \(W\) gives: \(W_{ML} = V_q(\Lambda_q - \sigma^2I)^{1/2}R\) where \(V_q\) contains top \(q\) eigenvectors and \(R\) is arbitrary rotation.
+\item[(c)] Prove that as \(\sigma^2 \to 0\), probabilistic PCA reduces to standard PCA. What's the advantage of the probabilistic formulation?
+\end{enumerate}
+
+\newpage
+\section*{Gaussian Distribution}
+
+\subsection*{PROBLEM 16: Quality Control with Normal Distribution}
+
+Manufacturing process produces bolts with diameter \(\sim \mathcal{N}(10, 0.04)\) mm. Specifications: 9.7–10.3 mm.
+
+\begin{enumerate}
+\item[(a)] Calculate probability a random bolt meets specifications. Use error function: \(\text{erf}(x) = \frac{2}{\sqrt{\pi}}\int_0^x e^{-t^2}dt\).
+\item[(b)] If 10,000 bolts are produced daily, how many defective bolts are expected?
+\item[(c)] Derive the process capability index \(C_p = \frac{USL - LSL}{6\sigma}\). If \(C_p < 1.33\), what \(\sigma\) is needed?
+\end{enumerate}
+
+\subsection*{PROBLEM 17: Multivariate Gaussian Conditional Distribution}
+
+Bivariate distribution: height \(X_1\) and weight \(X_2\) with
+\[
+\boldsymbol{\mu} = \begin{pmatrix} 170 \\ 70 \end{pmatrix}, \quad
+\Sigma = \begin{pmatrix} 64 & 32 \\ 32 & 25 \end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Derive the conditional distribution \(X_2 | X_1 = 180\) using the formula:
+\[
+\mu_{2|1} = \mu_2 + \Sigma_{21}\Sigma_{11}^{-1}(x_1 - \mu_1), \quad \Sigma_{2|1} = \Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1}\Sigma_{12}
+\]
+\item[(b)] Calculate expected weight for height = 180 cm and the conditional variance.
+\item[(c)] Prove the conditional distribution is also Gaussian. Why is this property important in Bayesian inference?
+\end{enumerate}
+
+\subsection*{PROBLEM 18: Chi-Square Goodness-of-Fit Test}
+
+Dice rolled 600 times with observed frequencies:
+
+\[\begin{array}{c|cccccc}
+\text{Face} & 1 & 2 & 3 & 4 & 5 & 6 \\
+\hline
+\text{Observed} & 92 & 107 & 98 & 95 & 103 & 105 \\
+\end{array}\]
+
+\begin{enumerate}
+\item[(a)] Test \(H_0\): dice is fair using \(\chi^2 = \sum \frac{(O_i - E_i)^2}{E_i}\). Calculate test statistic.
+\item[(b)] Find critical value for \(\alpha = 0.05\) with appropriate df. Make decision about fairness.
+\item[(c)] Derive the asymptotic distribution of \(\chi^2\) statistic using central limit theorem. Why does it follow chi-square distribution?
+\end{enumerate}
+
+\subsection*{PROBLEM 19: Gaussian Mixture Model Classification}
+
+Two classes with Gaussian distributions:
+\begin{itemize}
+\item Class 1: \(\mathcal{N}(2, 1)\), prior \(\pi_1 = 0.6\)
+\item Class 2: \(\mathcal{N}(5, 1.5)\), prior \(\pi_2 = 0.4\)
+\end{itemize}
+
+\begin{enumerate}
+\item[(a)] Derive Bayes optimal decision boundary by solving: \(\pi_1 p(x|C_1) = \pi_2 p(x|C_2)\).
+\item[(b)] Classify observation \(x = 3.5\) using posterior probabilities: \(P(C_i|x) = \frac{\pi_i p(x|C_i)}{\sum_j \pi_j p(x|C_j)}\).
+\item[(c)] Calculate expected misclassification rate for this decision rule.
+\end{enumerate}
+
+\subsection*{PROBLEM 20: Q-Q Plot for Normality Testing}
+
+Sample data (sorted): \(\{12.3, 14.1, 15.8, 16.2, 17.5, 18.9, 20.1, 22.4\}\).
+
+\begin{enumerate}
+\item[(a)] Calculate theoretical quantiles from \(\mathcal{N}(0,1)\) for plotting positions \(p_i = \frac{i-0.5}{n}\). Use \(\Phi^{-1}(p_i)\).
+\item[(b)] Standardize data: \(z_i = \frac{x_i - \bar{x}}{s}\). Plot \((z_{(i)}, q_i)\) and assess linearity.
+\item[(c)] Perform Shapiro-Wilk test using: \(W = \frac{(\sum a_i x_{(i)})^2}{\sum(x_i - \bar{x})^2}\). Interpret result (\(W\) close to 1 indicates normality).
+\end{enumerate}
+
+\newpage
+\section*{Ridge Regression}
+
+\subsection*{PROBLEM 21: Housing Price Prediction with Multicollinearity}
+
+Predicting house price from size (\(x_1\)) and rooms (\(x_2\)) (size and rooms are highly correlated):
+
+\[
+X = \begin{pmatrix}
+1 & 1000 & 2 \\
+1 & 1500 & 3 \\
+1 & 2000 & 4 \\
+1 & 2500 & 5
+\end{pmatrix}, \quad
+y = \begin{pmatrix} 200 \\ 270 \\ 340 \\ 410 \end{pmatrix}
+\]
+(prices in thousands)
+
+\begin{enumerate}
+\item[(a)] Compute \(X^TX\) and calculate its condition number \(\kappa = \lambda_{\max}/\lambda_{\min}\). What does high \(\kappa\) indicate?
+\item[(b)] Derive and compute ridge solution with \(\lambda = 100\): \(\hat{\beta}^{\text{ridge}} = (X^TX + \lambda I)^{-1}X^Ty\).
+\item[(c)] Compare with OLS. Show how ridge shrinks coefficients and reduces variance at cost of bias.
+\end{enumerate}
+
+\subsection*{PROBLEM 22: Cross-Validation for Lambda Selection}
+
+Small dataset: \(X = \begin{pmatrix} 1 & 2 \\ 1 & 4 \\ 1 & 6 \\ 1 & 8 \end{pmatrix}\), \(y = \begin{pmatrix} 3 \\ 7 \\ 9 \\ 13 \end{pmatrix}\).
+
+\begin{enumerate}
+\item[(a)] Implement leave-one-out cross-validation for \(\lambda \in \{0, 1, 5, 10\}\). Calculate CV error: \(\text{CV}(\lambda) = \frac{1}{n}\sum_{i=1}^n (y_i - \hat{y}_{-i}^{(\lambda)})^2\).
+\item[(b)] Derive the LOOCV shortcut formula: \(CV(\lambda) = \frac{1}{n}\sum \left(\frac{y_i - \hat{y}_i}{1 - H_{ii}}\right)^2\) where \(H = X(X^TX + \lambda I)^{-1}X^T\).
+\item[(c)] Plot CV error vs \(\lambda\). Which \(\lambda\) is optimal? Explain bias-variance trade-off.
+\end{enumerate}
+
+\subsection*{PROBLEM 23: Ridge Regression as Constrained Optimization}
+
+Consider equivalent formulations of ridge regression.
+
+\begin{enumerate}
+\item[(a)] Show that ridge regression \(\min_\beta \|y - X\beta\|^2 + \lambda\|\beta\|^2\) is equivalent to constrained problem: \(\min_\beta \|y - X\beta\|^2\) subject to \(\|\beta\|^2 \leq t\) for some \(t(\lambda)\).
+\item[(b)] Derive the Lagrangian and KKT conditions. Find the relationship between \(\lambda\) and constraint \(t\).
+\item[(c)] Geometrically illustrate ridge solution as intersection of constraint ball \(\|\beta\| \leq \sqrt{t}\) and OLS error ellipsoids. Why does ridge shrink towards origin?
+\end{enumerate}
+
+\subsection*{PROBLEM 24: Generalized Cross-Validation (GCV)}
+
+For design matrix \(X\) and penalty \(\lambda\).
+
+\begin{enumerate}
+\item[(a)] Derive the GCV criterion: \(\text{GCV}(\lambda) = \frac{n\|y - X\hat{\beta}^{\lambda}\|^2}{(n - \text{df}(\lambda))^2}\) where \(\text{df}(\lambda) = \Tr[X(X^TX + \lambda I)^{-1}X^T]\).
+\item[(b)] For dataset: \(X = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 1 & 3 \end{pmatrix}\), \(y = \begin{pmatrix} 2 \\ 3 \\ 5 \end{pmatrix}\), compute GCV(\(\lambda\)) for \(\lambda = 0.5\).
+\item[(c)] Explain why GCV approximates leave-one-out CV but is computationally cheaper.
+\end{enumerate}
+
+\subsection*{PROBLEM 25: Tikhonov Regularization (Generalized Ridge)}
+
+Generalized ridge with penalty matrix \(\Gamma\): \(\min_\beta \|y - X\beta\|^2 + \lambda\|\Gamma\beta\|^2\).
+
+\begin{enumerate}
+\item[(a)] Derive solution: \(\hat{\beta} = (X^TX + \lambda\Gamma^T\Gamma)^{-1}X^Ty\). For \(\Gamma = D\) (difference matrix), what constraints are imposed?
+\item[(b)] Consider trend filtering with \(D = \begin{pmatrix} -1 & 1 & 0 \\ 0 & -1 & 1 \end{pmatrix}\) (first differences). Solve for data: \(X=I_3\), \(y = \begin{pmatrix} 1 \\ 5 \\ 2 \end{pmatrix}\), \(\lambda=1\).
+\item[(c)] Relate Tikhonov regularization to prior \(\beta \sim \mathcal{N}(0, (\lambda\Gamma^T\Gamma)^{-1})\). What does \(\Gamma = D\) encode?
+\end{enumerate}
+
+\newpage
+\section*{Controlling Standard Deviation}
+
+\subsection*{PROBLEM 26: Pharmaceutical Tablet Weight Variance}
+
+Tablet weight regulation requires \(\sigma \leq 2\) mg. Sample of 25 tablets has \(s = 2.3\) mg.
+
+\begin{enumerate}
+\item[(a)] Test \(H_0: \sigma^2 = 4\) vs \(H_a: \sigma^2 > 4\) at \(\alpha = 0.05\) using \(\chi^2 = \frac{(n-1)s^2}{\sigma_0^2}\). Critical value: \(\chi^2_{0.05,24} = 36.42\).
+\item[(b)] Calculate the p-value: \(P(\chi^2_{24} > \chi^2_{\text{obs}})\). Make regulatory decision.
+\item[(c)] Derive power of test: \(1-\beta = P(\text{reject } H_0 | \sigma^2 = 6)\). How many samples needed for 80\% power?
+\end{enumerate}
+
+\subsection*{PROBLEM 27: Comparing Process Variabilities}
+
+Two assembly lines produce resistors. Line A: \(n_1=16, s_1^2=0.49\). Line B: \(n_2=21, s_2^2=0.25\).
+
+\begin{enumerate}
+\item[(a)] Test equality of variances: \(H_0: \sigma_1^2 = \sigma_2^2\) using \(F = s_1^2/s_2^2 \sim F_{15,20}\). Critical values: \(F_{0.025,15,20} = 2.76\), \(F_{0.975,15,20} = 0.39\).
+\item[(b)] Construct 95\% CI for variance ratio: \(\left[\frac{s_1^2}{s_2^2} \cdot \frac{1}{F_{\alpha/2}}, \frac{s_1^2}{s_2^2} \cdot \frac{1}{F_{1-\alpha/2}}\right]\).
+\item[(c)] If variances differ significantly, which statistical tests become invalid? Suggest robust alternatives.
+\end{enumerate}
+
+\subsection*{PROBLEM 28: Bartlett's Test for Homogeneity of Variances}
+
+Three groups with sample sizes \(n = (10, 12, 15)\) and variances \(s^2 = (4.2, 3.8, 5.1)\).
+
+\begin{enumerate}
+\item[(a)] Calculate pooled variance: \(s_p^2 = \frac{\sum(n_i-1)s_i^2}{\sum(n_i-1)}\).
+\item[(b)] Compute Bartlett's statistic: \(B = \frac{(N-k)\ln(s_p^2) - \sum(n_i-1)\ln(s_i^2)}{1 + \frac{1}{3(k-1)}[\sum\frac{1}{n_i-1} - \frac{1}{N-k}]}\) where \(N = \sum n_i\), \(k=3\).
+\item[(c)] Under \(H_0\): equal variances, \(B \sim \chi^2_{k-1}\). Test at \(\alpha=0.05\) with \(\chi^2_{0.05,2} = 5.99\).
+\end{enumerate}
+
+\subsection*{PROBLEM 29: Brown-Forsythe Test (Robust to Non-Normality)}
+
+Data from 3 groups (deviations from median):
+\begin{itemize}
+\item Group 1: \(|x_i - \text{med}_1| = \{2.1, 1.8, 2.3, 1.9\}\)
+\item Group 2: \(|x_i - \text{med}_2| = \{3.2, 2.9, 3.5, 3.1\}\)
+\item Group 3: \(|x_i - \text{med}_3| = \{1.5, 1.7, 1.4, 1.6\}\)
+\end{itemize}
+
+\begin{enumerate}
+\item[(a)] Perform ANOVA on absolute deviations to test variance equality. Calculate \(F = \frac{MS_{\text{between}}}{MS_{\text{within}}}\).
+\item[(b)] Why is Brown-Forsythe preferred over Bartlett's for non-normal data? Explain robustness.
+\item[(c)] If \(H_0\) rejected, perform post-hoc pairwise comparisons using Bonferroni correction. Which groups differ?
+\end{enumerate}
+
+\subsection*{PROBLEM 30: Cochran's C Test for Outlier Variance}
+
+Experiment conducted 6 times with sample variances: \(s^2 = \{4.1, 3.9, 4.2, 3.8, 4.0, 12.5\}\) (all \(n_i=5\)).
+
+\begin{enumerate}
+\item[(a)] Calculate Cochran's statistic: \(C = \frac{\max(s_i^2)}{\sum s_i^2} = \frac{12.5}{32.5}\).
+\item[(b)] Compare with critical value \(C_{0.05}(6, 4) = 0.616\) (6 groups, \(df=4\) each). Is largest variance an outlier?
+\item[(c)] If outlier detected, investigate: run Grubbs' test on original data from that group. Derive decision rule.
+\end{enumerate}
+
+\newpage
+\section*{Markov Chains}
+
+\subsection*{PROBLEM 31: Brand Loyalty Model}
+
+Customers switch between brands A, B, C monthly:
+\[
+P = \begin{pmatrix}
+0.7 & 0.2 & 0.1 \\
+0.3 & 0.6 & 0.1 \\
+0.2 & 0.3 & 0.5
+\end{pmatrix}
+\]
+
+Current market shares: \(\pi^{(0)} = (0.4, 0.35, 0.25)\).
+
+\begin{enumerate}
+\item[(a)] Calculate market shares after 3 months: \(\pi^{(3)} = \pi^{(0)}P^3\). Show intermediate steps.
+\item[(b)] Find equilibrium market shares by solving \(\pi P = \pi\), \(\sum \pi_i = 1\). Use substitution or eigenvalue method.
+\item[(c)] Derive mean return time to brand A: \(\tau_A = 1/\pi_A\). Interpret in business context.
+\end{enumerate}
+
+\subsection*{PROBLEM 32: Absorbing Markov Chain - Credit Rating}
+
+Bond ratings: AAA, AA, A, D (default, absorbing). Transition matrix:
+\[
+P = \begin{pmatrix}
+0.90 & 0.08 & 0.02 & 0 \\
+0.05 & 0.85 & 0.08 & 0.02 \\
+0.02 & 0.10 & 0.80 & 0.08 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Identify transient and absorbing states. Write canonical form: \(P = \begin{pmatrix} Q & R \\ 0 & I \end{pmatrix}\).
+\item[(b)] Calculate fundamental matrix \(N = (I - Q)^{-1}\). Interpret \(N_{ij}\) as expected visits to state \(j\) starting from \(i\).
+\item[(c)] Find absorption probabilities: \(B = NR\). What's probability an AA bond eventually defaults?
+\end{enumerate}
+
+\subsection*{PROBLEM 33: PageRank Algorithm}
+
+Web graph with 4 pages and link structure:
+\[
+L = \begin{pmatrix}
+0 & 1/2 & 1/2 & 0 \\
+1/3 & 0 & 1/3 & 1/3 \\
+0 & 0 & 0 & 1 \\
+0 & 1 & 0 & 0
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Form Google matrix: \(G = \alpha L + (1-\alpha)\frac{\mathbf{1}\mathbf{1}^T}{n}\) with \(\alpha = 0.85\). Why is teleportation term needed?
+\item[(b)] Compute PageRank by power iteration: \(\pi^{(k+1)} = G^T\pi^{(k)}\) starting from \(\pi^{(0)} = (0.25, 0.25, 0.25, 0.25)\). Iterate until \(\|\pi^{(k+1)} - \pi^{(k)}\| < 10^{-3}\).
+\item[(c)] Prove convergence using Perron-Frobenius theorem. What conditions ensure unique stationary distribution?
+\end{enumerate}
+
+\subsection*{PROBLEM 34: Birth-Death Process for Queuing}
+
+Server with arrival rate \(\lambda = 3\) customers/hr, service rate \(\mu = 4\) customers/hr.
+
+Generator matrix for states \(n = 0,1,2,3\) (max capacity):
+\[
+Q = \begin{pmatrix}
+-3 & 3 & 0 & 0 \\
+4 & -7 & 3 & 0 \\
+0 & 4 & -7 & 3 \\
+0 & 0 & 4 & -4
+\end{pmatrix}
+\]
+
+\begin{enumerate}
+\item[(a)] Verify detailed balance: \(\pi_i q_{ij} = \pi_j q_{ji}\). Derive stationary distribution \(\pi_n = \pi_0(\lambda/\mu)^n\).
+\item[(b)] Calculate average queue length: \(L = \sum n\pi_n\) and expected wait time using Little's law: \(W = L/\lambda\).
+\item[(c)] Find probability of system being full (customer rejected). How does this change if \(\mu\) increases to 5?
+\end{enumerate}
+
+\subsection*{PROBLEM 35: Hidden Markov Model Basics}
+
+2-state HMM: Sunny (S) and Rainy (R) with transitions and emissions.
+
+Transition: \(A = \begin{pmatrix} 0.7 & 0.3 \\ 0.4 & 0.6 \end{pmatrix}\). Emission: \(B = \begin{pmatrix} 0.9 & 0.1 \\ 0.2 & 0.8 \end{pmatrix}\) (Happy/Grumpy).
+
+Observe: Happy, Happy, Grumpy.
+
+\begin{enumerate}
+\item[(a)] Calculate \(P(\text{observations} | \text{states} = SSR)\) using \(P(O|\lambda) = \prod P(o_t|s_t) \cdot P(s_t|s_{t-1})\) with initial \(\pi = (0.6, 0.4)\).
+\item[(b)] Implement forward algorithm to compute \(P(\text{observations})\): \(\alpha_t(i) = P(o_1, \ldots, o_t, s_t=i)\).
+\item[(c)] Use Viterbi algorithm to find most likely state sequence. Show trellis diagram.
+\end{enumerate}
+
+\newpage
+\section*{Monte Carlo Methods}
+
+\subsection*{PROBLEM 36: Buffon's Needle for Estimating Pi}
+
+Needle of length \(L=1\) dropped on floor with parallel lines distance \(D=2\) apart.
+
+\begin{enumerate}
+\item[(a)] Derive probability needle crosses a line: \(P = \frac{2L}{\pi D}\). (Hint: parameterize by angle \(\theta\) and distance \(x\) from nearest line).
+\item[(b)] Simulate 10,000 drops. Estimate \(\pi\) using \(\hat{\pi} = \frac{2L \cdot n_{\text{total}}}{D \cdot n_{\text{cross}}}\). Calculate standard error.
+\item[(c)] Compare efficiency with circle-in-square method. Which has lower variance?
+\end{enumerate}
+
+\subsection*{PROBLEM 37: Stratified Sampling for Variance Reduction}
+
+Estimate \(I = \int_0^4 x^3 dx\) (true value = 64).
+
+\begin{enumerate}
+\item[(a)] Standard MC with \(n=100\) uniform samples on \([0,4]\): \(\hat{I}_{\text{MC}} = 4\cdot\frac{1}{n}\sum f(U_i)\). Calculate variance.
+\item[(b)] Stratified sampling: divide \([0,4]\) into 4 equal strata. Sample 25 points per stratum. Calculate \(\hat{I}_{\text{strat}} = \sum w_k \bar{f}_k\) where \(w_k = 0.25\).
+\item[(c)] Prove variance reduction: \(\text{Var}(\hat{I}_{\text{strat}}) = \sum w_k^2 \sigma_k^2/n_k < \text{Var}(\hat{I}_{\text{MC}})\). Verify numerically.
+\end{enumerate}
+
+\subsection*{PROBLEM 38: Control Variates Method}
+
+Estimate \(\theta = E[e^X]\) where \(X \sim \text{Uniform}(0,1)\).
+
+Control variate: \(Y = X\) with known \(E[Y] = 0.5\).
+
+\begin{enumerate}
+\item[(a)] Simulate \(n=1000\) samples. Estimate \(\hat{\theta}_0 = \frac{1}{n}\sum e^{X_i}\) and calculate sample variance.
+\item[(b)] Use control variate estimator: \(\hat{\theta}_c = \hat{\theta}_0 - c(\bar{Y} - 0.5)\) where \(c = \text{Cov}(e^X, X)/\text{Var}(X)\). Estimate \(c\) from sample covariance.
+\item[(c)] Show variance reduction: \(\text{Var}(\hat{\theta}_c) = \text{Var}(\hat{\theta}_0)(1 - \rho^2)\) where \(\rho = \text{Cor}(e^X, X)\). Calculate efficiency gain.
+\end{enumerate}
+
+\subsection*{PROBLEM 39: Gibbs Sampling for Bivariate Normal}
+
+Target: \((X,Y) \sim \mathcal{N}\left(\begin{pmatrix}0\\0\end{pmatrix}, \begin{pmatrix}1 & 0.8\\0.8 & 1\end{pmatrix}\right)\).
+
+Conditionals: \(X|Y \sim \mathcal{N}(0.8Y, 0.36)\), \(Y|X \sim \mathcal{N}(0.8X, 0.36)\).
+
+\begin{enumerate}
+\item[(a)] Implement Gibbs sampler for 5000 iterations starting at \((X_0, Y_0) = (0, 0)\). Plot trace of \(X_t\).
+\item[(b)] Calculate autocorrelation: \(\rho_k = \text{Cor}(X_t, X_{t+k})\) for lags \(k=1,\ldots,50\). Estimate effective sample size: \(n_{\text{eff}} = \frac{n}{1+2\sum \rho_k}\).
+\item[(c)] Compare marginal histograms with true \(\mathcal{N}(0,1)\). Perform Kolmogorov-Smirnov test for goodness of fit.
+\end{enumerate}
+
+\subsection*{PROBLEM 40: Rejection Sampling from Truncated Distribution}
+
+Target: truncated normal \(X \sim \mathcal{N}(0,1)\) on \([2, \infty)\).
+
+Proposal: exponential \(g(x) = e^{-(x-2)}\) for \(x \geq 2\).
+
+\begin{enumerate}
+\item[(a)] Find constant \(M\) such that \(f(x) \leq Mg(x)\) for all \(x \geq 2\) where \(f(x) = \frac{\phi(x)}{\Phi(-2)}\).
+\item[(b)] Implement rejection algorithm: 
+\begin{enumerate}
+\item Generate \(Y \sim g\), \(U \sim \text{Uniform}(0,1)\)
+\item Accept if \(U \leq f(Y)/(Mg(Y))\)
+\end{enumerate}
+Run until 1000 samples accepted. Calculate acceptance rate.
+\item[(c)] Derive expected number of proposals per acceptance: \(1/P_{\text{accept}} = M\). Discuss efficiency vs direct sampling.
+\end{enumerate}
+
+\newpage
+\section*{Deterministic Models}
+
+\subsection*{PROBLEM 41: Pharmacokinetics - Drug Concentration Model}
+
+One-compartment model: \(\frac{dC}{dt} = -kC\) where \(C(t)\) is drug concentration, \(k=0.2\) hr\(^{-1}\).
+
+Single dose: \(C(0) = 100\) mg/L. Repeated dosing: \(D=50\) mg/L every 4 hours.
+
+\begin{enumerate}
+\item[(a)] Solve ODE for single dose: \(C(t) = C_0e^{-kt}\). Calculate half-life: \(t_{1/2} = \ln(2)/k\).
+\item[(b)] For repeated dosing, derive steady-state concentration: \(C_{ss} = \frac{D}{1-e^{-kT}}\) where \(T=4\) hr is dosing interval. Calculate \(C_{ss}\).
+\item[(c)] Find therapeutic window \([C_{\min}, C_{\max}] = [20, 80]\). Adjust \(D\) and \(T\) to maintain \(C(t)\) in this range.
+\end{enumerate}
+
+\subsection*{PROBLEM 42: Chemical Reaction Kinetics}
+
+Second-order reaction: \(A + B \to C\) with rate law \(\frac{d[A]}{dt} = -k[A][B]\).
+
+Initial: \([A]_0 = [B]_0 = 1.0\) M, \(k = 0.5\) M\(^{-1}\)min\(^{-1}\).
+
+\begin{enumerate}
+\item[(a)] For equal initial concentrations, derive: \(\frac{1}{[A]} - \frac{1}{[A]_0} = kt\). Solve for \([A](t)\).
+\item[(b)] Calculate time for 75\% conversion (\([A] = 0.25\) M). At what time does \([A] = 0.1[A]_0\)?
+\item[(c)] If \([A]_0 \neq [B]_0\), derive: \(\ln\frac{[A][B]_0}{[B][A]_0} = ([B]_0 - [A]_0)kt\). Solve for \([A]_0 = 1.0\), \([B]_0 = 2.0\).
+\end{enumerate}
+
+\subsection*{PROBLEM 43: Zombie Apocalypse Model (SZR)}
+
+Population dynamics:
+\[
+\begin{cases}
+\frac{dS}{dt} = -\beta SZ \\
+\frac{dZ}{dt} = \beta SZ + \zeta R - \alpha SZ \\
+\frac{dR}{dt} = \alpha SZ - \zeta R
+\end{cases}
+\]
+
+Parameters: \(\beta = 0.0001\) (infection), \(\alpha = 0.0001\) (kill), \(\zeta = 0.01\) (resurrection).
+Initial: \(S(0) = 1000, Z(0) = 10, R(0) = 0\).
+
+\begin{enumerate}
+\item[(a)] Verify conservation when \(\zeta = 0\): \(S + Z + R = N\). What happens with \(\zeta > 0\)?
+\item[(b)] Simulate for 100 days using Euler method with \(\Delta t = 0.1\). Plot \(S(t), Z(t), R(t)\).
+\item[(c)] Find zombie-free equilibrium. Derive stability condition (zombie extinction threshold).
+\end{enumerate}
+
+\subsection*{PROBLEM 44: Van der Pol Oscillator (Nonlinear Dynamics)}
+
+\[
+\frac{d^2x}{dt^2} - \mu(1-x^2)\frac{dx}{dt} + x = 0
+\]
+
+Rewrite as system: \(\frac{dx}{dt} = y\), \(\frac{dy}{dt} = \mu(1-x^2)y - x\).
+
+\begin{enumerate}
+\item[(a)] Find fixed points. For \(\mu = 1\), analyze stability using Jacobian at origin.
+\item[(b)] Simulate with initial conditions \((x_0, y_0) = (0.1, 0)\) for \(\mu \in \{0.1, 1, 5\}\) over \(t \in [0, 50]\). Plot phase portraits.
+\item[(c)] Explain limit cycle behavior. How does period depend on \(\mu\)? (numerical approximation acceptable)
+\end{enumerate}
+
+\subsection*{PROBLEM 45: Optimal Control - Vaccination Strategy}
+
+SIR model with vaccination: control \(u(t) \in [0, 0.9]\) (fraction vaccinated daily).
+
+\[
+\begin{cases}
+\frac{dS}{dt} = -\beta SI - u(t)S \\
+\frac{dI}{dt} = \beta SI - \gamma I \\
+\frac{dR}{dt} = \gamma I + u(t)S
+\end{cases}
+\]
+
+Objective: minimize \(J = \int_0^T [\alpha I(t) + \beta u(t)^2] dt\) (balance infection cost vs vaccination cost).
+
+Parameters: \(\beta = 0.0005, \gamma = 0.1, \alpha = 1, \beta = 10, T = 100\).
+
+\begin{enumerate}
+\item[(a)] Write Hamiltonian: \(H = \alpha I + \beta u^2 + \lambda_S(-\beta SI - uS) + \lambda_I(\beta SI - \gamma I) + \lambda_R(\gamma I + uS)\).
+\item[(b)] Derive optimal control from \(\frac{\partial H}{\partial u} = 0\): \(u^* = \max\{0, \min\{0.9, -\lambda_S S/(2\beta)\}\}\).
+\item[(c)] Implement forward-backward sweep method to solve. Compare total cost with constant vaccination \(u = 0.3\).
+\end{enumerate}
+
+\end{document}

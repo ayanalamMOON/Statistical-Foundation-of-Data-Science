@@ -1,0 +1,10 @@
+Problem 2.
+A machine claims the mean weight of a packaged item is Uo = 50 g. A quality-check sample (n = 8) gives measurements:
+52, 49, 51, 48, 53, 47, 50, 54
+Task 1. Test whether the sample provides evidence the mean differs from 50 g (two-tailed) at a = 0.05.
+
+You are required to show following:
+Implementation with explaination.
+Prompt you used to ask LLM.
+Reason of using the specific Prompt.
+Remember you cannot copy or paste the question and submit the prompt.

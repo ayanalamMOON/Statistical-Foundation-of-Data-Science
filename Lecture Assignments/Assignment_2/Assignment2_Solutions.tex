@@ -12285,5 +12285,777 @@ Common metrics for ranking features:
 This mathematical property justifies why removing stopwords doesn't hurt (and often helps) classification accuracy—they contribute almost nothing to the decision boundary score $\sum w_j x_j$.
 \end{explanation}
 
+\subsubsection{Part (e): Compare Multinomial vs. Bernoulli Naive Bayes}
+
+\begin{solution}
+We compare how Multinomial and Bernoulli Naive Bayes models treat the message "win win win" differently.
+
+\textbf{Step 1: Define the Two Models}
+
+\textbf{Multinomial Naive Bayes:}
+\begin{itemize}
+    \item \textbf{Feature representation:} Document as word count vector $\mathbf{x} = (x_1, x_2, \ldots, x_{|V|})$
+    \item \textbf{Likelihood:} $P(\mathbf{x} \mid C=c) \propto \prod_{j=1}^{|V|} \theta_{jc}^{x_j}$
+    \item \textbf{Log-likelihood:} $\log P(\mathbf{x} \mid C=c) = \sum_{j=1}^{|V|} x_j \log \theta_{jc}$
+    \item \textbf{Key property:} Word frequency matters—counts are used
+\end{itemize}
+
+\textbf{Bernoulli Naive Bayes:}
+\begin{itemize}
+    \item \textbf{Feature representation:} Document as binary presence vector $\mathbf{b} = (b_1, b_2, \ldots, b_{|V|})$ where $b_j \in \{0,1\}$
+    \item \textbf{Likelihood:} $P(\mathbf{b} \mid C=c) = \prod_{j=1}^{|V|} p_{jc}^{b_j} (1-p_{jc})^{1-b_j}$
+    \item \textbf{Log-likelihood:} $\log P(\mathbf{b} \mid C=c) = \sum_{j=1}^{|V|} \left[ b_j \log p_{jc} + (1-b_j) \log(1-p_{jc}) \right]$
+    \item \textbf{Key property:} Only presence/absence matters—counts ignored
+\end{itemize}
+
+where $\theta_{jc} = P(\text{word } j \mid C=c)$ in Multinomial and $p_{jc} = P(\text{word } j \text{ present} \mid C=c)$ in Bernoulli.
+
+\textbf{Step 2: Representation of "win win win"}
+
+For the message $D = \text{"win win win"}$:
+
+\textbf{Multinomial representation:}
+\[
+\mathbf{x} = (\underbrace{3}_{\text{"win"}}, \underbrace{0}_{\text{"free"}}, \underbrace{0}_{\text{"credit"}}, \underbrace{0}_{\text{"call"}})
+\]
+The count vector explicitly shows "win" appears 3 times.
+
+\textbf{Bernoulli representation:}
+\[
+\mathbf{b} = (\underbrace{1}_{\text{"win"}}, \underbrace{0}_{\text{"free"}}, \underbrace{0}_{\text{"credit"}}, \underbrace{0}_{\text{"call"}})
+\]
+The binary vector only indicates that "win" is present (appears at least once).
+
+\textbf{Step 3: Likelihood Calculation for Multinomial}
+
+Using the Multinomial model:
+\begin{align*}
+\log P(\text{"win win win"} \mid C=c) &= x_{\text{win}} \log \theta_{\text{win},c} + x_{\text{free}} \log \theta_{\text{free},c} + \cdots \\
+&= 3 \log \theta_{\text{win},c} + 0 + 0 + 0 \\
+&= 3 \log \theta_{\text{win},c}
+\end{align*}
+
+The contribution from "win" is \textbf{multiplied by 3} because it appears 3 times.
+
+\textbf{Step 4: Likelihood Calculation for Bernoulli}
+
+Using the Bernoulli model:
+\begin{align*}
+\log P(\mathbf{b} \mid C=c) &= b_{\text{win}} \log p_{\text{win},c} + (1-b_{\text{win}}) \log(1-p_{\text{win},c}) \\
+&\quad + b_{\text{free}} \log p_{\text{free},c} + (1-b_{\text{free}}) \log(1-p_{\text{free},c}) \\
+&\quad + \cdots \\
+&= 1 \cdot \log p_{\text{win},c} + 0 \cdot \log(1-p_{\text{win},c}) \\
+&\quad + 0 \cdot \log p_{\text{free},c} + 1 \cdot \log(1-p_{\text{free},c}) \\
+&\quad + 0 \cdot \log p_{\text{credit},c} + 1 \cdot \log(1-p_{\text{credit},c}) \\
+&\quad + 0 \cdot \log p_{\text{call},c} + 1 \cdot \log(1-p_{\text{call},c}) \\
+&= \log p_{\text{win},c} + \log(1-p_{\text{free},c}) + \log(1-p_{\text{credit},c}) + \log(1-p_{\text{call},c})
+\end{align*}
+
+The contribution from "win" is counted only \textbf{once}, regardless of how many times it appears. Additionally, we subtract log-probabilities for words that are \textbf{absent}.
+
+\textbf{Step 5: Numerical Example}
+
+Assume we have estimated (using our training data with Laplace smoothing):
+
+\textbf{For Spam ($C=1$):}
+\begin{align*}
+\theta_{\text{win},1} &= 0.4063 \quad \text{(Multinomial probability)} \\
+p_{\text{win},1} &= 0.90 \quad \text{(Bernoulli: prob. "win" appears in spam docs)} \\
+p_{\text{free},1} &= 0.85, \quad p_{\text{credit},1} = 0.70, \quad p_{\text{call},1} = 0.10
+\end{align*}
+
+\textbf{For Ham ($C=0$):}
+\begin{align*}
+\theta_{\text{win},0} &= 0.0469 \quad \text{(Multinomial probability)} \\
+p_{\text{win},0} &= 0.15 \quad \text{(Bernoulli: prob. "win" appears in ham docs)} \\
+p_{\text{free},0} &= 0.20, \quad p_{\text{credit},0} = 0.25, \quad p_{\text{call},0} = 0.95
+\end{align*}
+
+\textbf{Multinomial log-odds ratio:}
+\begin{align*}
+\log \frac{P(\text{"win win win"} \mid C=1)}{P(\text{"win win win"} \mid C=0)} &= 3 \log \frac{\theta_{\text{win},1}}{\theta_{\text{win},0}} \\
+&= 3 \log \frac{0.4063}{0.0469} \\
+&= 3 \log(8.66) \\
+&= 3 \times 2.16 \\
+&= \boxed{6.48}
+\end{align*}
+
+The repetition of "win" \textbf{amplifies} the signal by a factor of 3.
+
+\textbf{Bernoulli log-odds ratio:}
+\begin{align*}
+\log \frac{P(\mathbf{b} \mid C=1)}{P(\mathbf{b} \mid C=0)} &= \log \frac{p_{\text{win},1}}{p_{\text{win},0}} + \log \frac{1-p_{\text{free},1}}{1-p_{\text{free},0}} + \log \frac{1-p_{\text{credit},1}}{1-p_{\text{credit},0}} + \log \frac{1-p_{\text{call},1}}{1-p_{\text{call},0}} \\
+&= \log \frac{0.90}{0.15} + \log \frac{0.15}{0.80} + \log \frac{0.30}{0.75} + \log \frac{0.90}{0.05} \\
+&= \log(6.0) + \log(0.1875) + \log(0.40) + \log(18.0) \\
+&= 1.79 + (-1.67) + (-0.92) + 2.89 \\
+&= \boxed{2.09}
+\end{align*}
+
+The Bernoulli model gives a \textbf{weaker signal} because it doesn't count the repetition of "win". However, it also considers the \textbf{absence} of other words, which can add information.
+
+\textbf{Step 6: Key Differences Summary}
+
+\begin{center}
+\begin{tabular}{|l|p{5cm}|p{5cm}|}
+\hline
+\textbf{Aspect} & \textbf{Multinomial NB} & \textbf{Bernoulli NB} \\
+\hline
+Feature representation & Word counts $x_j \in \{0,1,2,\ldots\}$ & Binary presence $b_j \in \{0,1\}$ \\
+\hline
+Treatment of "win win win" & Counts $x_{\text{win}} = 3$ & Binary $b_{\text{win}} = 1$ \\
+\hline
+Log-likelihood contribution & $3 \log \theta_{\text{win},c}$ & $\log p_{\text{win},c}$ \\
+\hline
+Sensitivity to repetition & High—repeated words amplify signal & Low—only cares about presence \\
+\hline
+Absent words & Ignored (zero counts contribute nothing) & Explicitly modeled via $(1-p_{jc})$ terms \\
+\hline
+Best for & Long documents, word frequency matters & Short documents, presence matters \\
+\hline
+Typical use case & News classification, topic modeling & Spam filtering (short emails), sentiment (tweets) \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Step 7: Implications for "win win win"}
+
+\textbf{Multinomial Perspective:}
+\begin{itemize}
+    \item The message "win win win" receives a very strong spam score: $6.48$
+    \item This makes sense if spam emails often contain \textbf{repeated promotional words}
+    \item Good for detecting "keyword stuffing" behavior
+\end{itemize}
+
+\textbf{Bernoulli Perspective:}
+\begin{itemize}
+    \item The message receives a moderate spam score: $2.09$
+    \item The model is more conservative—treats "win win win" similarly to "win"
+    \item Better if we believe the \textbf{presence} of "win" is informative, but the count is noisy
+    \item Also considers that "free", "credit", and "call" are \textbf{absent}, which affects the score
+\end{itemize}
+
+\textbf{Conclusion:}
+
+For the message "win win win":
+\begin{itemize}
+    \item \textbf{Multinomial NB} would classify it \textbf{very confidently as spam} (log-odds = 6.48)
+    \item \textbf{Bernoulli NB} would classify it as spam but with \textbf{less confidence} (log-odds = 2.09)
+    \item The choice depends on whether \textbf{word frequency} or just \textbf{word presence} is more meaningful for your application
+\end{itemize}
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: When to Use Which Model?}
+
+\textbf{1. Document Length Considerations}
+
+\textit{Short documents (e.g., tweets, SMS, subject lines):}
+\begin{itemize}
+    \item Bernoulli often performs better
+    \item Word counts have little variation—most words appear 0 or 1 time
+    \item The "absent word" modeling can be informative
+    \item Example: "Free prize!" vs "Call mom" → presence of "free" and "prize" matters more than their exact counts
+\end{itemize}
+
+\textit{Long documents (e.g., news articles, research papers):}
+\begin{itemize}
+    \item Multinomial typically performs better
+    \item Word frequencies carry meaningful signal
+    \item A political article might mention "election" 20 times vs 2 times
+    \item Absent word modeling less useful (most words are absent anyway due to large vocabulary)
+\end{itemize}
+
+\textbf{2. Mathematical Relationship}
+
+The Bernoulli model can be viewed as a special case of the Multinomial where:
+\[
+P(D \mid C) = P(n \mid C) \cdot P(\mathbf{x} \mid n, C)
+\]
+where $n$ is document length. In Multinomial NB, we typically assume $P(n \mid C)$ is constant across classes and ignore it. In Bernoulli, we explicitly model absence, which implicitly captures length information.
+
+\textbf{3. Parameter Estimation Differences}
+
+\textit{Multinomial:}
+\[
+\hat{\theta}_{jc} = \frac{\text{count of word } j \text{ in class } c}{\text{total word count in class } c}
+\]
+This is estimated from the \textbf{word frequency distribution} within each class.
+
+\textit{Bernoulli:}
+\[
+\hat{p}_{jc} = \frac{\text{number of documents containing word } j \text{ in class } c}{\text{total documents in class } c}
+\]
+This is estimated from the \textbf{document frequency}—how many documents contain the word, regardless of how often it appears in each document.
+
+\textbf{Example:} Consider 100 spam emails with total 5000 words, where "win" appears in 40 emails with a total occurrence of 200 times.
+\begin{itemize}
+    \item Multinomial: $\hat{\theta}_{\text{win},\text{spam}} = 200/5000 = 0.04$
+    \item Bernoulli: $\hat{p}_{\text{win},\text{spam}} = 40/100 = 0.40$
+\end{itemize}
+
+The Bernoulli parameter is typically much higher because it measures document-level presence, not word-level frequency.
+
+\textbf{4. Computational Considerations}
+
+\textit{Multinomial:}
+\begin{itemize}
+    \item Requires counting all word occurrences
+    \item Log-likelihood sum has $|V|$ terms, but only non-zero counts contribute
+    \item Sparse representation efficient: store only (word, count) pairs
+\end{itemize}
+
+\textit{Bernoulli:}
+\begin{itemize}
+    \item Requires checking presence/absence for \textbf{all} words in vocabulary
+    \item Log-likelihood sum has $|V|$ terms, and \textbf{all} contribute (both present and absent words)
+    \item Can be slower for large vocabularies if not optimized
+\end{itemize}
+
+\textbf{5. Hybrid and Extensions}
+
+\textit{TF-IDF weighted Multinomial:}
+\begin{itemize}
+    \item Weight words by $\text{TF-IDF} = \text{count} \times \log \frac{N}{\text{document frequency}}$
+    \item Downweights common words, upweights rare discriminative words
+\end{itemize}
+
+\textit{Multivariate Bernoulli with count threshold:}
+\begin{itemize}
+    \item Set $b_j = 1$ if count $\geq k$ (e.g., $k=2$)
+    \item Combines presence detection with frequency threshold
+\end{itemize}
+
+\textbf{6. Empirical Performance}
+
+Research findings (e.g., McCallum \& Nigam, 1998; Metsis et al., 2006):
+\begin{itemize}
+    \item On 20 Newsgroups (long documents): Multinomial wins by 5-10\% accuracy
+    \item On movie reviews (medium): Similar performance, slight edge to Multinomial
+    \item On spam filtering (short emails): Bernoulli competitive, sometimes better
+    \item With feature selection (e.g., top 1000 words): Gap narrows
+\end{itemize}
+
+\textbf{7. Theoretical Insight: Generative vs. Discriminative}
+
+Both models are \textbf{generative}—they model $P(\mathbf{x} \mid C)$ and use Bayes' rule to get $P(C \mid \mathbf{x})$.
+
+However, they make different independence assumptions:
+\begin{itemize}
+    \item Multinomial: Words are i.i.d. draws from a class-specific distribution
+    \item Bernoulli: Word presences are independent Bernoulli trials
+\end{itemize}
+
+In practice, both assumptions are violated (e.g., "New York" has correlated words), but the models are often robust due to the large-margin property of log-linear classifiers (which we prove in part f).
+\end{explanation}
+
+\subsubsection{Part (f): Multinomial Naive Bayes as a Linear Classifier}
+
+\begin{solution}
+We prove that the Multinomial Naive Bayes classifier is a linear classifier in the space of word counts and derive the weight vector $\mathbf{w}$ and bias $b$.
+
+\textbf{Step 1: Setup and Decision Rule}
+
+Consider binary classification with classes $C \in \{c_1, c_2\}$ (e.g., Spam vs. Ham).
+
+A document is represented as a word count vector:
+\[
+\mathbf{x} = (x_1, x_2, \ldots, x_{|V|}) \in \mathbb{Z}_{\geq 0}^{|V|}
+\]
+where $x_j$ is the count of word $j$ in the document.
+
+The Naive Bayes classifier predicts class $c_1$ if:
+\[
+P(C = c_1 \mid \mathbf{x}) > P(C = c_2 \mid \mathbf{x})
+\]
+
+\textbf{Step 2: Apply Bayes' Theorem}
+
+By Bayes' theorem:
+\[
+P(C = c_k \mid \mathbf{x}) = \frac{P(\mathbf{x} \mid C = c_k) P(C = c_k)}{P(\mathbf{x})}
+\]
+
+Since $P(\mathbf{x})$ is constant across classes for a given document, the decision rule simplifies to:
+\[
+P(C = c_1 \mid \mathbf{x}) > P(C = c_2 \mid \mathbf{x}) \iff P(\mathbf{x} \mid C = c_1) P(C = c_1) > P(\mathbf{x} \mid C = c_2) P(C = c_2)
+\]
+
+\textbf{Step 3: Multinomial Likelihood}
+
+Under the Multinomial Naive Bayes model, the likelihood is:
+\[
+P(\mathbf{x} \mid C = c_k) = \frac{n!}{\prod_j x_j!} \prod_{j=1}^{|V|} \theta_{jk}^{x_j}
+\]
+where:
+\begin{itemize}
+    \item $\theta_{jk} = P(\text{word } j \mid C = c_k)$ is the probability of word $j$ in class $c_k$
+    \item $n = \sum_j x_j$ is the document length
+    \item The multinomial coefficient $\frac{n!}{\prod_j x_j!}$ accounts for all possible orderings
+\end{itemize}
+
+For classification, the multinomial coefficient is the \textbf{same for both classes} (it depends only on $\mathbf{x}$, not on $c_k$), so we can ignore it:
+\[
+P(\mathbf{x} \mid C = c_k) \propto \prod_{j=1}^{|V|} \theta_{jk}^{x_j}
+\]
+
+\textbf{Step 4: Form the Likelihood Ratio}
+
+The decision rule becomes:
+\[
+\frac{P(\mathbf{x} \mid C = c_1) P(C = c_1)}{P(\mathbf{x} \mid C = c_2) P(C = c_2)} > 1
+\]
+
+Substituting the Multinomial likelihood:
+\[
+\frac{P(C = c_1)}{P(C = c_2)} \cdot \frac{\prod_{j=1}^{|V|} \theta_{j1}^{x_j}}{\prod_{j=1}^{|V|} \theta_{j2}^{x_j}} > 1
+\]
+
+Simplifying the product ratio:
+\[
+\frac{P(C = c_1)}{P(C = c_2)} \cdot \prod_{j=1}^{|V|} \left( \frac{\theta_{j1}}{\theta_{j2}} \right)^{x_j} > 1
+\]
+
+\textbf{Step 5: Take the Logarithm (Log-Odds)}
+
+Applying the logarithm to both sides:
+\[
+\log \frac{P(C = c_1)}{P(C = c_2)} + \sum_{j=1}^{|V|} x_j \log \frac{\theta_{j1}}{\theta_{j2}} > 0
+\]
+
+Let's denote:
+\begin{align*}
+b &= \log \frac{P(C = c_1)}{P(C = c_2)} \quad \text{(bias term)} \\
+w_j &= \log \frac{\theta_{j1}}{\theta_{j2}} \quad \text{(weight for word } j\text{)}
+\end{align*}
+
+Then the decision rule becomes:
+\[
+\sum_{j=1}^{|V|} w_j x_j + b > 0
+\]
+
+Or in vector notation:
+\[
+\mathbf{w}^T \mathbf{x} + b > 0
+\]
+
+where $\mathbf{w} = (w_1, w_2, \ldots, w_{|V|})$ is the weight vector.
+
+\textbf{Step 6: Define the Decision Function}
+
+Define the decision function:
+\[
+f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b = \sum_{j=1}^{|V|} w_j x_j + b
+\]
+
+The classifier predicts:
+\[
+\hat{C}(\mathbf{x}) = \begin{cases}
+c_1 & \text{if } f(\mathbf{x}) > 0 \\
+c_2 & \text{if } f(\mathbf{x}) < 0
+\end{cases}
+\]
+
+\textbf{Step 7: Prove Linearity}
+
+The function $f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b$ is a \textbf{linear function} of $\mathbf{x}$ because:
+\begin{enumerate}
+    \item It is a weighted sum of the features (word counts)
+    \item Each feature $x_j$ appears with coefficient $w_j$
+    \item There are no polynomial terms, products of features, or nonlinear transformations
+\end{enumerate}
+
+The decision boundary is defined by:
+\[
+\{\mathbf{x} : f(\mathbf{x}) = 0\} = \{\mathbf{x} : \mathbf{w}^T \mathbf{x} + b = 0\}
+\]
+
+This is a \textbf{hyperplane} in the $|V|$-dimensional space of word counts.
+
+\textbf{Therefore, the Multinomial Naive Bayes classifier is a linear classifier.}
+
+\textbf{Step 8: Explicit Formulas for $\mathbf{w}$ and $b$}
+
+\textbf{Weight vector:}
+\[
+\boxed{\mathbf{w} = \begin{pmatrix}
+w_1 \\
+w_2 \\
+\vdots \\
+w_{|V|}
+\end{pmatrix} = \begin{pmatrix}
+\log \frac{\theta_{11}}{\theta_{12}} \\
+\log \frac{\theta_{21}}{\theta_{22}} \\
+\vdots \\
+\log \frac{\theta_{|V|1}}{\theta_{|V|2}}
+\end{pmatrix} = \begin{pmatrix}
+\log \frac{P(\text{word } 1 \mid C = c_1)}{P(\text{word } 1 \mid C = c_2)} \\
+\log \frac{P(\text{word } 2 \mid C = c_1)}{P(\text{word } 2 \mid C = c_2)} \\
+\vdots \\
+\log \frac{P(\text{word } |V| \mid C = c_1)}{P(\text{word } |V| \mid C = c_2)}
+\end{pmatrix}}
+\]
+
+Each weight $w_j$ is the \textbf{log-odds ratio} (or log-likelihood ratio) for word $j$.
+
+\textbf{Bias term:}
+\[
+\boxed{b = \log \frac{P(C = c_1)}{P(C = c_2)} = \log \frac{\pi_1}{\pi_2}}
+\]
+
+The bias captures the \textbf{prior log-odds} of class $c_1$ vs. class $c_2$.
+
+\textbf{Step 9: Interpretation of Weights}
+
+\textbf{Positive weight ($w_j > 0$):}
+\[
+w_j > 0 \iff \log \frac{\theta_{j1}}{\theta_{j2}} > 0 \iff \theta_{j1} > \theta_{j2}
+\]
+Word $j$ is \textbf{more likely in class $c_1$} (e.g., "win" is more likely in Spam).
+\begin{itemize}
+    \item Each occurrence of word $j$ adds $w_j$ to the score
+    \item Pushes the decision toward class $c_1$
+\end{itemize}
+
+\textbf{Negative weight ($w_j < 0$):}
+\[
+w_j < 0 \iff \theta_{j1} < \theta_{j2}
+\]
+Word $j$ is \textbf{more likely in class $c_2$} (e.g., "call" is more likely in Ham).
+\begin{itemize}
+    \item Each occurrence of word $j$ subtracts $|w_j|$ from the score
+    \item Pushes the decision toward class $c_2$
+\end{itemize}
+
+\textbf{Zero weight ($w_j \approx 0$):}
+\[
+w_j \approx 0 \iff \theta_{j1} \approx \theta_{j2}
+\]
+Word $j$ has \textbf{equal probability in both classes} (e.g., stopwords like "the", "is").
+\begin{itemize}
+    \item Not discriminative
+    \item Contributes little to the decision
+\end{itemize}
+
+\textbf{Magnitude $|w_j|$:}
+
+The magnitude indicates the \textbf{discriminative power} of word $j$:
+\begin{itemize}
+    \item Large $|w_j|$ → word is highly informative for classification
+    \item Small $|w_j|$ → word is not very useful
+\end{itemize}
+
+\textbf{Step 10: Numerical Example}
+
+Using our Spam vs. Ham example with Laplace smoothing:
+
+\textbf{Class priors:}
+\[
+P(C = \text{Spam}) = 0.4, \quad P(C = \text{Ham}) = 0.6
+\]
+
+\textbf{Bias:}
+\[
+b = \log \frac{0.4}{0.6} = \log(0.667) = -0.405
+\]
+
+\textbf{Conditional probabilities (from part a):}
+\begin{align*}
+\theta_{\text{win}, \text{Spam}} &= \frac{26}{64} = 0.4063, \quad \theta_{\text{win}, \text{Ham}} = \frac{3}{64} = 0.0469 \\
+\theta_{\text{free}, \text{Spam}} &= \frac{21}{64} = 0.3281, \quad \theta_{\text{free}, \text{Ham}} = \frac{6}{64} = 0.0938 \\
+\theta_{\text{credit}, \text{Spam}} &= \frac{16}{64} = 0.2500, \quad \theta_{\text{credit}, \text{Ham}} = \frac{4}{64} = 0.0625 \\
+\theta_{\text{call}, \text{Spam}} &= \frac{1}{64} = 0.0156, \quad \theta_{\text{call}, \text{Ham}} = \frac{51}{64} = 0.7969
+\end{align*}
+
+\textbf{Weights:}
+\begin{align*}
+w_{\text{win}} &= \log \frac{0.4063}{0.0469} = \log(8.66) = 2.16 \\
+w_{\text{free}} &= \log \frac{0.3281}{0.0938} = \log(3.50) = 1.25 \\
+w_{\text{credit}} &= \log \frac{0.2500}{0.0625} = \log(4.00) = 1.39 \\
+w_{\text{call}} &= \log \frac{0.0156}{0.7969} = \log(0.0196) = -3.93
+\end{align*}
+
+\textbf{Weight vector:}
+\[
+\mathbf{w} = \begin{pmatrix}
+2.16 \\
+1.25 \\
+1.39 \\
+-3.93
+\end{pmatrix} \quad \text{(for words "win", "free", "credit", "call")}
+\]
+
+\textbf{Decision function:}
+\[
+f(\mathbf{x}) = 2.16 \cdot x_{\text{win}} + 1.25 \cdot x_{\text{free}} + 1.39 \cdot x_{\text{credit}} - 3.93 \cdot x_{\text{call}} - 0.405
+\]
+
+\textbf{Example classification:}
+
+For the message "win free credit" with $\mathbf{x} = (1, 1, 1, 0)$:
+\[
+f(\mathbf{x}) = 2.16(1) + 1.25(1) + 1.39(1) - 3.93(0) - 0.405 = 2.16 + 1.25 + 1.39 - 0.405 = 4.395
+\]
+
+Since $f(\mathbf{x}) = 4.395 > 0$, classify as \textbf{Spam}. ✓
+
+For a message "call" with $\mathbf{x} = (0, 0, 0, 1)$:
+\[
+f(\mathbf{x}) = 2.16(0) + 1.25(0) + 1.39(0) - 3.93(1) - 0.405 = -3.93 - 0.405 = -4.335
+\]
+
+Since $f(\mathbf{x}) = -4.335 < 0$, classify as \textbf{Ham}. ✓
+
+\textbf{Step 11: Geometric Interpretation}
+
+The decision boundary is the hyperplane:
+\[
+2.16 \cdot x_{\text{win}} + 1.25 \cdot x_{\text{free}} + 1.39 \cdot x_{\text{credit}} - 3.93 \cdot x_{\text{call}} = 0.405
+\]
+
+In the 4-dimensional word-count space:
+\begin{itemize}
+    \item Points on one side of the hyperplane are classified as Spam
+    \item Points on the other side are classified as Ham
+    \item The normal vector to the hyperplane is $\mathbf{w}$, which points toward the Spam region
+    \item The distance from the origin to the hyperplane is $|b| / \|\mathbf{w}\|$
+\end{itemize}
+
+\textbf{Visualization in 2D (simplified):}
+
+Consider only two features: $x_{\text{win}}$ and $x_{\text{call}}$. The decision boundary is:
+\[
+2.16 \cdot x_{\text{win}} - 3.93 \cdot x_{\text{call}} = 0.405
+\]
+
+Solving for $x_{\text{call}}$:
+\[
+x_{\text{call}} = \frac{2.16}{3.93} x_{\text{win}} - \frac{0.405}{3.93} \approx 0.55 \cdot x_{\text{win}} - 0.10
+\]
+
+This is a straight line with:
+\begin{itemize}
+    \item Slope: $0.55$ (positive because $w_{\text{win}}$ and $w_{\text{call}}$ have opposite signs)
+    \item Intercept: $-0.10$
+    \item Documents above the line → Ham
+    \item Documents below the line → Spam
+\end{itemize}
+
+\textbf{Conclusion:}
+
+We have proven that the Multinomial Naive Bayes classifier is a \textbf{linear classifier} in log-space with:
+\[
+\boxed{
+\begin{aligned}
+\text{Weight vector: } & \mathbf{w} = \left( \log \frac{P(w_j \mid c_1)}{P(w_j \mid c_2)} \right)_{j=1}^{|V|} \\
+\text{Bias: } & b = \log \frac{P(c_1)}{P(c_2)} \\
+\text{Decision function: } & f(\mathbf{x}) = \mathbf{w}^T \mathbf{x} + b \\
+\text{Decision rule: } & \hat{C}(\mathbf{x}) = c_1 \text{ if } f(\mathbf{x}) > 0, \text{ else } c_2
+\end{aligned}
+}
+\]
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Dive: Implications of Linearity}
+
+\textbf{1. Comparison with Other Linear Classifiers}
+
+The Multinomial Naive Bayes classifier is \textbf{one member} of the family of linear classifiers. How does it compare?
+
+\begin{center}
+\small
+\begin{tabular}{|p{2.8cm}|p{4.2cm}|p{1.8cm}|p{2.8cm}|}
+\hline
+\textbf{Classifier} & \textbf{Weight Learning} & \textbf{Prob.?} & \textbf{Training} \\
+\hline
+Naive Bayes & $w_j = \log \frac{\theta_{j1}}{\theta_{j2}}$ & Yes & Count frequencies \\
+\hline
+Logistic Regression & Maximize conditional likelihood & Yes & Gradient descent \\
+\hline
+Perceptron & Mistake-driven updates & No & Online learning \\
+\hline
+SVM (linear) & Maximize margin & No & Quadratic program \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Key distinction:} Naive Bayes is a \textbf{generative} classifier (models $P(\mathbf{x} \mid C)$), while Logistic Regression, Perceptron, and SVM are \textbf{discriminative} (directly model $P(C \mid \mathbf{x})$ or the decision boundary).
+
+\textbf{2. Why Linearity Matters}
+
+\textit{Computational efficiency:}
+\begin{itemize}
+    \item Classification is $O(|V|)$: just compute a dot product
+    \item Training is $O(N \cdot d)$ where $N$ is number of documents, $d$ is average document length
+    \item No iterative optimization needed (just count!)
+\end{itemize}
+
+\textit{Interpretability:}
+\begin{itemize}
+    \item Each weight $w_j$ has a clear meaning: log-likelihood ratio for word $j$
+    \item Can rank features by $|w_j|$ to find most important words
+    \item Can visualize decision boundary (in 2D/3D projections)
+\end{itemize}
+
+\textit{Scalability:}
+\begin{itemize}
+    \item Works well even with $|V| = 100{,}000$ words
+    \item Sparse representation efficient: only store non-zero counts
+\end{itemize}
+
+\textit{Limitations:}
+\begin{itemize}
+    \item Cannot capture feature interactions (e.g., "not good" vs "good")
+    \item Linear decision boundary may be too simple for complex tasks
+    \item Strong independence assumption often violated
+\end{itemize}
+
+\textbf{3. When Naive Bayes Beats Logistic Regression}
+
+Despite the "naive" independence assumption, NB can outperform LR in some settings:
+
+\textit{Small training data:}
+\begin{itemize}
+    \item NB has $O(|V| \cdot |C|)$ parameters to estimate
+    \item LR has $O(|V|)$ parameters but requires iterative optimization
+    \item NB converges faster with limited data (Ng \& Jordan, 2002)
+\end{itemize}
+
+\textit{High-dimensional sparse features:}
+\begin{itemize}
+    \item Text data often has $|V| \gg N$ (more features than examples)
+    \item NB's closed-form solution avoids overfitting
+    \item LR may need regularization
+\end{itemize}
+
+\textit{Model calibration:}
+\begin{itemize}
+    \item NB provides well-calibrated probabilities (under correct model)
+    \item LR probabilities can be overconfident without calibration
+\end{itemize}
+
+\textbf{4. Relationship to Log-Linear Models}
+
+The decision function $f(\mathbf{x}) = \sum_j w_j x_j + b$ is a \textbf{log-linear model}.
+
+We can rewrite the posterior as:
+\[
+P(C = c_1 \mid \mathbf{x}) = \frac{1}{1 + \exp(-f(\mathbf{x}))} = \sigma(f(\mathbf{x}))
+\]
+where $\sigma$ is the logistic sigmoid function.
+
+This is \textbf{exactly the form of logistic regression}! The difference is:
+\begin{itemize}
+    \item NB: Weights come from generative model ($w_j = \log \frac{\theta_{j1}}{\theta_{j2}}$)
+    \item LR: Weights come from discriminative training (maximize $P(C \mid \mathbf{x})$ directly)
+\end{itemize}
+
+\textbf{5. Feature Engineering Implications}
+
+Since NB is linear in $\mathbf{x}$, we can improve performance by:
+
+\textit{Adding polynomial features:}
+\begin{itemize}
+    \item Include bigrams: $x_{\text{"not\_good"}}$ as a separate feature
+    \item Capture local context
+\end{itemize}
+
+\textit{Non-linear transformations:}
+\begin{itemize}
+    \item Use $\log(1 + x_j)$ instead of $x_j$ to reduce impact of very frequent words
+    \item TF-IDF weighting
+\end{itemize}
+
+\textit{Feature selection:}
+\begin{itemize}
+    \item Remove features with $|w_j| < \epsilon$ (low discriminative power)
+    \item Keep top $k$ features by $|w_j|$
+\end{itemize}
+
+\textbf{6. The Decision Boundary in High Dimensions}
+
+In $|V|$-dimensional space, the decision boundary $\mathbf{w}^T \mathbf{x} + b = 0$ is a $(|V|-1)$-dimensional hyperplane.
+
+\textit{Example: $|V| = 50{,}000$ (typical vocabulary size)}
+
+The hyperplane has 49,999 dimensions! High-dimensional geometry has surprising properties:
+\begin{itemize}
+    \item Most data points are "far" from the decision boundary (curse of dimensionality)
+    \item Margin (distance to boundary) can be large even with simple linear classifier
+    \item Generalization can be good despite high dimensions (due to sparsity)
+\end{itemize}
+
+\textbf{7. Probabilistic Interpretation of Margin}
+
+For a document $\mathbf{x}$, the score $f(\mathbf{x})$ is the log-odds:
+\[
+f(\mathbf{x}) = \log \frac{P(C = c_1 \mid \mathbf{x})}{P(C = c_2 \mid \mathbf{x})}
+\]
+
+We can convert back to probability:
+\[
+P(C = c_1 \mid \mathbf{x}) = \frac{\exp(f(\mathbf{x}))}{1 + \exp(f(\mathbf{x}))} = \frac{1}{1 + \exp(-f(\mathbf{x}))}
+\]
+
+\textbf{Margin interpretation:}
+\begin{itemize}
+    \item $f(\mathbf{x}) = 0$: Uncertain (50-50 probability)
+    \item $f(\mathbf{x}) = 2$: $P(c_1 \mid \mathbf{x}) = 0.88$ (confident)
+    \item $f(\mathbf{x}) = 5$: $P(c_1 \mid \mathbf{x}) = 0.993$ (very confident)
+    \item $f(\mathbf{x}) = -3$: $P(c_1 \mid \mathbf{x}) = 0.047$ (confident for $c_2$)
+\end{itemize}
+
+\textbf{8. Extensions to Multi-Class}
+
+For $K > 2$ classes, we use the \textbf{one-vs-rest} strategy or \textbf{softmax}:
+
+\textit{Softmax (natural generalization):}
+\[
+P(C = c_k \mid \mathbf{x}) = \frac{\exp(f_k(\mathbf{x}))}{\sum_{k'=1}^{K} \exp(f_{k'}(\mathbf{x}))}
+\]
+where $f_k(\mathbf{x}) = \mathbf{w}_k^T \mathbf{x} + b_k$ with:
+\[
+\mathbf{w}_k = \begin{pmatrix}
+\log \theta_{1k} \\
+\log \theta_{2k} \\
+\vdots \\
+\log \theta_{|V|k}
+\end{pmatrix}, \quad b_k = \log P(C = c_k)
+\]
+
+This is still a \textbf{linear classifier in log-space}. The decision regions are separated by hyperplanes.
+
+\textbf{9. Connection to Information Theory}
+
+The weight $w_j = \log \frac{\theta_{j1}}{\theta_{j2}}$ can be interpreted as the \textbf{pointwise mutual information} between word $j$ and class $c_1$ (relative to $c_2$).
+
+The score $f(\mathbf{x}) = \sum_j w_j x_j$ is a weighted sum of information contributions from each word occurrence.
+
+This provides an information-theoretic justification for why NB works: it aggregates evidence (in the form of log-likelihood ratios) from all words to make a decision.
+
+\textbf{10. Practical Considerations}
+
+\textit{Underflow prevention:}
+\begin{itemize}
+    \item Always compute in log-space
+    \item Never compute $\prod \theta_j$ directly (will underflow to 0)
+    \item Use $\sum \log \theta_j$ instead
+\end{itemize}
+
+\textit{Smoothing impact on weights:}
+\begin{itemize}
+    \item Laplace smoothing shrinks $|w_j|$ toward 0
+    \item Prevents overly confident predictions from rare words
+    \item Acts as implicit regularization
+\end{itemize}
+
+\textit{Sparse implementation:}
+\begin{itemize}
+    \item Store only (word index, count) pairs for each document
+    \item Skip words with $x_j = 0$ when computing $\sum w_j x_j$
+    \item Massive speedup for sparse text data
+\end{itemize}
+\end{explanation}
+
 \end{document}
 

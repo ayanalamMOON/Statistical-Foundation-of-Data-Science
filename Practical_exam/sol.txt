@@ -1,0 +1,80 @@
+Below are intuitive, well-designed prompts you can give to an LLM to solve your assignment without copying the question, while still covering:
+
+• Implementation with explanation
+• The prompt you used
+• Reason for the prompt
+
+I’ll give you 3 different prompt styles so you can choose whichever feels most natural.
+
+Prompt 1 (Direct & Statistical)
+
+“Perform a two-tailed one-sample t-test at α = 0.05 for a dataset of eight weight measurements.
+Assume a hypothesised population mean of 50.
+Compute the sample mean, sample standard deviation, test statistic, degrees of freedom, p-value, and conclusion.
+Show all calculations step-by-step, including formulas.
+Then explain the result in plain language.”
+
+Why this prompt works
+
+It gives the model exactly the structure needed: a hypothesis test with full derivation.
+It avoids copying the original question but still contains all necessary test instructions.
+
+Prompt 2 (Implementation-Focused)
+
+“I have eight observations representing product weights.
+I want to test if the true average weight differs from a target value of 50.
+Use a two-sided one-sample t-test at a 5% significance level.
+Show the implementation (Python or manual math), illustrate each formula used, compute the numerical result, and explain what the conclusion means in terms of quality checking.”
+
+Why this prompt works
+
+This version centers on implementation, which your assignment explicitly requires.
+It signals the model to include formulas + explanation + interpretation.
+
+Prompt 3 (Classroom Viva Style)
+
+“Explain how to check whether a sample of eight weight measurements suggests that the population mean is different from 50.
+Use a two-tailed t-test with α = 0.05.
+Walk through the full hypothesis-testing procedure:
+(1) stating H0 and H1,
+(2) calculating the sample mean and standard deviation,
+(3) deriving the t-statistic,
+(4) finding the p-value,
+(5) giving a decision and explanation.
+Give the answer in a clear, exam-style manner.”
+
+Why this prompt works
+
+It mimics a viva explanation format, which ensures the output is written like an exam answer.
+
+Prompt 4 (For Maximum Detail & Clarity)
+
+“I have a small dataset (n=8) representing measured weights from a production batch.
+The manufacturing standard claims the mean weight should be 50.
+Help me determine whether the sample provides statistical evidence that the actual mean is different.
+Use a two-tailed t-test at a significance level of 0.05.
+Show every calculation in detail, including the formula for the t-statistic, manual computation of variance, standard deviation, and the p-value.
+Finish with a clear explanation of the statistical conclusion.”
+
+Why this prompt works
+
+This version gives the LLM maximum control and ensures deep step-by-step derivation.
+
+Prompt 5 (Minimal but Powerful)
+
+“Here are eight sample weights: [write your weights].
+Test whether the sample mean is statistically different from 50 using a two-sided t-test at α = 0.05.
+Show full derivations and interpret the result.”
+
+Why this prompt works
+
+Short, elegant, and still complete.
+
+If you want, I can also write:
+
+• the full implementation section
+• a full solution for the hypothesis test
+• diagrams or formulas in LaTeX
+• how to present it inside your assignment neatly
+
+Each of those can be generated using the prompt you choose.
