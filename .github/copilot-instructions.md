@@ -169,6 +169,152 @@ VS Code configured for LaTeX compilation (`.vscode/settings.json`):
 - Uses `pdflatex` with auto-build on save
 - See `Lecture Assignments/Assignment 1/` for `.tex` workflow example
 
+### LaTeX Assignment Format - CRITICAL RULE
+
+**SOLUTION SECTIONS MUST CONTAIN ONLY MATHEMATICAL CONTENT - NO NARRATIVE TEXT**
+
+This is the **Assignment 2 format standard** that MUST be followed for all LaTeX assignments:
+
+#### ✅ ALLOWED in `\begin{solution}...\end{solution}`:
+- Mathematical formulas and equations
+- Calculations with numbered steps (STEP 1, STEP 2, etc.)
+- Step-by-step derivations showing each algebraic manipulation
+- Numerical tables and matrices
+- Final results in boxes
+- Theorem statements (formal mathematical statements only)
+- Proof derivations (mathematical steps only)
+- Brief labels like "STEP 1:", "Case 1:", "For cluster i:"
+
+**Calculation Requirements:**
+- **Show ALL intermediate steps** - no jumps in algebra or arithmetic
+- **One operation per line** - make each transformation explicit
+- **Keep it concise** - write only what is mathematically necessary
+- **No excessive explanations** - let the mathematics speak for itself
+
+**Example of CORRECT calculation format:**
+```latex
+\begin{align*}
+f(x) &= (x-2)^2 + 3     \quad \text{(given)} \\
+    &= x^2 - 4x + 4 + 3 \quad \text{(expand)} \\
+    &= x^2 - 4x + 7     \quad \text{(simplify)}
+\end{align*}
+```
+
+**Example of INCORRECT (too much narrative):**
+```latex
+First, we need to understand that expanding the square will give us three terms.
+Let me show you why this works: when we expand (x-2)^2, we're essentially...
+[excessive explanation continues]
+```
+
+#### ❌ FORBIDDEN in `\begin{solution}...\end{solution}`:
+- "Goal:", "Key insight:", "Motivation:", "Intuition:" sections
+- "Why...", "How...", "What..." explanatory questions
+- "Wait, this doesn't work..." or "Let me recalculate..." thinking-aloud text
+- "Hmm,", "Actually,", "Note that" commentary
+- Bullet-point explanations of concepts
+- "Interpretation:" sections with prose
+- "Claim:", "Proof sketch:" with narrative proofs
+- Parenthetical comments like "(no change needed)", "(this makes sense because...)"
+- ASCII visualizations or diagrams
+- "Accepting this standard result for brevity" disclaimers
+- Any sentence that explains WHY or HOW something works conceptually
+
+#### ✅ WHERE NARRATIVE BELONGS:
+All explanatory text, intuitions, interpretations, and conceptual discussions go in `\begin{explanation}...\end{explanation}` sections ONLY.
+
+### Explanation Section Format - CRITICAL RULE
+
+**EXPLANATION SECTIONS MUST BE WRITTEN AS PROFESSIONAL TEACHING CONTENT - NO INNER MONOLOGUE**
+
+Explanation sections should read like a **textbook or lecture notes**, not like someone thinking aloud or working through problems.
+
+#### ✅ ALLOWED in `\begin{explanation}...\end{explanation}`:
+- Clear conceptual explanations in declarative sentences
+- "Why this matters" and "How it works" discussions
+- Step-by-step reasoning presented as teaching material
+- Examples with pedagogical purpose
+- Comparisons and contrasts between methods
+- Intuitive interpretations of mathematical results
+- Real-world applications and implications
+- Common pitfalls and how to avoid them
+- Key insights presented as established facts
+
+**Tone Requirements:**
+- **Authoritative and confident** - present information as a teacher would
+- **Direct and clear** - use simple, declarative statements
+- **Professional** - academic but accessible language
+- **Organized** - logical flow with clear structure
+
+**Example of CORRECT explanation format:**
+```latex
+\begin{explanation}
+\textbf{Why normalization is essential:}
+
+In KNN algorithms, features with larger scales dominate distance calculations.
+Consider a dataset where age ranges from 20-80 (range: 60) and income ranges
+from \$20,000-\$200,000 (range: 180,000). Without normalization, income
+differences are weighted 3,000× more than age differences.
+
+Normalization ensures all features contribute proportionally to the distance metric.
+\end{explanation}
+```
+
+#### ❌ FORBIDDEN in `\begin{explanation}...\end{explanation}`:
+- "Wait, let me reconsider..." or "Hmm, this seems wrong..."
+- "Actually, I made a mistake..." or "Let me recalculate..."
+- "Oh, I see now..." or "Ah, that makes sense..."
+- "Let me try a different approach..." or "Maybe I should..."
+- "I think..." or "I believe..." (use definitive statements)
+- "This is confusing, but..." or "I'm not sure, but..."
+- Self-corrections mid-explanation ("No wait, that's not right...")
+- Questioning tone: "Why does this work? Well, uh..."
+- Stream-of-consciousness writing
+- Debugging commentary or trial-and-error narration
+- Apologetic language: "Sorry for the confusion..."
+- Uncertainty markers: "probably", "maybe", "might be"
+
+**Example of INCORRECT (inner monologue):**
+```latex
+\begin{explanation}
+Hmm, let me think about why normalization matters here. Well, first I should
+consider... wait, actually that's not quite right. Let me reconsider. Oh, I see
+now - it's because the scales are different! Actually, let me recalculate to make
+sure. Yeah, that seems to work better.
+\end{explanation}
+```
+
+#### Quality Standards for Explanations:
+1. **Write in present tense** - "This algorithm works by..." not "This worked by..."
+2. **Use active voice** - "We normalize features to..." not "Features are normalized..."
+3. **Be definitive** - "This happens because..." not "This might happen because..."
+4. **Structure logically** - use subheadings, numbered lists, clear paragraphs
+5. **Teach, don't discover** - present insights as conclusions, not as realizations
+6. **No self-reference** - avoid "I", "my calculation", "my approach"
+7. **No metacommentary** - don't comment on the writing process itself
+
+**STRICT ENFORCEMENT POLICY FOR EXPLANATIONS**:
+- **Before submitting**: Remove ALL inner monologue and thinking-aloud text
+- **Rewrite uncertainties**: Convert "I think X" to "X occurs because..."
+- **Remove corrections**: If you made an error, just write the correct version
+- **Professional tone only**: Write as if for publication in academic materials
+- **No stream-of-consciousness**: Every sentence should be deliberate and polished
+
+**Reference Implementation**: See `Lecture Assignments/Assignment 2/Assignment2_Solutions.tex` for correct format.
+
+**Recent Violation Example (Problem 7, Assignment 3)**:
+- ❌ Had "Goal:", "Key insight:", "Wait, this doesn't work cleanly", "Why logarithmic?" in solution sections
+- ✅ Fixed by removing ALL narrative, keeping only: algorithm steps, probability calculations, tables, theorem statements, mathematical derivations
+
+**STRICT ENFORCEMENT POLICY**:
+- **Before submitting ANY LaTeX solution**: Verify solution sections contain ZERO narrative text
+- **If ANY forbidden pattern detected**: IMMEDIATELY rewrite to pure mathematics
+- **No exceptions**: This rule applies to ALL problems in ALL LaTeX assignments
+- **Automated check**: Search solution sections for forbidden keywords before compilation
+- **Quality standard**: Solution = mathematics only, Explanation = narrative only
+
+This is non-negotiable for maintaining academic formatting standards.
+
 ## Theory Notes Reference Guide
 
 Use these notes strategically during assignment work:

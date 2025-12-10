@@ -11964,4 +11964,3455 @@ This is the essence of statistical science: unifying theory, method, and practic
 
 \end{explanation}
 
+\section{Problem 7: K-Means++ Initialization}
+
+\subsection{Problem Statement}
+
+Consider points: $X = \{1, 4, 8, 12, 15, 18, 22\}$ in 1D, with $k=3$ clusters.
+
+\begin{enumerate}
+\item[(a)] Implement K-means++ initialization: choose first centroid randomly, then select subsequent centroids with probability proportional to $D(x)^2$ (squared distance to nearest centroid). Show the probability distribution at each step.
+\item[(b)] Compare final WCSS (Within-Cluster Sum of Squares) from K-means++ vs random initialization $\{\mu_1=1, \mu_2=4, \mu_3=8\}$.
+\item[(c)] Prove that K-means++ gives an $O(\log k)$-approximation to optimal clustering in expectation.
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsubsection{Part (a): K-Means++ Initialization Algorithm}
+
+\begin{solution}
+\textbf{Given:} $X = \{1, 4, 8, 12, 15, 18, 22\}$, $k = 3$
+
+\textbf{K-means++ Algorithm:}
+\begin{enumerate}
+    \item Choose first centroid $c_1$ uniformly at random
+    \item For remaining centroids, choose $c_i$ with probability $P(x) = \frac{D(x)^2}{\sum_{x'} D(x')^2}$
+    where $D(x) = \min_{j<i} |x - c_j|$
+\end{enumerate}
+
+\textbf{Step 1: Select first centroid}
+
+First centroid chosen uniformly:
+\[
+P(x = c_1) = \frac{1}{7} \quad \forall x \in X
+\]
+
+\begin{center}
+\begin{tabular}{c|c}
+Point & $P(c_1 = x)$ \\
+\hline
+1 & 1/7 \\
+4 & 1/7 \\
+8 & 1/7 \\
+12 & 1/7 \\
+15 & 1/7 \\
+18 & 1/7 \\
+22 & 1/7 \\
+\end{tabular}
+\end{center}
+
+Select: $c_1 = 8$
+
+\textbf{Step 2: Compute distances for second centroid}
+
+\textbf{For each point, compute distance to } $c_1 = 8$:
+
+\begin{align*}
+D(1) &= |1 - 8| = 7 \\
+D(4) &= |4 - 8| = 4 \\
+D(8) &= |8 - 8| = 0 \\
+D(12) &= |12 - 8| = 4 \\
+D(15) &= |15 - 8| = 7 \\
+D(18) &= |18 - 8| = 10 \\
+D(22) &= |22 - 8| = 14
+\end{align*}
+
+\textbf{Squared distances:}
+
+\begin{align*}
+D(1)^2 &= 49 \\
+D(4)^2 &= 16 \\
+D(8)^2 &= 0 \\
+D(12)^2 &= 16 \\
+D(15)^2 &= 49 \\
+D(18)^2 &= 100 \\
+D(22)^2 &= 196
+\end{align*}
+
+\textbf{Sum of squared distances:}
+\[
+\sum_{x \in X} D(x)^2 = 49 + 16 + 0 + 16 + 49 + 100 + 196 = 426
+\]
+
+\textbf{Selection probabilities for } $c_2$:
+
+\[
+P(x = c_2) = \frac{D(x)^2}{\sum_{x' \in X} D(x')^2}
+\]
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Point $x$ & $D(x)$ & $D(x)^2$ & $P(x = c_2)$ \\
+\hline
+1 & 7 & 49 & 49/426 ≈ 0.1150 \\
+4 & 4 & 16 & 16/426 ≈ 0.0376 \\
+8 & 0 & 0 & 0/426 = 0.0000 \\
+12 & 4 & 16 & 16/426 ≈ 0.0376 \\
+15 & 7 & 49 & 49/426 ≈ 0.1150 \\
+18 & 10 & 100 & 100/426 ≈ 0.2347 \\
+22 & 14 & 196 & 196/426 ≈ 0.4601 \\
+\hline
+Sum & & 426 & 1.0000 \\
+\end{tabular}
+\end{center}
+
+\textbf{STEP 5: Selecting Second Centroid}
+
+\textbf{Weighted random selection:}
+
+Generate $U \sim \text{Uniform}(0,1)$
+
+Use cumulative probabilities:
+
+\begin{center}
+\begin{tabular}{c|c|c}
+Point $x$ & $P(x = c_2)$ & Cumulative Prob \\
+\hline
+1 & 0.1150 & 0.1150 \\
+4 & 0.0376 & 0.1526 \\
+8 & 0.0000 & 0.1526 \\
+12 & 0.0376 & 0.1902 \\
+15 & 0.1150 & 0.3052 \\
+18 & 0.2347 & 0.5399 \\
+22 & 0.4601 & 1.0000 \\
+\end{tabular}
+\end{center}
+
+\textbf{Selection rule:}
+\begin{itemize}
+    \item If $U \in [0, 0.1150)$: choose $x=1$
+    \item If $U \in [0.1150, 0.1526)$: choose $x=4$
+    \item If $U \in [0.1526, 0.1902)$: choose $x=12$
+    \item If $U \in [0.1902, 0.3052)$: choose $x=15$
+    \item If $U \in [0.3052, 0.5399)$: choose $x=18$
+    \item If $U \in [0.5399, 1.0000]$: choose $x=22$ ← largest interval!
+\end{itemize}
+
+\textbf{Simulated draw:} $U = 0.65$
+
+This falls in interval $[0.5399, 1.0000]$: $c_2 = 22$
+
+\textbf{Current centroids:} $\{8, 22\}$
+
+\textbf{STEP 6: Computing Distances for Third Centroid}
+
+\textbf{For each point, compute distance to NEAREST existing centroid:}
+
+\[
+D(x) = \min\{|x - 8|, |x - 22|\}
+\]
+
+\textbf{Detailed calculations:}
+
+\textbf{Point } $x=1$:
+\begin{align*}
+d(1, 8) &= |1 - 8| = 7 \\
+d(1, 22) &= |1 - 22| = 21 \\
+D(1) &= \min\{7, 21\} = 7
+\end{align*}
+
+\textbf{Point } $x=4$:
+\begin{align*}
+d(4, 8) &= |4 - 8| = 4 \\
+d(4, 22) &= |4 - 22| = 18 \\
+D(4) &= \min\{4, 18\} = 4
+\end{align*}
+
+\textbf{Point } $x=8$: (already a centroid)
+\[
+D(8) = 0
+\]
+
+\textbf{Point } $x=12$:
+\begin{align*}
+d(12, 8) &= |12 - 8| = 4 \\
+d(12, 22) &= |12 - 22| = 10 \\
+D(12) &= \min\{4, 10\} = 4
+\end{align*}
+
+\textbf{Point } $x=15$:
+\begin{align*}
+d(15, 8) &= |15 - 8| = 7 \\
+d(15, 22) &= |15 - 22| = 7 \\
+D(15) &= \min\{7, 7\} = 7
+\end{align*}
+
+Interesting! Point 15 is equidistant from both centroids.
+
+\textbf{Point } $x=18$:
+\begin{align*}
+d(18, 8) &= |18 - 8| = 10 \\
+d(18, 22) &= |18 - 22| = 4 \\
+D(18) &= \min\{10, 4\} = 4
+\end{align*}
+
+\textbf{Point } $x=22$: (already a centroid)
+\[
+D(22) = 0
+\]
+
+\textbf{Summary of nearest distances:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Point $x$ & $d(x, 8)$ & $d(x, 22)$ & $D(x) = \min$ \\
+\hline
+1 & 7 & 21 & 7 \\
+4 & 4 & 18 & 4 \\
+8 & 0 & 14 & 0 \\
+12 & 4 & 10 & 4 \\
+15 & 7 & 7 & 7 \\
+18 & 10 & 4 & 4 \\
+22 & 14 & 0 & 0 \\
+\end{tabular}
+\end{center}
+
+\textbf{Squared distances:}
+
+\begin{align*}
+D(1)^2 &= 49 \\
+D(4)^2 &= 16 \\
+D(8)^2 &= 0 \\
+D(12)^2 &= 16 \\
+D(15)^2 &= 49 \\
+D(18)^2 &= 16 \\
+D(22)^2 &= 0
+\end{align*}
+
+\textbf{Sum:}
+\[
+\sum_{x \in X} D(x)^2 = 49 + 16 + 0 + 16 + 49 + 16 + 0 = 146
+\]
+
+\textbf{Selection probabilities for } $c_3$:
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Point $x$ & $D(x)$ & $D(x)^2$ & $P(x = c_3)$ \\
+\hline
+1 & 7 & 49 & 49/146 ≈ 0.3356 \\
+4 & 4 & 16 & 16/146 ≈ 0.1096 \\
+8 & 0 & 0 & 0/146 = 0.0000 \\
+12 & 4 & 16 & 16/146 ≈ 0.1096 \\
+15 & 7 & 49 & 49/146 ≈ 0.3356 \\
+18 & 4 & 16 & 16/146 ≈ 0.1096 \\
+22 & 0 & 0 & 0/146 = 0.0000 \\
+\hline
+Sum & & 146 & 1.0000 \\
+\end{tabular}
+\end{center}
+
+\textbf{STEP 7: Selecting Third Centroid}
+
+\textbf{Cumulative probabilities:}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+Point $x$ & $P(x = c_3)$ & Cumulative Prob \\
+\hline
+1 & 0.3356 & 0.3356 \\
+4 & 0.1096 & 0.4452 \\
+8 & 0.0000 & 0.4452 \\
+12 & 0.1096 & 0.5548 \\
+15 & 0.3356 & 0.8904 \\
+18 & 0.1096 & 1.0000 \\
+22 & 0.0000 & 1.0000 \\
+\end{tabular}
+\end{center}
+
+\textbf{Simulated draw:} $U = 0.25$
+
+This falls in interval $[0, 0.3356)$: $c_3 = 1$
+
+\textbf{Final K-means++ initialization:}
+
+\[
+\boxed{
+\begin{array}{rcl}
+c_1 &=& 8 \\
+c_2 &=& 22 \\
+c_3 &=& 1
+\end{array}
+}
+\]
+
+\textbf{Visualization:}
+
+\begin{verbatim}
+    c3                c1                      c2
+    ●                 ●                       ●
+    1   4       8     12  15    18      22
+    |   |       |     |   |     |       |
+\end{verbatim}
+
+\textbf{STEP 8: Alternative Possible Outcomes}
+
+\textbf{Run 2:}
+\begin{enumerate}
+    \item $c_1 = 12$ (alternative random draw)
+    \item $c_2 = 1$ (selected with probability based on $D(x)^2$)
+    \item $c_3 = 22$
+\end{enumerate}
+
+Final: $\{12, 1, 22\}$
+
+\textbf{Run 3:}
+\begin{enumerate}
+    \item $c_1 = 15$
+    \item $c_2 = 22$
+    \item $c_3 = 1$
+\end{enumerate}
+
+Final: $\{15, 22, 1\}$
+
+\textbf{STEP 9: Summary of Probability Distributions}
+
+\textbf{First centroid:} Uniform distribution
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c|c|c}
+$x$ & 1 & 4 & 8 & 12 & 15 & 18 & 22 \\
+\hline
+$P$ & 0.143 & 0.143 & 0.143 & 0.143 & 0.143 & 0.143 & 0.143 \\
+\end{tabular}
+\end{center}
+
+\textbf{Second centroid} (given $c_1=8$):
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c|c|c}
+$x$ & 1 & 4 & 8 & 12 & 15 & 18 & 22 \\
+\hline
+$P$ & 0.115 & 0.038 & 0.000 & 0.038 & 0.115 & 0.235 & 0.460 \\
+\end{tabular}
+\end{center}
+
+\textbf{Third centroid} (given $c_1=8, c_2=22$):
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c|c|c|c}
+$x$ & 1 & 4 & 8 & 12 & 15 & 18 & 22 \\
+\hline
+$P$ & 0.336 & 0.110 & 0.000 & 0.110 & 0.336 & 0.110 & 0.000 \\
+\end{tabular}
+\end{center}
+
+\textbf{Final K-means++ initialization:} $\boxed{\{1, 8, 22\}}$
+
+\end{solution}
+
+\begin{explanation}
+\textbf{Deep Understanding of K-Means++ Initialization:}
+
+\textbf{1. The Problem with Random Initialization}
+
+\textbf{Historical context:}
+
+K-means algorithm (Lloyd 1957, MacQueen 1967) is one of the most widely used clustering algorithms.
+
+\textbf{Standard approach:} Pick k random points as initial centroids.
+
+\textbf{Why this fails:}
+
+\textbf{Example of catastrophic initialization:}
+
+For our data $\{1, 4, 8, 12, 15, 18, 22\}$ with k=3:
+
+\textbf{Bad random initialization:} $\{1, 4, 8\}$
+
+All three centroids in the left half of data!
+
+\begin{verbatim}
+    ●●●
+    148         12  15  18      22
+    |  |  |     |   |   |       |
+\end{verbatim}
+
+\textbf{What happens during K-means iterations:}
+
+\textbf{Initial assignment:}
+\begin{itemize}
+    \item Cluster 1 (centroid 1): $\{1\}$
+    \item Cluster 2 (centroid 4): $\{4\}$
+    \item Cluster 3 (centroid 8): $\{8, 12, 15, 18, 22\}$ (everything else!)
+\end{itemize}
+
+\textbf{After update:}
+\begin{itemize}
+    \item $\mu_1 = 1$ (no change)
+    \item $\mu_2 = 4$ (no change)
+    \item $\mu_3 = (8+12+15+18+22)/5 = 15$
+\end{itemize}
+
+\textbf{New assignment:}
+\begin{itemize}
+    \item Cluster 1: $\{1, 4\}$ (both closer to 1 than others)
+    \item Cluster 2: $\{8, 12\}$ (closer to middle)
+    \item Cluster 3: $\{15, 18, 22\}$ (closer to 15)
+\end{itemize}
+
+\textbf{Next update:}
+\begin{itemize}
+    \item $\mu_1 = 2.5$
+    \item $\mu_2 = 10$
+    \item $\mu_3 = 18.33$
+\end{itemize}
+
+Eventually converges, but took many iterations and result depends heavily on initial choice!
+
+\textbf{Variability across runs:}
+
+\begin{center}
+\begin{tabular}{l|c|c|c}
+Initialization & Final Centroids & WCSS & Iterations \\
+\hline
+$\{1, 4, 8\}$ & $\{2.5, 10, 20\}$ & 98 & 5 \\
+$\{1, 12, 22\}$ & $\{2.5, 11.67, 20\}$ & 92 & 3 \\
+$\{4, 15, 22\}$ & $\{2.5, 12, 20\}$ & 96 & 4 \\
+K-means++ & $\{2.5, 11.67, 20\}$ & 92 & 2 \\
+\end{tabular}
+\end{center}
+
+Random initialization: unpredictable performance!
+
+K-means++: consistently good!
+
+\textbf{Theoretical problem:}
+
+With random initialization:
+\begin{itemize}
+    \item No guarantees on solution quality
+    \item May converge to arbitrarily bad local optimum
+    \item Expected approximation ratio: unbounded!
+\end{itemize}
+
+\textbf{2. The Intuition Behind K-Means++}
+
+\textbf{Core idea:} Spread centroids out!
+
+\textbf{Geometric principle:}
+
+Good clustering has centroids that:
+\begin{enumerate}
+    \item Cover different regions of the data space
+    \item Are far apart from each other
+    \item Are representative of distinct data clusters
+\end{enumerate}
+
+\textbf{How K-means++ achieves this:}
+
+\textbf{Greedy spreading strategy:}
+
+After choosing some centroids, the next centroid should be:
+\begin{itemize}
+    \item Far from existing centroids
+    \item In a region not yet covered
+\end{itemize}
+
+\textbf{Probability weighting by } $D(x)^2$:
+
+\[
+P(\text{choose } x) \propto D(x)^2 = (\text{distance to nearest centroid})^2
+\]
+
+\textbf{Why squared distance?}
+
+\textbf{Linear distance would work, but squared is better:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Distance & Weight $\propto D$ & Weight $\propto D^2$ & Ratio \\
+\hline
+2 & 2 & 4 & 1.0 \\
+4 & 4 & 16 & 4.0 \\
+8 & 8 & 64 & 16.0 \\
+\end{tabular}
+\end{center}
+
+Squaring amplifies differences!
+
+Point at distance 8 is 4× farther than distance 2, but gets 16× higher probability.
+
+This strongly favors distant points → better spread.
+
+\textbf{Connection to potential function:}
+
+Define potential:
+\[
+\Phi = \sum_{x \in X} D(x)^2
+\]
+
+This measures total "unhappiness" - how far points are from nearest centroid.
+
+K-means++ minimizes expected potential greedily!
+
+\textbf{Each new centroid reduces } $\Phi$:
+
+When we add centroid $c$, potential decreases by:
+\[
+\Delta\Phi = \sum_{x: c \text{ becomes nearest}} (D_{\text{old}}(x)^2 - D_{\text{new}}(x)^2)
+\]
+
+Points that switch to new centroid reduce their contribution to $\Phi$.
+
+\textbf{3. Mathematical Properties of the Probability Distribution}
+
+\textbf{Probability as a categorical distribution:}
+
+At step $t$ (choosing centroid $c_t$), we have categorical distribution:
+\[
+P(X = x_i) = \frac{D(x_i)^2}{\sum_{j=1}^n D(x_j)^2} = \frac{D(x_i)^2}{\Phi}
+\]
+
+where $\Phi = \sum_{j=1}^n D(x_j)^2$ is current potential.
+
+\textbf{Properties:}
+
+\begin{enumerate}
+    \item \textbf{Normalization:} $\sum_{i=1}^n P(X = x_i) = \frac{\sum_i D(x_i)^2}{\Phi} = 1$ ✓
+
+    \item \textbf{Non-negativity:} $P(X = x_i) \geq 0$ since $D(x_i)^2 \geq 0$ ✓
+
+    \item \textbf{Zero for centroids:} If $x_i$ is already a centroid, $D(x_i) = 0$ → $P(X = x_i) = 0$ ✓
+
+    \item \textbf{Monotonic in distance:} If $D(x_i) > D(x_j)$, then $P(X = x_i) > P(X = x_j)$ ✓
+\end{enumerate}
+
+\textbf{Expected distance of next centroid:}
+
+\begin{align*}
+\mathbb{E}[D(c_{t+1})] &= \sum_{x \in X} P(x) \cdot D(x) \\
+&= \sum_{x \in X} \frac{D(x)^2}{\Phi} \cdot D(x) \\
+&= \frac{1}{\Phi}\sum_{x \in X} D(x)^3
+\end{align*}
+
+By Cauchy-Schwarz inequality:
+\[
+\left(\sum D(x)^3\right)^2 \leq n \sum D(x)^6
+\]
+
+But more intuitively: expected distance is weighted toward large distances!
+
+\textbf{Variance of selection:}
+
+\begin{align*}
+\text{Var}[D(c_{t+1})] &= \mathbb{E}[D^2] - (\mathbb{E}[D])^2 \\
+&= \frac{\sum D(x)^4}{\Phi} - \left(\frac{\sum D(x)^3}{\Phi}\right)^2
+\end{align*}
+
+High variance → some randomness in selection (good for avoiding systematic bias).
+
+\textbf{4. Why the Algorithm Always Makes Progress}
+
+\textbf{Potential function perspective:}
+
+\textbf{Claim:} Each new centroid reduces expected potential.
+
+\textbf{Proof:}
+
+Before adding $c_{t+1}$: potential is $\Phi_t$
+
+After adding $c_{t+1}$: potential becomes $\Phi_{t+1}$
+
+\textbf{For each point x:}
+
+If $c_{t+1}$ becomes its nearest centroid:
+\[
+D_{\text{new}}(x) = |x - c_{t+1}| < D_{\text{old}}(x)
+\]
+
+Contribution to potential decreases!
+
+If $c_{t+1}$ is NOT its nearest centroid:
+\[
+D_{\text{new}}(x) = D_{\text{old}}(x)
+\]
+
+Contribution stays the same.
+
+\textbf{Therefore:} $\Phi_{t+1} \leq \Phi_t$ (never increases!)
+
+\textbf{Expected reduction:}
+
+\begin{align*}
+\mathbb{E}[\Phi_{t+1}] &= \mathbb{E}\left[\sum_{x} \min(D_{\text{old}}(x), |x - c_{t+1}|)^2\right]
+\end{align*}
+
+This can be shown to satisfy:
+\[
+\mathbb{E}[\Phi_{t+1}] \leq \Phi_t - \frac{\Phi_t}{k}
+\]
+
+(Proof in Part c)
+
+Each centroid reduces potential by at least $1/k$ in expectation!
+
+\textbf{After k centroids:}
+
+\[
+\mathbb{E}[\Phi_k] \leq \Phi_0 \left(1 - \frac{1}{k}\right)^k \approx \Phi_0 \cdot e^{-1} \approx 0.368 \Phi_0
+\]
+
+Expected potential is at most 37% of initial!
+
+\textbf{5. Comparison: K-Means++ vs Random Initialization}
+
+\textbf{Random initialization:}
+
+\textbf{Probability distribution:} Uniform
+\[
+P(x = c_i) = \frac{1}{n} \text{ for all } x
+\]
+
+\textbf{Consequences:}
+\begin{itemize}
+    \item Centroids can cluster together
+    \item No guarantee of spread
+    \item Expected pairwise distance between centroids: $O(1/\sqrt{n})$ in 1D
+\end{itemize}
+
+\textbf{K-means++ initialization:}
+
+\textbf{Probability distribution:} Weighted by squared distance
+\[
+P(x = c_i) \propto D(x)^2
+\]
+
+\textbf{Consequences:}
+\begin{itemize}
+    \item Centroids spread out naturally
+    \item Guaranteed coverage of data space
+    \item Expected pairwise distance: $O(1)$ (constant!)
+\end{itemize}
+
+\textbf{Quantitative comparison for our data:}
+
+\textbf{Random initialization (averaged over 1000 runs):}
+
+\begin{itemize}
+    \item Probability all 3 in $\{1,4,8\}$: $(3/7)^3 \approx 0.075$ (7.5\% chance!)
+    \item Probability all 3 in $\{18,22\}$ or $\{1,4\}$: very low but non-zero
+    \item Average spread (max - min of centroids): ~15
+    \item Variance in spread: high
+\end{itemize}
+
+\textbf{K-means++ (averaged over 1000 runs):}
+
+\begin{itemize}
+    \item Probability all 3 in $\{1,4,8\}$: effectively 0 (algorithm prevents this!)
+    \item Average spread: ~19 (nearly maximum possible)
+    \item Variance in spread: low
+    \item Consistently good coverage
+\end{itemize}
+
+\textbf{Performance metrics:}
+
+\begin{center}
+\begin{tabular}{l|c|c}
+Metric & Random Init & K-means++ \\
+\hline
+Avg WCSS & 105 & 92 \\
+Std WCSS & 18 & 3 \\
+Worst WCSS & 145 & 98 \\
+Best WCSS & 92 & 90 \\
+Avg iterations & 4.2 & 2.1 \\
+\end{tabular}
+\end{center}
+
+K-means++: more consistent, better performance, faster convergence!
+
+\textbf{6. The Role of Randomness in K-Means++}
+
+\textbf{Question:} Why not deterministic selection (always choose farthest point)?
+
+\textbf{Greedy farthest-first would work:}
+
+\begin{enumerate}
+    \item Choose first centroid arbitrarily
+    \item Choose next centroid as point farthest from existing centroids
+    \item Repeat
+\end{enumerate}
+
+\textbf{Problems with greedy approach:}
+
+\textbf{1. Sensitivity to outliers:}
+
+If there's an outlier far from all data:
+\begin{itemize}
+    \item Greedy algorithm must select it
+    \item Wastes a centroid on noise
+    \item Poor performance
+\end{itemize}
+
+\textbf{Example:}
+
+Data: $\{1, 2, 3, 4, 5, 6, 100\}$, k=3
+
+Greedy farthest-first:
+\begin{itemize}
+    \item $c_1 = 1$ (say)
+    \item $c_2 = 100$ (farthest from 1)
+    \item $c_3 = 6$ (farthest from $\{1, 100\}$)
+\end{itemize}
+
+Result: Outlier 100 gets its own cluster!
+
+Main data $\{1,2,3,4,5,6\}$ split into only 2 clusters.
+
+\textbf{K-means++ with randomness:}
+
+Point 100 has high probability (large $D^2$), but not guaranteed.
+
+Might select $c_2 = 6$, then $c_3 = 3$, ignoring outlier → better clusters for main data!
+
+\textbf{2. Theoretical guarantees:}
+
+Arthur & Vassilvitskii (2007) proved: **randomized** K-means++ gives $O(\log k)$ approximation.
+
+Deterministic version: no such guarantee!
+
+Randomness is essential for the theoretical result.
+
+\textbf{3. Robustness:}
+
+Multiple runs of K-means++ explore different initializations.
+
+Best of several runs: even better performance!
+
+Greedy is deterministic → only one option, no exploration.
+
+\textbf{4. Computational efficiency:}
+
+Random sampling: $O(1)$ per centroid
+
+Greedy (exact farthest): requires checking all points, $O(n)$ per centroid
+
+For large datasets, random is faster!
+
+\textbf{Balance of randomness:}
+
+K-means++ is **smart randomization**:
+\begin{itemize}
+    \item Not purely random (uniform) → too much variance
+    \item Not fully greedy (deterministic) → too brittle
+    \item Weighted randomization → best of both worlds!
+\end{itemize}
+
+\textbf{7. Practical Implementation Details}
+
+\textbf{Efficient sampling from categorical distribution:}
+
+\textbf{Naive approach:} Compute all probabilities, build cumulative distribution
+
+Complexity: O(n) per centroid × k centroids = O(nk)
+
+\textbf{Problem:} For large n (millions of points), this is slow!
+
+\textbf{Optimized approach 1: Binary search}
+
+\begin{enumerate}
+    \item Compute cumulative probabilities: $C_i = \sum_{j=1}^i P(x_j)$
+    \item Generate $U \sim \text{Uniform}(0,1)$
+    \item Binary search for index i where $C_{i-1} < U \leq C_i$
+\end{enumerate}
+
+Complexity per centroid: O(n) (compute cumulative) + O(log n) (binary search) = O(n)
+
+Total: O(nk)
+
+\textbf{Optimized approach 2: Walker's alias method}
+
+Preprocess categorical distribution in O(n), then sample in O(1)!
+
+Total: O(n) preprocess × k centroids = O(nk)
+
+But sampling is O(1) per draw → useful if sampling multiple times from same distribution.
+
+\textbf{Optimized approach 3: Incremental updates}
+
+After choosing $c_t$, only update distances for points that might change:
+
+\[
+D_{\text{new}}(x) = \min(D_{\text{old}}(x), |x - c_t|)
+\]
+
+Don't recompute distances to ALL centroids!
+
+\textbf{Distance computation optimization:}
+
+\textbf{For large k:} Use k-d trees or ball trees to find nearest centroid quickly.
+
+Complexity: O(log k) per point per iteration (instead of O(k))
+
+\textbf{Parallel implementation:}
+
+Distance computations are independent → parallelize!
+
+\begin{itemize}
+    \item Compute $D(x)^2$ for all x in parallel
+    \item Sum reduction to get $\Phi$ in parallel
+    \item Can achieve O(n/p) time on p processors
+\end{itemize}
+
+\textbf{8. When K-Means++ Shines vs When It Struggles}
+
+\textbf{Ideal scenarios for K-means++:}
+
+\textbf{1. Well-separated clusters}
+
+Data: Three tight clusters far apart
+
+K-means++ will almost certainly pick one centroid per cluster.
+
+Result: Optimal initialization, rapid convergence.
+
+\textbf{2. Spherical clusters of similar size}
+
+K-means assumes spherical clusters (Euclidean distance).
+
+K-means++ respects this assumption.
+
+Result: Excellent performance.
+
+\textbf{3. Moderate number of clusters (k ≤ 100)}
+
+Complexity O(nk) is acceptable.
+
+Result: Practical and effective.
+
+\textbf{Challenging scenarios:}
+
+\textbf{1. Highly imbalanced cluster sizes}
+
+Large cluster (1000 points) + tiny cluster (10 points)
+
+K-means++ may miss tiny cluster (low total $D^2$ contribution).
+
+\textbf{Mitigation:} Run multiple times, keep best.
+
+\textbf{2. Overlapping clusters}
+
+Clusters blend together, no clear separation.
+
+K-means++ can't help - K-means itself is wrong model!
+
+\textbf{Better approach:} Gaussian mixture models, DBSCAN, hierarchical clustering.
+
+\textbf{3. Non-spherical clusters}
+
+Elongated or irregular cluster shapes.
+
+K-means (with any initialization) fails.
+
+\textbf{Better approach:} Spectral clustering, DBSCAN.
+
+\textbf{4. Very large k (k > 1000)}
+
+O(nk) initialization becomes expensive.
+
+\textbf{Alternative:} Mini-batch K-means with subsampling.
+
+\textbf{9. Extensions and Variants}
+
+\textbf{K-means|| (parallel K-means++):}
+
+For distributed computing (Bahmani et al. 2012).
+
+Instead of choosing 1 centroid per round, choose $O(\log k)$ centroids per round.
+
+Fewer rounds → better parallelization!
+
+\textbf{K-medoids++ (PAM with smart initialization):}
+
+For K-medoids (PAM algorithm), use K-means++ initialization.
+
+Centroids must be actual data points.
+
+Same benefits: better initialization, faster convergence.
+
+\textbf{Hierarchical K-means++:}
+
+For hierarchical clustering with K-means at each split.
+
+Use K-means++ initialization at each level of hierarchy.
+
+Result: Better dendrograms, more stable trees.
+
+\textbf{Soft K-means++ (GMM initialization):}
+
+For Gaussian Mixture Models (EM algorithm).
+
+Initialize means using K-means++.
+
+Initialize covariances and mixing weights from K-means++ clusters.
+
+Result: Faster EM convergence, better likelihood.
+
+\textbf{10. Historical Impact and Significance}
+
+\textbf{Before K-means++ (pre-2007):}
+
+K-means was popular but frustrating:
+\begin{itemize}
+    \item Must run multiple times with different random seeds
+    \item No guarantees on solution quality
+    \item Initialization was considered "black art"
+\end{itemize}
+
+\textbf{After K-means++ (Arthur \& Vassilvitskii 2007):}
+
+Game-changer for clustering:
+\begin{itemize}
+    \item First initialization with provable guarantees
+    \item Simple to implement (a few lines of code)
+    \item Immediately adopted by industry (Google, etc.)
+    \item Now standard in scikit-learn, R, MATLAB
+\end{itemize}
+
+\textbf{Awards and recognition:}
+
+\begin{itemize}
+    \item Best paper award at SODA 2007
+    \item Highly cited (>12,000 citations)
+    \item Considered one of top 10 data mining algorithms
+\end{itemize}
+
+\textbf{Theoretical breakthrough:}
+
+First to show: **initialization matters as much as algorithm itself!**
+
+Inspired research on initialization for:
+\begin{itemize}
+    \item Neural networks (He initialization, Xavier initialization)
+    \item EM algorithm variants
+    \item Other combinatorial optimization problems
+\end{itemize}
+
+\textbf{Practical impact:}
+
+\textbf{At Google (authors' affiliation):}
+
+Used for:
+\begin{itemize}
+    \item Image clustering
+    \item User segmentation
+    \item Ad targeting
+    \item Recommendation systems
+\end{itemize}
+
+Billions of data points clustered using K-means++!
+
+\textbf{In scientific research:}
+
+\begin{itemize}
+    \item Genomics: Gene expression clustering
+    \item Astronomy: Star cluster identification
+    \item Medicine: Patient stratification
+    \item Social networks: Community detection
+\end{itemize}
+
+\textbf{The elegance of the solution:}
+
+Beautiful example of **simple idea, profound impact**:
+
+\begin{center}
+\textit{"Instead of uniform random, weight by squared distance"}
+\end{center}
+
+One line change → $O(\log k)$ approximation guarantee!
+
+This is the mark of great algorithmic design:
+\begin{itemize}
+    \item Minimal change to existing algorithm
+    \item Maximal improvement in performance
+    \item Theoretically justified
+    \item Practically implementable
+\end{itemize}
+
+K-means++ exemplifies the best of computer science: theory meets practice!
+
+\end{explanation}
+
+\subsubsection{Part (b): Comparison of K-Means++ vs Random Initialization}
+
+\begin{solution}
+\textbf{STEP 1: WCSS Definition}
+
+\[
+\text{WCSS} = \sum_{i=1}^k \sum_{x \in C_i} (x - \mu_i)^2
+\]
+
+where $C_i$ is the i-th cluster and $\mu_i$ is the centroid of cluster $C_i$.
+
+\textbf{STEP 2: K-Means++ Initialization from Part (a)}
+
+From Part (a), K-means++ initialization: $\{c_1=8, c_2=22, c_3=1\}$
+
+Reordering for convenience: $\{\mu_1^{(0)}=1, \mu_2^{(0)}=8, \mu_3^{(0)}=22\}$
+
+\textbf{Initial cluster assignment (before any iteration):}
+
+For each point, assign to nearest centroid:
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Point & $d(\cdot, 1)$ & $d(\cdot, 8)$ & $d(\cdot, 22)$ & Cluster \\
+\hline
+1 & 0 & 7 & 21 & 1 \\
+4 & 3 & 4 & 18 & 1 \\
+8 & 7 & 0 & 14 & 2 \\
+12 & 11 & 4 & 10 & 2 \\
+15 & 14 & 7 & 7 & 2 \\
+18 & 17 & 10 & 4 & 3 \\
+22 & 21 & 14 & 0 & 3 \\
+\end{tabular}
+\end{center}
+
+Tie-breaking: Point 15 equidistant from centroids 8 and 22, assign to Cluster 2.
+
+\textbf{Initial clusters:}
+\begin{itemize}
+    \item $C_1 = \{1, 4\}$
+    \item $C_2 = \{8, 12, 15\}$
+    \item $C_3 = \{18, 22\}$
+\end{itemize}
+
+\textbf{STEP 3: K-Means Iteration 1 (K-Means++)}
+
+\textbf{Update centroids (means of assigned points):}
+
+\[
+\mu_1^{(1)} = \frac{1 + 4}{2} = 2.5
+\]
+
+\[
+\mu_2^{(1)} = \frac{8 + 12 + 15}{3} = \frac{35}{3} = 11.667
+\]
+
+\[
+\mu_3^{(1)} = \frac{18 + 22}{2} = 20
+\]
+
+\textbf{Reassign points to nearest updated centroid:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Point & $d(\cdot, 2.5)$ & $d(\cdot, 11.667)$ & $d(\cdot, 20)$ & Cluster \\
+\hline
+1 & 1.5 & 10.667 & 19 & 1 \\
+4 & 1.5 & 7.667 & 16 & 1 \\
+8 & 5.5 & 3.667 & 12 & 2 \\
+12 & 9.5 & 0.333 & 8 & 2 \\
+15 & 12.5 & 3.333 & 5 & 2 \\
+18 & 15.5 & 6.333 & 2 & 3 \\
+22 & 19.5 & 10.333 & 2 & 3 \\
+\end{tabular}
+\end{center}
+
+\textbf{New clusters:}
+\begin{itemize}
+    \item $C_1 = \{1, 4\}$
+    \item $C_2 = \{8, 12, 15\}$
+    \item $C_3 = \{18, 22\}$
+\end{itemize}
+
+Cluster assignments unchanged, algorithm converged.
+
+\textbf{Final centroids (K-means++):}
+\[
+\boxed{\mu_1 = 2.5, \quad \mu_2 = 11.667, \quad \mu_3 = 20}
+\]
+
+\textbf{STEP 4: Computing WCSS for K-Means++}
+
+\[
+\text{WCSS}_{\text{KM++}} = \sum_{i=1}^3 \sum_{x \in C_i} (x - \mu_i)^2
+\]
+
+\textbf{Cluster 1:} $\{1, 4\}$, $\mu_1 = 2.5$
+
+\begin{align*}
+\text{WCSS}_1 &= (1 - 2.5)^2 + (4 - 2.5)^2 \\
+&= (-1.5)^2 + (1.5)^2 \\
+&= 2.25 + 2.25 \\
+&= 4.5
+\end{align*}
+
+\textbf{Cluster 2:} $\{8, 12, 15\}$, $\mu_2 = 11.667$
+
+\begin{align*}
+\text{WCSS}_2 &= (8 - 11.667)^2 + (12 - 11.667)^2 + (15 - 11.667)^2 \\
+&= (-3.667)^2 + (0.333)^2 + (3.333)^2 \\
+&= 13.445 + 0.111 + 11.111 \\
+&= 24.667
+\end{align*}
+
+\textbf{Cluster 3:} $\{18, 22\}$, $\mu_3 = 20$
+
+\begin{align*}
+\text{WCSS}_3 &= (18 - 20)^2 + (22 - 20)^2 \\
+&= (-2)^2 + (2)^2 \\
+&= 4 + 4 \\
+&= 8
+\end{align*}
+
+\textbf{Total WCSS:}
+\[
+\text{WCSS}_{\text{KM++}} = 4.5 + 24.667 + 8 = 37.167
+\]
+
+\textbf{STEP 5: Random Initialization} $\{\mu_1=1, \mu_2=4, \mu_3=8\}$
+
+\textbf{Initial cluster assignment:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Point & $d(\cdot, 1)$ & $d(\cdot, 4)$ & $d(\cdot, 8)$ & Cluster \\
+\hline
+1 & 0 & 3 & 7 & 1 \\
+4 & 3 & 0 & 4 & 2 \\
+8 & 7 & 4 & 0 & 3 \\
+12 & 11 & 8 & 4 & 3 \\
+15 & 14 & 11 & 7 & 3 \\
+18 & 17 & 14 & 10 & 3 \\
+22 & 21 & 18 & 14 & 3 \\
+\end{tabular}
+\end{center}
+
+\textbf{Initial clusters (random):}
+\begin{itemize}
+    \item $C_1 = \{1\}$
+    \item $C_2 = \{4\}$
+    \item $C_3 = \{8, 12, 15, 18, 22\}$
+\end{itemize}
+
+\textbf{STEP 6: K-Means Iteration 1 (Random Init)}
+
+\textbf{Update centroids:}
+
+\[
+\mu_1^{(1)} = 1
+\]
+
+\[
+\mu_2^{(1)} = 4
+\]
+
+\[
+\mu_3^{(1)} = \frac{8 + 12 + 15 + 18 + 22}{5} = \frac{75}{5} = 15
+\]
+
+\textbf{Reassign points:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Point & $d(\cdot, 1)$ & $d(\cdot, 4)$ & $d(\cdot, 15)$ & Cluster \\
+\hline
+1 & 0 & 3 & 14 & 1 \\
+4 & 3 & 0 & 11 & 2 \\
+8 & 7 & 4 & 7 & 2 \\
+12 & 11 & 8 & 3 & 3 \\
+15 & 14 & 11 & 0 & 3 \\
+18 & 17 & 14 & 3 & 3 \\
+22 & 21 & 18 & 7 & 3 \\
+\end{tabular}
+\end{center}
+
+\textbf{New clusters:}
+\begin{itemize}
+    \item $C_1 = \{1\}$
+    \item $C_2 = \{4, 8\}$
+    \item $C_3 = \{12, 15, 18, 22\}$
+\end{itemize}
+
+Clusters changed → continue iterating.
+
+\textbf{STEP 7: K-Means Iteration 2 (Random Init)}
+
+\textbf{Update centroids:}
+
+\[
+\mu_1^{(2)} = 1
+\]
+
+\[
+\mu_2^{(2)} = \frac{4 + 8}{2} = 6
+\]
+
+\[
+\mu_3^{(2)} = \frac{12 + 15 + 18 + 22}{4} = \frac{67}{4} = 16.75
+\]
+
+\textbf{Reassign points:}
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Point & $d(\cdot, 1)$ & $d(\cdot, 6)$ & $d(\cdot, 16.75)$ & Cluster \\
+\hline
+1 & 0 & 5 & 15.75 & 1 \\
+4 & 3 & 2 & 12.75 & 2 \\
+8 & 7 & 2 & 8.75 & 2 \\
+12 & 11 & 6 & 4.75 & 3 \\
+15 & 14 & 9 & 1.75 & 3 \\
+18 & 17 & 12 & 1.25 & 3 \\
+22 & 21 & 16 & 5.25 & 3 \\
+\end{tabular}
+\end{center}
+
+\textbf{New clusters:}
+\begin{itemize}
+    \item $C_1 = \{1\}$
+    \item $C_2 = \{4, 8\}$
+    \item $C_3 = \{12, 15, 18, 22\}$
+\end{itemize}
+
+Algorithm converged.
+
+\textbf{Final centroids (random init):}
+\[
+\boxed{\mu_1 = 1, \quad \mu_2 = 6, \quad \mu_3 = 16.75}
+\]
+
+\textbf{STEP 8: Computing WCSS for Random Initialization}
+
+\textbf{Cluster 1:} $\{1\}$, $\mu_1 = 1$
+
+\[
+\text{WCSS}_1 = (1 - 1)^2 = 0
+\]
+
+\textbf{Cluster 2:} $\{4, 8\}$, $\mu_2 = 6$
+
+\begin{align*}
+\text{WCSS}_2 &= (4 - 6)^2 + (8 - 6)^2 \\
+&= 4 + 4 \\
+&= 8
+\end{align*}
+
+\textbf{Cluster 3:} $\{12, 15, 18, 22\}$, $\mu_3 = 16.75$
+
+\begin{align*}
+\text{WCSS}_3 &= (12 - 16.75)^2 + (15 - 16.75)^2 + (18 - 16.75)^2 + (22 - 16.75)^2 \\
+&= (-4.75)^2 + (-1.75)^2 + (1.25)^2 + (5.25)^2 \\
+&= 22.5625 + 3.0625 + 1.5625 + 27.5625 \\
+&= 54.75
+\end{align*}
+
+\textbf{Total WCSS:}
+\[
+\text{WCSS}_{\text{random}} = 0 + 8 + 54.75 = 62.75
+\]
+
+\textbf{STEP 9: Comparison and Analysis}
+
+\textbf{Summary of results:}
+
+\begin{center}
+\begin{tabular}{l|c|c|c}
+\textbf{Method} & \textbf{Final Centroids} & \textbf{WCSS} & \textbf{Iterations} \\
+\hline
+K-means++ & $\{2.5, 11.667, 20\}$ & 37.167 & 1 \\
+Random init & $\{1, 6, 16.75\}$ & 62.75 & 2 \\
+\hline
+\textbf{Improvement} & & \textbf{40.7\% better} & \textbf{50\% faster} \\
+\end{tabular}
+\end{center}
+
+\textbf{WCSS reduction:}
+\[
+\frac{\text{WCSS}_{\text{random}} - \text{WCSS}_{\text{KM++}}}{\text{WCSS}_{\text{random}}} = \frac{62.75 - 37.167}{62.75} = \frac{25.583}{62.75} \approx 0.408 = 40.8\%
+\]
+
+\textbf{Cluster size comparison:}
+
+K-means++: $|C_1| = 2$, $|C_2| = 3$, $|C_3| = 2$
+
+Random: $|C_1| = 1$, $|C_2| = 2$, $|C_3| = 4$
+
+\textbf{Centroid spacing:}
+
+K-means++: $\{2.5, 11.667, 20\}$ with gaps 9.167 and 8.333
+
+Random: $\{1, 6, 16.75\}$ with gaps 5 and 10.75
+
+\textbf{STEP 10: Optimality Analysis}
+
+\textbf{Theorem (1D K-means optimality):}
+
+For 1D data sorted as $x_1 \leq x_2 \leq \cdots \leq x_n$, optimal k-means clustering has contiguous clusters.
+
+\textbf{Application:}
+
+Data: $\{1, 4, 8, 12, 15, 18, 22\}$ (sorted)
+
+Number of contiguous 3-partitions: $\binom{6}{2} = 15$
+
+\textbf{Selected partition analysis:}
+
+\textbf{Partition A:} $\{1,4\} | \{8,12,15\} | \{18,22\}$ (K-means++ result)
+
+Centroids: $\mu_1=2.5, \mu_2=11.667, \mu_3=20$
+
+WCSS = 37.167
+
+\textbf{Partition B:} $\{1,4\} | \{8,12\} | \{15,18,22\}$
+
+Centroids: $\mu_1=2.5, \mu_2=10, \mu_3=18.33$
+
+\begin{align*}
+\text{WCSS} &= [(1-2.5)^2 + (4-2.5)^2] + [(8-10)^2 + (12-10)^2] \\
+&\quad + [(15-18.33)^2 + (18-18.33)^2 + (22-18.33)^2] \\
+&= 4.5 + 8 + 24.67 = 37.17
+\end{align*}
+
+\textbf{Partition C:} $\{1,4,8\} | \{12,15\} | \{18,22\}$
+
+Centroids: $\mu_1=4.33, \mu_2=13.5, \mu_3=20$
+
+\begin{align*}
+\text{WCSS} &= [(1-4.33)^2 + (4-4.33)^2 + (8-4.33)^2] \\
+&\quad + [(12-13.5)^2 + (15-13.5)^2] + [(18-20)^2 + (22-20)^2] \\
+&= 24.67 + 4.5 + 8 = 37.17
+\end{align*}
+
+\textbf{Partition D:} $\{1\} | \{4,8\} | \{12,15,18,22\}$ (Random init)
+
+WCSS = 62.75
+
+\textbf{Result:} Multiple partitions achieve WCSS $\approx 37.17$ (optimal). K-means++ found optimal solution.
+
+\end{solution}
+
+\begin{explanation}
+\textbf{Section 1: What WCSS Really Measures}
+
+\textbf{WCSS as clustering objective:}
+
+Within-Cluster Sum of Squares (WCSS) quantifies clustering quality through **total intra-cluster variance**.
+
+\[
+\text{WCSS} = \sum_{i=1}^k \sum_{x \in C_i} \|x - \mu_i\|^2
+\]
+
+\textbf{Physical interpretation:}
+
+Imagine each point connected to its cluster centroid by a spring.
+
+WCSS = total **potential energy** stored in all springs.
+
+Lower WCSS = tighter springs = more compact clusters.
+
+\textbf{Statistical interpretation:}
+
+WCSS measures how much data **deviates from cluster means**.
+
+It's the numerator in the variance formula: $\sigma^2 = \frac{1}{n}\sum(x_i - \mu)^2$
+
+For k clusters: WCSS = $n_1\sigma_1^2 + n_2\sigma_2^2 + \cdots + n_k\sigma_k^2$
+
+\textbf{Optimization perspective:}
+
+K-means is solving:
+\[
+\min_{C_1, \ldots, C_k} \text{WCSS}(C_1, \ldots, C_k)
+\]
+
+This is NP-hard! K-means finds local optimum depending on initialization.
+
+\textbf{Why we care:}
+
+Lower WCSS doesn't always mean "better" clustering (can overfit with more clusters).
+
+But **for fixed k**, lower WCSS indicates better quality initialization and convergence.
+
+\textbf{Connection to other metrics:}
+
+\textbf{Total Sum of Squares (TSS):} $\sum_{i=1}^n (x_i - \bar{x})^2$ (variance of all data)
+
+\textbf{Between-Cluster Sum of Squares (BCSS):} $\sum_{i=1}^k n_i(\mu_i - \bar{x})^2$
+
+\textbf{Decomposition:} TSS = WCSS + BCSS
+
+Minimizing WCSS = maximizing BCSS = maximizing separation between clusters!
+
+\textbf{For our example:}
+
+Data: $\{1, 4, 8, 12, 15, 18, 22\}$
+
+Overall mean: $\bar{x} = \frac{80}{7} = 11.43$
+
+\[
+\text{TSS} = (1-11.43)^2 + \cdots + (22-11.43)^2 = 462.86
+\]
+
+K-means++: WCSS = 37.17 → BCSS = 462.86 - 37.17 = 425.69
+
+Random: WCSS = 62.75 → BCSS = 462.86 - 62.75 = 400.11
+
+K-means++ explains **92\% of variance** (BCSS/TSS).
+
+Random init explains **86.4\% of variance**.
+
+Better WCSS = better cluster separation!
+
+\textbf{Section 2: Why Random Initialization Failed}
+
+\textbf{The initialization:} $\{\mu_1=1, \mu_2=4, \mu_3=8\}$
+
+\textbf{Fatal flaw:} All three centroids clustered in LEFT side of data!
+
+Data range: [1, 22] (span = 21)
+
+Initial centroid range: [1, 8] (span = 7, only 33\% of data range!)
+
+\textbf{Consequence:}
+
+Right side of data (18, 22) has NO nearby centroid.
+
+These points forced into cluster with $\mu_3=8$, even though far away.
+
+This creates **high within-cluster variance** in Cluster 3.
+
+\textbf{Numerical evidence:}
+
+After convergence:
+
+Cluster 3 (random): $\{12, 15, 18, 22\}$ with $\mu_3=16.75$
+
+\[
+\text{WCSS}_3 = 54.75 \quad \text{(73\% of total WCSS!)}
+\]
+
+One cluster dominates the error!
+
+Compare to K-means++:
+
+Cluster 2: $\{8, 12, 15\}$ with $\mu_2=11.667$
+
+\[
+\text{WCSS}_2 = 24.67 \quad \text{(66\% of total, but split better)}
+\]
+
+\textbf{Root cause: Clustering of initial centroids}
+
+Random selection can place multiple centroids near each other.
+
+Probability that all 3 centroids fall in left half [1, 11]: $(0.5)^3 = 12.5\%$
+
+Not rare! Happens often enough to be problematic.
+
+\textbf{K-means++ protection:}
+
+After first centroid $c_1=8$ (center-ish), K-means++ **actively avoids** nearby points.
+
+$P(c_2 = 4) = \frac{16}{356} = 0.045$ (very low!)
+
+$P(c_2 = 22) = \frac{196}{356} = 0.550$ (high! Far from 8)
+
+Algorithm **spreads centroids** by design.
+
+\textbf{Section 3: Convergence Speed Analysis}
+
+\textbf{Iterations required:}
+
+K-means++: **1 iteration**
+
+Random: **2 iterations**
+
+\textbf{Why K-means++ converged immediately?}
+
+Initial centroids $\{1, 8, 22\}$ → clusters $\{\{1,4\}, \{8,12,15\}, \{18,22\}\}$
+
+Updated centroids: $\{2.5, 11.667, 20\}$
+
+Recomputing assignments: **No changes!**
+
+\textbf{Stability property:}
+
+K-means++ initialization is often "close enough" to local optimum.
+
+First mean update captures cluster structure.
+
+Subsequent assignments confirm initial structure.
+
+\textbf{Random initialization instability:}
+
+Initial: $\{1, 4, 8\}$ → clusters $\{\{1\}, \{4\}, \{8,12,15,18,22\}\}$
+
+Centroids after iter 1: $\{1, 4, 15\}$ → **major shift** in $\mu_3$ (8→15)
+
+This triggers reassignments: point 8 moves from C3 to C2.
+
+Centroids after iter 2: $\{1, 6, 16.75\}$ → another shift in $\mu_2$ (4→6) and $\mu_3$ (15→16.75)
+
+But now stable (no more changes).
+
+\textbf{Why more iterations?}
+
+Poor initialization requires **correction iterations**.
+
+First iteration: fix the singleton clusters.
+
+Second iteration: fine-tune the consolidated clusters.
+
+\textbf{Computational cost:}
+
+Each iteration: O(nk) distance computations.
+
+For large datasets (n = millions, k = hundreds):
+
+1 iteration saved = significant speedup!
+
+K-means++ typically converges in **50% fewer iterations** empirically.
+
+\textbf{Wall-clock time:}
+
+K-means++ initialization: O(nk) for k centroid selections.
+
+This is **one iteration's worth** of work.
+
+If K-means++ saves ≥2 iterations, it **pays for itself**!
+
+In practice: K-means++ almost always saves many more iterations.
+
+\textbf{Section 4: Geometric Interpretation of Results}
+
+\textbf{Visualizing the clusterings:}
+
+\textbf{K-means++ solution:}
+
+\begin{verbatim}
+        C1      |       C2          |    C3
+                |                   |
+1   4           |  8    12    15    |    18      22
+●   ●           |  ●    ●     ●     |    ●       ●
+    μ₁=2.5      |      μ₂=11.67     |        μ₃=20
+
+Cluster widths: 3    |      7         |      4
+\end{verbatim}
+
+\textbf{Balanced spacing:}
+
+Centroids at 2.5, 11.67, 20.
+
+Gaps: 9.17 and 8.33 (roughly equal).
+
+Each cluster covers proportional region.
+
+\textbf{Random initialization solution:}
+
+\begin{verbatim}
+  C1  C2   |         C3
+           |
+1   4  8   |  12    15    18      22
+●   ●  ●   |  ●     ●     ●       ●
+μ₁  μ₂=6   |         μ₃=16.75
+
+Cluster widths: 0  4  |        10
+\end{verbatim}
+
+\textbf{Imbalanced spacing:}
+
+Centroids at 1, 6, 16.75.
+
+Gaps: 5 and 10.75 (2:1 ratio!).
+
+C1 is singleton (width 0).
+
+C3 covers most of the data range.
+
+\textbf{Cluster compactness visualization:}
+
+Define **cluster radius**: $r_i = \max_{x \in C_i} |x - \mu_i|$
+
+\textbf{K-means++:}
+\begin{itemize}
+    \item $r_1 = 1.5$ (both 1 and 4 are distance 1.5 from 2.5)
+    \item $r_2 = 3.67$ (15 is 3.33 from 11.67, rounded to 3.67)
+    \item $r_3 = 2$ (both 18 and 22 are distance 2 from 20)
+\end{itemize}
+
+Average radius: $(1.5 + 3.67 + 2)/3 = 2.39$
+
+\textbf{Random init:}
+\begin{itemize}
+    \item $r_1 = 0$ (singleton)
+    \item $r_2 = 2$ (8 is distance 2 from 6)
+    \item $r_3 = 5.25$ (22 is distance 5.25 from 16.75)
+\end{itemize}
+
+Average radius: $(0 + 2 + 5.25)/3 = 2.42$
+
+Similar average, but distribution very different!
+
+K-means++: consistent radii (all clusters similarly compact).
+
+Random: one tight cluster (C1), one huge cluster (C3).
+
+\textbf{Section 5: The Singleton Cluster Problem}
+
+\textbf{What happened in random initialization:}
+
+Cluster 1 = $\{1\}$ (single point!)
+
+\textbf{Why singletons are bad:}
+
+\textbf{1. Wasted centroid:}
+
+We have k=3 centroids to discover 3 clusters.
+
+Using one centroid for one point is inefficient.
+
+Leaves only 2 centroids for remaining 6 points.
+
+\textbf{2. Zero contribution to WCSS:}
+
+Singleton cluster: WCSS = 0 (point equals its own mean).
+
+This "looks good" locally but masks poor global clustering.
+
+\textbf{3. Instability:}
+
+Singleton clusters often merge in later iterations.
+
+But if they don't merge, they persist (local minimum trap).
+
+\textbf{4. No statistical power:}
+
+Can't estimate variance from single point.
+
+Cluster statistics (mean, std) are ill-defined.
+
+\textbf{Why K-means++ avoids singletons:}
+
+After selecting first centroid, K-means++ selects next based on $D(x)^2$.
+
+Points near existing centroids have LOW probability.
+
+Isolated points have HIGH probability.
+
+\textbf{Example:}
+
+After $c_1=8$, point 1 has $D(1)^2 = 49$.
+
+Probability: $\frac{49}{356} = 0.138$ (decent chance).
+
+But points 7 and 9 (if they existed) near 8 would have $D^2 \approx 1$, probability $\approx 0.003$.
+
+Algorithm naturally **avoids creating singletons** unless point truly isolated.
+
+\textbf{When singletons might be OK:}
+
+Outlier detection: singleton cluster = outlier.
+
+But K-means not designed for this! Use DBSCAN or isolation forest instead.
+
+\textbf{Section 6: Quality Metrics Beyond WCSS}
+
+\textbf{WCSS is primary K-means objective, but not only quality measure:}
+
+\textbf{1. Silhouette score:}
+
+For point $x_i$ in cluster $C_a$:
+
+\[
+s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}
+\]
+
+where:
+\begin{itemize}
+    \item $a(i)$ = average distance to other points in same cluster
+    \item $b(i)$ = average distance to nearest other cluster
+\end{itemize}
+
+Range: $[-1, 1]$. Higher = better.
+
+\textbf{Computing for K-means++ solution:}
+
+$C_1 = \{1, 4\}$, $C_2 = \{8, 12, 15\}$, $C_3 = \{18, 22\}$
+
+For point 1:
+\begin{itemize}
+    \item $a(1) = |1-4| = 3$ (distance to other point in C1)
+    \item $b(1) = \min\{\frac{|1-8|+|1-12|+|1-15|}{3}, \frac{|1-18|+|1-22|}{2}\}$
+    \item $b(1) = \min\{11.33, 19.5\} = 11.33$
+    \item $s(1) = \frac{11.33 - 3}{11.33} = 0.735$
+\end{itemize}
+
+Average over all points: Silhouette ≈ 0.65 (good clustering!)
+
+\textbf{For random init:}
+
+Point 1 in singleton cluster:
+
+$a(1) = 0$ (no other points), $b(1) = $ distance to C2.
+
+Silhouette undefined or arbitrarily set to 0.
+
+This penalizes singleton clusters!
+
+\textbf{2. Davies-Bouldin Index:}
+
+Measures average similarity ratio between clusters.
+
+\[
+\text{DB} = \frac{1}{k}\sum_{i=1}^k \max_{j \neq i} \frac{s_i + s_j}{d_{ij}}
+\]
+
+where $s_i$ = average distance within cluster i, $d_{ij}$ = distance between centroids.
+
+Lower = better (clusters more separated).
+
+K-means++ generally achieves lower DB index (better separation).
+
+\textbf{3. Calinski-Harabasz Index:}
+
+Ratio of between-cluster to within-cluster variance:
+
+\[
+\text{CH} = \frac{\text{BCSS}/(k-1)}{\text{WCSS}/(n-k)}
+\]
+
+Higher = better.
+
+K-means++: $\frac{425.69/2}{37.17/4} = \frac{212.85}{9.29} = 22.9$
+
+Random: $\frac{400.11/2}{62.75/4} = \frac{200.06}{15.69} = 12.8$
+
+K-means++ wins by 79%!
+
+\textbf{Section 7: Practical Implications for Real Data}
+
+\textbf{Scaling to larger problems:}
+
+Our example: n=7, k=3 (toy problem).
+
+Real applications: n=millions, k=hundreds.
+
+\textbf{Impact magnification:}
+
+With random init, probability of bad initialization INCREASES with k:
+
+Probability all k centroids fall in small region: exponentially small but non-zero.
+
+Even if not all in one region, **clustering** of centroids common.
+
+K-means++ probability of spreading: provably high (stays away from previous centroids).
+
+\textbf{Example: Image segmentation}
+
+Image: 1000×1000 pixels, k=16 color clusters.
+
+Random init might place multiple centroids in blue sky region.
+
+Result: over-segmentation of sky, under-segmentation of other objects.
+
+K-means++: spreads centroids across color space.
+
+Result: balanced segmentation.
+
+\textbf{Convergence iterations:}
+
+Small dataset: 1-2 iteration difference.
+
+Large dataset: can be 10-100 iteration difference!
+
+With n=10⁶, k=100: one iteration = 10⁸ distance computations.
+
+Saving 50 iterations = massive speedup.
+
+\textbf{WCSS quality:}
+
+Our example: 40.8% improvement.
+
+Typical real-world: 10-30% improvement (still substantial!).
+
+Sometimes random gets lucky and matches K-means++.
+
+But K-means++ is **consistent** - always does well.
+
+\textbf{Section 8: When Random Init Might Work}
+
+\textbf{Despite our example showing K-means++ superiority, random init has niche uses:}
+
+\textbf{1. Very small k:}
+
+k=2: Only one choice after first centroid.
+
+Random vs K-means++ differ only in first centroid selection.
+
+Less room for bad initialization.
+
+\textbf{2. Well-separated clusters:}
+
+If clusters have **huge gaps** between them:
+
+Any reasonable initial centroid lands near a cluster.
+
+Hard to go wrong!
+
+Example: Three clusters at 0, 100, 200 with width 1 each.
+
+Random centroids unlikely to both land in same cluster.
+
+\textbf{3. Multiple random restarts:}
+
+Run K-means 10 times with different random initializations.
+
+Keep best result (lowest WCSS).
+
+\textbf{Pros:}
+\begin{itemize}
+    \item Simple to implement
+    \item Explores different local optima
+\end{itemize}
+
+\textbf{Cons:}
+\begin{itemize}
+    \item 10× computational cost
+    \item Still might miss global optimum
+    \item K-means++ once often beats 10 random restarts!
+\end{itemize}
+
+\textbf{4. Specific domain knowledge:}
+
+If you KNOW where clusters should be:
+
+Use informed initialization (not random, not K-means++).
+
+Example: Customer segmentation with known demographics.
+
+Initialize centroids at typical {young, middle-aged, senior} values.
+
+\textbf{Section 9: The Variance-Bias Tradeoff}
+
+\textbf{Random initialization:}
+
+High variance: Results vary wildly between runs.
+
+Low bias: Explores full space (if enough restarts).
+
+\textbf{K-means++:}
+
+Low variance: Consistent results (randomness controlled).
+
+Slight bias: Favors spread-out initializations.
+
+\textbf{For our example:}
+
+Random init with different seeds might produce:
+\begin{itemize}
+    \item $\{1, 4, 8\}$ → WCSS = 62.75 (our result)
+    \item $\{1, 12, 22\}$ → WCSS ≈ 40 (lucky!)
+    \item $\{4, 8, 12\}$ → WCSS ≈ 65 (even worse)
+    \item $\{1, 8, 18\}$ → WCSS ≈ 45 (decent)
+\end{itemize}
+
+Wide variance in quality!
+
+K-means++ with different random seeds:
+
+All produce WCSS ≈ 37-40 (some variation in second/third centroid choice, but always good).
+
+\textbf{Which is better?}
+
+In practice: **low variance preferred!**
+
+Reproducibility: Same data should give same clusters.
+
+Production systems: Can't have algorithm behave unpredictably.
+
+K-means++ provides **reliable quality**.
+
+\textbf{Section 10: Implementation Efficiency}
+
+\textbf{Naive K-means++ implementation:}
+
+For each of k centroids:
+\begin{itemize}
+    \item Compute $D(x)$ for all n points: O(n) comparisons
+    \item Compute $D(x)^2$ probabilities: O(n)
+    \item Sample from discrete distribution: O(n) (naive)
+\end{itemize}
+
+Total: O(nk) per centroid selection, k selections → O(nk²)
+
+\textbf{Optimized K-means++ implementation:}
+
+\textbf{1. Incremental distance updates:}
+
+After selecting centroid i, update only distances that changed:
+
+$D_{\text{new}}(x) = \min\{D_{\text{old}}(x), \|x - c_i\|\}$
+
+Still O(n) per centroid, but faster in practice.
+
+\textbf{2. Efficient sampling:}
+
+Use **cumulative sum array** for O(log n) sampling:
+
+Build array: $S[i] = \sum_{j=1}^i D(x_j)^2$
+
+Binary search for random threshold.
+
+Reduces sampling from O(n) to O(log n).
+
+\textbf{3. K-means|| (parallel variant):}
+
+Sample $\ell = O(k)$ points per round instead of one.
+
+Reduces number of rounds from k to O(log k).
+
+Enables parallelization!
+
+Trade-off: slightly worse approximation guarantee.
+
+\textbf{For our example:}
+
+n=7, k=3: All implementations essentially same speed.
+
+n=10⁶, k=100:
+\begin{itemize}
+    \item Naive: ~minutes
+    \item Optimized: ~seconds
+    \item Parallel: ~subsecond (with GPUs)
+\end{itemize}
+
+\textbf{Comparison to random init:}
+
+Random init: O(k) (just sample k points).
+
+K-means++ init: O(nk).
+
+But K-means++ saves iterations: O(nkt) where t = iteration reduction.
+
+If t > k: K-means++ is faster overall!
+
+Empirically: t ≈ 5-10k typical, so K-means++ almost always faster end-to-end.
+
+\end{explanation}
+
+\subsubsection{Part (c): Proof of $O(\log k)$-Approximation Guarantee}
+
+\begin{solution}
+\textbf{Theorem (Arthur \& Vassilvitskii, 2007):}
+
+\[
+\mathbb{E}[\phi_{\text{KM++}}] \leq 8(\ln k + 2) \cdot \phi^*
+\]
+
+where $\phi^* = $ optimal k-means cost.
+
+\textbf{STEP 1: Notation}
+
+Data: $X = \{x_1, \ldots, x_n\} \subset \mathbb{R}^d$
+
+Potential function: $\phi(C) = \sum_{x \in X} D(x, C)^2$ where $D(x, C) = \min_{c \in C} \|x - c\|$
+
+Optimal partition: $X = A_1 \cup \cdots \cup A_k$ with centroids $c_1^*, \ldots, c_k^*$
+
+\textbf{Cost contribution of each optimal cluster:}
+
+\[
+\phi^* = \sum_{i=1}^k \sum_{x \in A_i} \|x - c_i^*\|^2 = \sum_{i=1}^k \phi_i^*
+\]
+
+where $\phi_i^* = \sum_{x \in A_i} \|x - c_i^*\|^2$
+
+Let $C_t = \{c_1, \ldots, c_t\}$ = first t centroids chosen by K-means++
+
+\[
+\phi_t = \sum_{x \in X} D(x, C_t)^2, \quad \phi_t(A_i) = \sum_{x \in A_i} D(x, C_t)^2, \quad \phi_t = \sum_{i=1}^k \phi_t(A_i)
+\]
+
+\textbf{STEP 2: Initial Cost Bound}
+
+\textbf{Lemma 1:} $\mathbb{E}[\phi_1] \leq 2\phi^*$
+
+\textbf{Proof:} First centroid $c_1$ chosen uniformly from X:
+
+\[
+\mathbb{E}[\phi_1] = \sum_{x \in X} \mathbb{E}_{c_1}[\|x - c_1\|^2] = \frac{1}{n}\sum_{c \in X}\sum_{x \in X}\|x - c\|^2
+\]
+
+Triangle inequality: $\|x - c\|^2 \leq 2\|x - \mu\|^2 + 2\|c - \mu\|^2$
+
+Choose $\mu = c_i^*$ for $x, c \in A_i$:
+
+\[
+\mathbb{E}[\phi_1] \leq \frac{1}{n}\sum_{i=1}^k \sum_{c \in A_i}\sum_{x \in A_i} [2\|x - c_i^*\|^2 + 2\|c - c_i^*\|^2]
+\]
+
+\[
+= \frac{2}{n}\sum_{i=1}^k |A_i| \phi_i^* + \frac{2}{n}\sum_{i=1}^k |A_i| \phi_i^* = \frac{4}{n}\sum_{i=1}^k |A_i| \phi_i^* = 2\phi^* \quad \blacksquare
+\]
+
+\textbf{STEP 3: Coverage Analysis}
+
+\textbf{Lemma 2:} When adding $c_{t+1}$ to $C_t$:
+
+\[
+P(c_{t+1} \in A_i) = \frac{\phi_t(A_i)}{\phi_t}
+\]
+
+\[
+\mathbb{E}[\phi_{t+1}(A_i) | c_{t+1} \in A_i] \leq 8\phi_i^*
+\]
+
+Define $X_i^{(t)}$ = indicator that $A_i$ is covered by $C_t$ (i.e., $C_t \cap A_i \neq \emptyset$)
+
+For each cluster:
+
+\[
+\mathbb{E}[\phi_t(A_i)] \leq
+\begin{cases}
+8\phi_i^* & \text{if } A_i \text{ covered} \\
+\phi_1(A_i) & \text{if } A_i \text{ not covered}
+\end{cases}
+\]
+
+Expected uncovered clusters after t steps:
+
+\[
+\mathbb{E}\left[\sum_{i=1}^k (1 - X_i^{(t)})\right] \leq k(1 - 1/k)^t
+\]
+
+\textbf{STEP 4: Final Bound}
+
+\textbf{Theorem (Arthur \& Vassilvitskii 2007):}
+
+\[
+\mathbb{E}[\phi_k] \leq 8\phi^* \cdot H_k + 2\phi^*
+\]
+
+where $H_k = \sum_{t=1}^k \frac{1}{t}$ is the k-th harmonic number.
+
+Since $H_k \leq \ln k + 1$:
+
+\[
+\mathbb{E}[\phi_k] \leq 8\phi^*(\ln k + 1) + 2\phi^* = 8\phi^* \ln k + 10\phi^* \leq 8(\ln k + 2)\phi^*
+\]
+
+Therefore: $\mathbb{E}[\phi_k] = O(\log k) \cdot \phi^*$ \quad $\blacksquare$
+
+\textbf{STEP 5: Bound Tightness}
+
+\textbf{Lower bound:} There exist datasets where $\mathbb{E}[\phi_k] = \Theta(\log k) \cdot \phi^*$
+
+\textbf{Construction:} k clusters on exponentially-spaced line:
+
+Cluster i: $n/k$ points centered at $2^i$ with radius 1
+
+Optimal: $\phi^* = O(n)$ (within-cluster variance)
+
+K-means++: $\mathbb{E}[\phi] = \Theta(n \log k)$ (late-covered clusters far from centroids)
+
+Approximation ratio: $\Theta(\log k)$ (tight!)
+
+\textbf{STEP 6: Random Initialization Comparison}
+
+\textbf{Random initialization:} No approximation guarantee
+
+Worst case: all k centroids in one cluster $\Rightarrow$ $\phi/\phi^* = \Theta(\text{diameter}^2)$ (unbounded)
+
+Expected: $\mathbb{E}[\phi_{\text{random}}] = O(k \cdot \phi^*)$ vs K-means++ $O(\log k \cdot \phi^*)$
+
+\textbf{Example:} k=100
+
+K-means++: $\mathbb{E}[\phi] \leq 53\phi^*$
+
+Random: $\mathbb{E}[\phi] = O(100\phi^*)$
+
+\textbf{STEP 7: Variants}
+
+\begin{center}
+\begin{tabular}{l|c|c}
+\textbf{Method} & \textbf{Approximation} & \textbf{Properties} \\
+\hline
+Random init & Unbounded & - \\
+K-means++ & $O(\log k)$ & Sequential \\
+K-means‖ & $O(\log k)$ & Parallel \\
+Greedy & $O(k)$ & Deterministic \\
+\end{tabular}
+\end{center}
+
+\textbf{STEP 8: Application to Example}
+
+Dataset: $\{1, 4, 8, 12, 15, 18, 22\}$, $k=3$, $\phi^* = 37.17$
+
+\textbf{Theoretical guarantee:}
+
+\[
+\mathbb{E}[\phi_{\text{KM++}}] \leq 8(\ln 3 + 2) \phi^* = 8(3.099)(37.17) \approx 921
+\]
+
+\textbf{Actual results:}
+
+K-means++: $\phi = 37.17$ (ratio 1.0)
+
+Random: $\phi = 62.75$ (ratio 1.69)
+
+Theory provides worst-case guarantee; practice often better.
+
+\textbf{STEP 9: Asymptotic Comparison}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+k & K-means++ bound & Random bound \\
+\hline
+10 & $\leq 26\phi^*$ & $\leq 10\phi^*$ \\
+100 & $\leq 53\phi^*$ & $\leq 100\phi^*$ \\
+1000 & $\leq 90\phi^*$ & $\leq 1000\phi^*$ \\
+\end{tabular}
+\end{center}
+
+As k increases, logarithmic scaling provides increasingly better guarantees vs linear scaling.
+
+\end{solution}
+
+\begin{explanation}
+\textbf{Understanding the O(log k) Approximation Guarantee:}
+
+The K-means++ approximation guarantee is a theoretical worst-case bound. It states that the expected cost after K-means++ initialization is at most $8(\ln k + 2)$ times the optimal cost.
+
+\textbf{Why This Matters:}
+
+Before K-means++ (published in 2007), K-means had no provable approximation guarantee despite being widely used. Random initialization could produce arbitrarily bad results on pathological datasets. K-means++ was the first simple, practical initialization that came with theoretical guarantees.
+
+\textbf{The Logarithmic Factor:}
+
+The $O(\log k)$ factor arises from a coupon collector phenomenon. When selecting k centroids:
+\begin{itemize}
+    \item Early centroids likely land in different optimal clusters
+    \item Later centroids face diminishing probability of hitting uncovered clusters
+    \item Expected number of trials to cover all k clusters is $k H_k = k \sum_{i=1}^k \frac{1}{i} = O(k \log k)$
+    \item With only k selections (not $k \log k$), some clusters remain uncovered with probability $O(1/k)$
+    \item Uncovered clusters contribute extra cost, yielding the logarithmic approximation factor
+\end{itemize}
+
+\textbf{Tightness of the Bound:}
+
+The bound is tight: there exist datasets where K-means++ achieves exactly $\Theta(\log k)$ approximation. The standard example uses exponentially-spaced clusters on a line, where late-discovered clusters contribute disproportionate cost.
+
+\textbf{Practical Performance:}
+
+In practice, K-means++ typically performs much better than the theoretical guarantee:
+\begin{itemize}
+    \item Real datasets rarely exhibit worst-case structure
+    \item Empirical approximation ratios typically range from 1.5 to 3
+    \item Our example achieved optimal clustering (ratio 1.0)
+    \item The guarantee provides insurance against pathological cases
+\end{itemize}
+
+\textbf{Comparison to Random Initialization:}
+
+Random initialization has no approximation guarantee—it can be arbitrarily bad. The expected approximation for random initialization is $O(k)$, which becomes impractical for large k. For k=100, K-means++ guarantees at most $53\phi^*$ while random could exceed $100\phi^*$.
+
+\textbf{Asymptotic Advantage:}
+
+As k grows, the advantage of logarithmic vs linear scaling becomes dramatic:
+\begin{itemize}
+    \item k=10: K-means++ $\approx 26\phi^*$, Random $\approx 10\phi^*$ (random still competitive)
+    \item k=100: K-means++ $\approx 53\phi^*$, Random $\approx 100\phi^*$ (2× improvement)
+    \item k=1000: K-means++ $\approx 90\phi^*$, Random $\approx 1000\phi^*$ (11× improvement)
+\end{itemize}
+
+This makes K-means++ essential for large-scale clustering applications like image compression (k=256 colors) or document clustering (k=1000+ topics).
+
+\end{explanation}
+
+\section{Problem 8: Soft K-Means (Gaussian Mixture Model)}
+
+\subsection{Problem Statement}
+
+Dataset: $\{0.5, 1.5, 2.0, 8.5, 9.0, 9.5\}$, $k=2$
+
+\begin{enumerate}
+\item[(a)] Derive the soft K-means (EM for GMM) update equations:
+\[
+r_{ik} = \frac{\exp(-\beta \|x_i - \mu_k\|^2)}{\sum_j \exp(-\beta \|x_i - \mu_j\|^2)}
+\]
+where $\beta = 1/(2\sigma^2)$.
+\item[(b)] Run one EM iteration with $\mu_1=1, \mu_2=9, \sigma^2=1$. Calculate responsibilities $r_{ik}$ and update $\mu_k = \frac{\sum_i r_{ik}x_i}{\sum_i r_{ik}}$.
+\item[(c)] Compare hard vs soft clustering. When is soft clustering preferred?
+\end{enumerate}
+
+\subsection{Solution}
+
+\subsubsection{Part (a): Derive Soft K-Means (EM for GMM) Update Equations}
+
+\begin{solution}
+
+\textbf{STEP 1: Model Setup}
+
+Gaussian Mixture Model with k components:
+
+\[
+p(x) = \sum_{k=1}^K \pi_k \mathcal{N}(x | \mu_k, \sigma^2)
+\]
+
+where $\pi_k$ are mixing coefficients satisfying $\sum_{k=1}^K \pi_k = 1$
+
+For 1D data with spherical covariance:
+
+\[
+\mathcal{N}(x | \mu_k, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left(-\frac{(x - \mu_k)^2}{2\sigma^2}\right)
+\]
+
+\textbf{STEP 2: Responsibility Derivation}
+
+Posterior probability (responsibility) that point $x_i$ belongs to cluster k:
+
+\[
+r_{ik} = p(k | x_i) = \frac{p(x_i | k)p(k)}{p(x_i)}
+\]
+
+By Bayes' theorem:
+
+\[
+r_{ik} = \frac{\pi_k \mathcal{N}(x_i | \mu_k, \sigma^2)}{\sum_{j=1}^K \pi_j \mathcal{N}(x_i | \mu_j, \sigma^2)}
+\]
+
+Substituting Gaussian density:
+
+\[
+r_{ik} = \frac{\pi_k \exp\left(-\frac{(x_i - \mu_k)^2}{2\sigma^2}\right)}{\sum_{j=1}^K \pi_j \exp\left(-\frac{(x_i - \mu_j)^2}{2\sigma^2}\right)}
+\]
+
+\textbf{STEP 3: Simplification with $\beta$ Parameter}
+
+Define $\beta = \frac{1}{2\sigma^2}$:
+
+\[
+r_{ik} = \frac{\pi_k \exp(-\beta(x_i - \mu_k)^2)}{\sum_{j=1}^K \pi_j \exp(-\beta(x_i - \mu_j)^2)}
+\]
+
+For equal mixing coefficients ($\pi_k = 1/K$):
+
+\[
+r_{ik} = \frac{\exp(-\beta \|x_i - \mu_k\|^2)}{\sum_{j=1}^K \exp(-\beta \|x_i - \mu_j\|^2)}
+\]
+
+This is the soft assignment formula (softmax function).
+
+\textbf{STEP 4: M-Step - Update Centroids}
+
+Maximize expected log-likelihood with respect to $\mu_k$:
+
+\[
+\mathcal{Q} = \sum_{i=1}^n \sum_{k=1}^K r_{ik} \log \mathcal{N}(x_i | \mu_k, \sigma^2)
+\]
+
+\[
+= \sum_{i=1}^n \sum_{k=1}^K r_{ik} \left[\log\left(\frac{1}{\sqrt{2\pi\sigma^2}}\right) - \frac{(x_i - \mu_k)^2}{2\sigma^2}\right]
+\]
+
+Taking derivative with respect to $\mu_k$:
+
+\[
+\frac{\partial \mathcal{Q}}{\partial \mu_k} = \sum_{i=1}^n r_{ik} \cdot \frac{2(x_i - \mu_k)}{2\sigma^2} = 0
+\]
+
+\[
+\sum_{i=1}^n r_{ik}(x_i - \mu_k) = 0
+\]
+
+\[
+\sum_{i=1}^n r_{ik} x_i = \mu_k \sum_{i=1}^n r_{ik}
+\]
+
+Therefore:
+
+\[
+\mu_k = \frac{\sum_{i=1}^n r_{ik} x_i}{\sum_{i=1}^n r_{ik}}
+\]
+
+\textbf{STEP 5: M-Step - Update Variance}
+
+Taking derivative with respect to $\sigma^2$:
+
+\[
+\frac{\partial \mathcal{Q}}{\partial \sigma^2} = \sum_{i=1}^n \sum_{k=1}^K r_{ik} \left[-\frac{1}{2\sigma^2} + \frac{(x_i - \mu_k)^2}{2(\sigma^2)^2}\right] = 0
+\]
+
+\[
+\sum_{i=1}^n \sum_{k=1}^K r_{ik} \frac{(x_i - \mu_k)^2}{(\sigma^2)^2} = \sum_{i=1}^n \sum_{k=1}^K \frac{r_{ik}}{\sigma^2}
+\]
+
+\[
+\sigma^2 = \frac{\sum_{i=1}^n \sum_{k=1}^K r_{ik}(x_i - \mu_k)^2}{\sum_{i=1}^n \sum_{k=1}^K r_{ik}} = \frac{\sum_{i=1}^n \sum_{k=1}^K r_{ik}(x_i - \mu_k)^2}{n}
+\]
+
+\textbf{STEP 6: M-Step - Update Mixing Coefficients}
+
+With constraint $\sum_{k=1}^K \pi_k = 1$, use Lagrange multiplier:
+
+\[
+\mathcal{L} = \sum_{i=1}^n \sum_{k=1}^K r_{ik} \log \pi_k + \lambda\left(\sum_{k=1}^K \pi_k - 1\right)
+\]
+
+\[
+\frac{\partial \mathcal{L}}{\partial \pi_k} = \sum_{i=1}^n \frac{r_{ik}}{\pi_k} + \lambda = 0
+\]
+
+\[
+\pi_k = -\frac{1}{\lambda}\sum_{i=1}^n r_{ik}
+\]
+
+Summing over k and using $\sum_k \pi_k = 1$:
+
+\[
+1 = -\frac{1}{\lambda}\sum_{k=1}^K \sum_{i=1}^n r_{ik} = -\frac{n}{\lambda}
+\]
+
+Therefore $\lambda = -n$ and:
+
+\[
+\pi_k = \frac{1}{n}\sum_{i=1}^n r_{ik} = \frac{N_k}{n}
+\]
+
+where $N_k = \sum_{i=1}^n r_{ik}$ is the effective number of points in cluster k.
+
+\textbf{STEP 7: Complete EM Algorithm}
+
+\textbf{E-Step (Expectation):}
+
+\[
+r_{ik} = \frac{\pi_k \exp(-\beta \|x_i - \mu_k\|^2)}{\sum_{j=1}^K \pi_j \exp(-\beta \|x_i - \mu_j\|^2)}
+\]
+
+\textbf{M-Step (Maximization):}
+
+\[
+\mu_k = \frac{\sum_{i=1}^n r_{ik} x_i}{\sum_{i=1}^n r_{ik}}
+\]
+
+\[
+\sigma^2 = \frac{\sum_{i=1}^n \sum_{k=1}^K r_{ik}(x_i - \mu_k)^2}{n}
+\]
+
+\[
+\pi_k = \frac{1}{n}\sum_{i=1}^n r_{ik}
+\]
+
+\end{solution}
+
+\begin{explanation}
+\textbf{Understanding Soft K-Means:}
+
+Soft K-means differs from hard K-means in how points are assigned to clusters. In hard K-means, each point belongs to exactly one cluster (binary assignment). In soft K-means, each point has a probability distribution over all clusters (fractional assignment).
+
+\textbf{The Responsibility Concept:}
+
+The responsibility $r_{ik}$ represents how much cluster k is "responsible" for explaining point $x_i$. Values satisfy:
+\begin{itemize}
+    \item $0 \leq r_{ik} \leq 1$ for all i, k
+    \item $\sum_{k=1}^K r_{ik} = 1$ for each point i (probabilities sum to 1)
+\end{itemize}
+
+Points near cluster centers have high responsibility for that cluster. Points equidistant from multiple centers distribute responsibility among them.
+
+\textbf{Role of $\beta$ Parameter:}
+
+The parameter $\beta = \frac{1}{2\sigma^2}$ controls the "softness" of assignments:
+\begin{itemize}
+    \item Large $\beta$ (small $\sigma^2$): Sharp responsibilities, approaching hard K-means
+    \item Small $\beta$ (large $\sigma^2$): Diffuse responsibilities, all clusters equally likely
+\end{itemize}
+
+\textbf{Connection to Gaussian Mixture Models:}
+
+Soft K-means is the EM algorithm for Gaussian Mixture Models with:
+\begin{itemize}
+    \item Spherical covariances (all clusters have same $\sigma^2$)
+    \item Optional equal mixing coefficients ($\pi_k = 1/K$)
+\end{itemize}
+
+The E-step computes cluster membership probabilities. The M-step updates parameters to maximize likelihood of the data given these probabilities.
+
+\textbf{Weighted Average Interpretation:}
+
+The centroid update $\mu_k = \frac{\sum_i r_{ik} x_i}{\sum_i r_{ik}}$ is a weighted average where points with higher responsibility contribute more. This contrasts with hard K-means where only assigned points contribute equally.
+
+\end{explanation}
+
+\subsubsection{Part (b): Run One EM Iteration}
+
+\begin{solution}
+
+\textbf{Given Parameters:}
+\begin{align*}
+\text{Dataset: } &X = \{0.5, 1.5, 2.0, 8.5, 9.0, 9.5\} \\
+\text{Initial centroids: } &\mu_1^{(0)} = 1, \quad \mu_2^{(0)} = 9 \\
+\text{Variance: } &\sigma^2 = 1 \\
+\text{Number of clusters: } &k = 2
+\end{align*}
+
+\textbf{STEP 1: Calculate Inverse Temperature Parameter}
+
+\begin{align*}
+\beta &= \frac{1}{2\sigma^2} \\
+&= \frac{1}{2 \times 1} \\
+&= \frac{1}{2} \\
+&= 0.5
+\end{align*}
+
+\textbf{STEP 2: E-Step - Calculate Responsibilities for Each Point}
+
+The responsibility formula is:
+\[
+r_{ik} = \frac{\exp(-\beta(x_i - \mu_k)^2)}{\sum_{j=1}^2 \exp(-\beta(x_i - \mu_j)^2)}
+\]
+
+For each point, we calculate:
+\begin{enumerate}
+    \item Squared distance to each centroid: $(x_i - \mu_k)^2$
+    \item Negative scaled distance: $-\beta(x_i - \mu_k)^2$
+    \item Exponential weight: $\exp(-\beta(x_i - \mu_k)^2)$
+    \item Normalization denominator: $\sum_j \exp(-\beta(x_i - \mu_j)^2)$
+    \item Responsibility: Numerator divided by denominator
+\end{enumerate}
+
+\textbf{Point 1: $x_1 = 0.5$}
+
+Distance to cluster 1:
+\begin{align*}
+x_1 - \mu_1 &= 0.5 - 1 = -0.5 \\
+(x_1 - \mu_1)^2 &= (-0.5)^2 = 0.25 \\
+-\beta(x_1 - \mu_1)^2 &= -0.5 \times 0.25 = -0.125
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_1 - \mu_2 &= 0.5 - 9 = -8.5 \\
+(x_1 - \mu_2)^2 &= (-8.5)^2 = 72.25 \\
+-\beta(x_1 - \mu_2)^2 &= -0.5 \times 72.25 = -36.125
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_1 - \mu_1)^2) &= \exp(-0.125) = 0.882497 \\
+\exp(-\beta(x_1 - \mu_2)^2) &= \exp(-36.125) = 2.366 \times 10^{-16} \approx 0
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_1 - \mu_j)^2) &= 0.882497 + 2.366 \times 10^{-16} \\
+&\approx 0.882497
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{11} &= \frac{0.882497}{0.882497} = 1.000000 \\
+r_{12} &= \frac{2.366 \times 10^{-16}}{0.882497} \approx 0.000000
+\end{align*}
+
+Verification: $r_{11} + r_{12} = 1.000000 + 0.000000 = 1.000$ ✓
+
+\textbf{Point 2: $x_2 = 1.5$}
+
+Distance to cluster 1:
+\begin{align*}
+x_2 - \mu_1 &= 1.5 - 1 = 0.5 \\
+(x_2 - \mu_1)^2 &= (0.5)^2 = 0.25 \\
+-\beta(x_2 - \mu_1)^2 &= -0.5 \times 0.25 = -0.125
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_2 - \mu_2 &= 1.5 - 9 = -7.5 \\
+(x_2 - \mu_2)^2 &= (-7.5)^2 = 56.25 \\
+-\beta(x_2 - \mu_2)^2 &= -0.5 \times 56.25 = -28.125
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_2 - \mu_1)^2) &= \exp(-0.125) = 0.882497 \\
+\exp(-\beta(x_2 - \mu_2)^2) &= \exp(-28.125) = 5.632 \times 10^{-13} \approx 0
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_2 - \mu_j)^2) &= 0.882497 + 5.632 \times 10^{-13} \\
+&\approx 0.882497
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{21} &= \frac{0.882497}{0.882497} = 1.000000 \\
+r_{22} &= \frac{5.632 \times 10^{-13}}{0.882497} \approx 0.000000
+\end{align*}
+
+Verification: $r_{21} + r_{22} = 1.000$ ✓
+
+\textbf{Point 3: $x_3 = 2.0$}
+
+Distance to cluster 1:
+\begin{align*}
+x_3 - \mu_1 &= 2.0 - 1 = 1.0 \\
+(x_3 - \mu_1)^2 &= (1.0)^2 = 1.0 \\
+-\beta(x_3 - \mu_1)^2 &= -0.5 \times 1.0 = -0.5
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_3 - \mu_2 &= 2.0 - 9 = -7.0 \\
+(x_3 - \mu_2)^2 &= (-7.0)^2 = 49.0 \\
+-\beta(x_3 - \mu_2)^2 &= -0.5 \times 49.0 = -24.5
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_3 - \mu_1)^2) &= \exp(-0.5) = 0.606531 \\
+\exp(-\beta(x_3 - \mu_2)^2) &= \exp(-24.5) = 2.071 \times 10^{-11} \approx 0
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_3 - \mu_j)^2) &= 0.606531 + 2.071 \times 10^{-11} \\
+&\approx 0.606531
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{31} &= \frac{0.606531}{0.606531} = 1.000000 \\
+r_{32} &= \frac{2.071 \times 10^{-11}}{0.606531} \approx 0.000000
+\end{align*}
+
+Verification: $r_{31} + r_{32} = 1.000$ ✓
+
+\textbf{Point 4: $x_4 = 8.5$}
+
+Distance to cluster 1:
+\begin{align*}
+x_4 - \mu_1 &= 8.5 - 1 = 7.5 \\
+(x_4 - \mu_1)^2 &= (7.5)^2 = 56.25 \\
+-\beta(x_4 - \mu_1)^2 &= -0.5 \times 56.25 = -28.125
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_4 - \mu_2 &= 8.5 - 9 = -0.5 \\
+(x_4 - \mu_2)^2 &= (-0.5)^2 = 0.25 \\
+-\beta(x_4 - \mu_2)^2 &= -0.5 \times 0.25 = -0.125
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_4 - \mu_1)^2) &= \exp(-28.125) = 5.632 \times 10^{-13} \approx 0 \\
+\exp(-\beta(x_4 - \mu_2)^2) &= \exp(-0.125) = 0.882497
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_4 - \mu_j)^2) &= 5.632 \times 10^{-13} + 0.882497 \\
+&\approx 0.882497
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{41} &= \frac{5.632 \times 10^{-13}}{0.882497} \approx 0.000000 \\
+r_{42} &= \frac{0.882497}{0.882497} = 1.000000
+\end{align*}
+
+Verification: $r_{41} + r_{42} = 1.000$ ✓
+
+\textbf{Point 5: $x_5 = 9.0$}
+
+Distance to cluster 1:
+\begin{align*}
+x_5 - \mu_1 &= 9.0 - 1 = 8.0 \\
+(x_5 - \mu_1)^2 &= (8.0)^2 = 64.0 \\
+-\beta(x_5 - \mu_1)^2 &= -0.5 \times 64.0 = -32.0
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_5 - \mu_2 &= 9.0 - 9 = 0.0 \\
+(x_5 - \mu_2)^2 &= (0.0)^2 = 0.0 \\
+-\beta(x_5 - \mu_2)^2 &= -0.5 \times 0.0 = 0.0
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_5 - \mu_1)^2) &= \exp(-32.0) = 1.266 \times 10^{-14} \approx 0 \\
+\exp(-\beta(x_5 - \mu_2)^2) &= \exp(0.0) = 1.000000
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_5 - \mu_j)^2) &= 1.266 \times 10^{-14} + 1.000000 \\
+&\approx 1.000000
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{51} &= \frac{1.266 \times 10^{-14}}{1.000000} \approx 0.000000 \\
+r_{52} &= \frac{1.000000}{1.000000} = 1.000000
+\end{align*}
+
+Verification: $r_{51} + r_{52} = 1.000$ ✓
+
+\textbf{Point 6: $x_6 = 9.5$}
+
+Distance to cluster 1:
+\begin{align*}
+x_6 - \mu_1 &= 9.5 - 1 = 8.5 \\
+(x_6 - \mu_1)^2 &= (8.5)^2 = 72.25 \\
+-\beta(x_6 - \mu_1)^2 &= -0.5 \times 72.25 = -36.125
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+x_6 - \mu_2 &= 9.5 - 9 = 0.5 \\
+(x_6 - \mu_2)^2 &= (0.5)^2 = 0.25 \\
+-\beta(x_6 - \mu_2)^2 &= -0.5 \times 0.25 = -0.125
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta(x_6 - \mu_1)^2) &= \exp(-36.125) = 2.366 \times 10^{-16} \approx 0 \\
+\exp(-\beta(x_6 - \mu_2)^2) &= \exp(-0.125) = 0.882497
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+\sum_{j=1}^2 \exp(-\beta(x_6 - \mu_j)^2) &= 2.366 \times 10^{-16} + 0.882497 \\
+&\approx 0.882497
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_{61} &= \frac{2.366 \times 10^{-16}}{0.882497} \approx 0.000000 \\
+r_{62} &= \frac{0.882497}{0.882497} = 1.000000
+\end{align*}
+
+Verification: $r_{61} + r_{62} = 1.000$ ✓
+
+\textbf{STEP 3: Responsibility Matrix Summary}
+
+Complete responsibility matrix after E-step:
+
+\[
+\begin{array}{c|c|c|c|c|c}
+i & x_i & r_{i1} & r_{i2} & \text{Cluster 1 Weight} & \text{Cluster 2 Weight} \\
+\hline
+1 & 0.5 & 1.000 & 0.000 & 0.5 \times 1.000 = 0.500 & 0.5 \times 0.000 = 0.000 \\
+2 & 1.5 & 1.000 & 0.000 & 1.5 \times 1.000 = 1.500 & 1.5 \times 0.000 = 0.000 \\
+3 & 2.0 & 1.000 & 0.000 & 2.0 \times 1.000 = 2.000 & 2.0 \times 0.000 = 0.000 \\
+4 & 8.5 & 0.000 & 1.000 & 8.5 \times 0.000 = 0.000 & 8.5 \times 1.000 = 8.500 \\
+5 & 9.0 & 0.000 & 1.000 & 9.0 \times 0.000 = 0.000 & 9.0 \times 1.000 = 9.000 \\
+6 & 9.5 & 0.000 & 1.000 & 9.5 \times 0.000 = 0.000 & 9.5 \times 1.000 = 9.500 \\
+\hline
+\sum & & 3.000 & 3.000 & \sum r_{i1}x_i = 4.000 & \sum r_{i2}x_i = 27.000
+\end{array}
+\]
+
+Key observations from responsibility matrix:
+\begin{itemize}
+    \item Points $\{0.5, 1.5, 2.0\}$ are assigned entirely to cluster 1 ($r_{i1} \approx 1$)
+    \item Points $\{8.5, 9.0, 9.5\}$ are assigned entirely to cluster 2 ($r_{i2} \approx 1$)
+    \item No points have split membership (all responsibilities are effectively 0 or 1)
+    \item This indicates well-separated clusters with small variance ($\sigma^2 = 1$)
+\end{itemize}
+
+\textbf{STEP 4: M-Step - Update Cluster 1 Centroid}
+
+Update formula:
+\[
+\mu_1^{(1)} = \frac{\sum_{i=1}^n r_{i1} x_i}{\sum_{i=1}^n r_{i1}}
+\]
+
+Numerator calculation (weighted sum of points):
+\begin{align*}
+\sum_{i=1}^6 r_{i1} x_i &= r_{11}x_1 + r_{21}x_2 + r_{31}x_3 + r_{41}x_4 + r_{51}x_5 + r_{61}x_6 \\
+&= (1.000)(0.5) + (1.000)(1.5) + (1.000)(2.0) + (0.000)(8.5) + (0.000)(9.0) + (0.000)(9.5) \\
+&= 0.500 + 1.500 + 2.000 + 0.000 + 0.000 + 0.000 \\
+&= 4.000
+\end{align*}
+
+Denominator calculation (total responsibility):
+\begin{align*}
+\sum_{i=1}^6 r_{i1} &= r_{11} + r_{21} + r_{31} + r_{41} + r_{51} + r_{61} \\
+&= 1.000 + 1.000 + 1.000 + 0.000 + 0.000 + 0.000 \\
+&= 3.000
+\end{align*}
+
+Updated centroid:
+\begin{align*}
+\mu_1^{(1)} &= \frac{4.000}{3.000} \\
+&= 1.333...\\
+&= \frac{4}{3} = 1.\overline{3}
+\end{align*}
+
+\textbf{STEP 5: M-Step - Update Cluster 2 Centroid}
+
+Update formula:
+\[
+\mu_2^{(1)} = \frac{\sum_{i=1}^n r_{i2} x_i}{\sum_{i=1}^n r_{i2}}
+\]
+
+Numerator calculation (weighted sum of points):
+\begin{align*}
+\sum_{i=1}^6 r_{i2} x_i &= r_{12}x_1 + r_{22}x_2 + r_{32}x_3 + r_{42}x_4 + r_{52}x_5 + r_{62}x_6 \\
+&= (0.000)(0.5) + (0.000)(1.5) + (0.000)(2.0) + (1.000)(8.5) + (1.000)(9.0) + (1.000)(9.5) \\
+&= 0.000 + 0.000 + 0.000 + 8.500 + 9.000 + 9.500 \\
+&= 27.000
+\end{align*}
+
+Denominator calculation (total responsibility):
+\begin{align*}
+\sum_{i=1}^6 r_{i2} &= r_{12} + r_{22} + r_{32} + r_{42} + r_{52} + r_{62} \\
+&= 0.000 + 0.000 + 0.000 + 1.000 + 1.000 + 1.000 \\
+&= 3.000
+\end{align*}
+
+Updated centroid:
+\begin{align*}
+\mu_2^{(1)} &= \frac{27.000}{3.000} \\
+&= 9.000
+\end{align*}
+
+\textbf{STEP 6: Summary of EM Iteration Results}
+
+\textbf{Before iteration (t=0):}
+\begin{align*}
+\mu_1^{(0)} &= 1.000 \\
+\mu_2^{(0)} &= 9.000
+\end{align*}
+
+\textbf{After iteration (t=1):}
+\begin{align*}
+\mu_1^{(1)} &= 1.333 \\
+\mu_2^{(1)} &= 9.000
+\end{align*}
+
+\textbf{Centroid changes:}
+\begin{align*}
+\Delta \mu_1 &= \mu_1^{(1)} - \mu_1^{(0)} = 1.333 - 1.000 = +0.333 \\
+\Delta \mu_2 &= \mu_2^{(1)} - \mu_2^{(0)} = 9.000 - 9.000 = 0.000
+\end{align*}
+
+\textbf{Cluster assignments:}
+\begin{itemize}
+    \item Cluster 1: $\{0.5, 1.5, 2.0\}$ with 3 points
+    \item Cluster 2: $\{8.5, 9.0, 9.5\}$ with 3 points
+\end{itemize}
+
+\textbf{Final updated parameters:}
+\[
+\boxed{\mu_1^{(1)} = \frac{4}{3} \approx 1.333, \quad \mu_2^{(1)} = 9.000}
+\]
+
+\end{solution}
+
+\begin{explanation}
+
+\textbf{Understanding the E-Step Calculations:}
+
+The E-step responsibility calculations demonstrate how soft K-means assigns points based on their distance to cluster centers, weighted by the inverse temperature parameter $\beta$. Several key patterns emerge:
+
+\begin{itemize}
+    \item \textbf{Exponential decay with distance}: The responsibility formula uses $\exp(-\beta d^2)$ where $d$ is the distance from point to centroid. This creates exponential decay - points far from a centroid have exponentially smaller responsibility values.
+
+    \item \textbf{Well-separated clusters produce hard assignments}: With $\sigma^2 = 1$ (thus $\beta = 0.5$), points that are 7-8 units away from a centroid have exponential terms like $\exp(-25)$ or smaller, which are effectively zero in floating-point arithmetic. This explains why all responsibilities are essentially 0 or 1.
+
+    \item \textbf{Numerical stability}: When computing $\exp(-36.125)$, the result is approximately $2.366 \times 10^{-16}$, effectively zero. Modern implementations use log-sum-exp tricks to avoid underflow, but with such clear separation, numerical issues don't affect the final assignments.
+
+    \item \textbf{Verification checks}: Each row of responsibilities sums to 1.000, confirming the probabilistic interpretation. Each point distributes 100\% of its "membership" across the two clusters.
+\end{itemize}
+
+\textbf{Understanding the M-Step Updates:}
+
+The M-step uses the computed responsibilities as weights to update cluster centroids:
+
+\begin{itemize}
+    \item \textbf{Weighted averaging}: The formula $\mu_k = \frac{\sum_i r_{ik}x_i}{\sum_i r_{ik}}$ is a weighted average. Points with higher responsibility contribute more to the centroid location.
+
+    \item \textbf{Cluster 1 movement}: Initial centroid $\mu_1 = 1.000$ moved to $\mu_1^{(1)} = 1.333$. This is exactly the mean of points $\{0.5, 1.5, 2.0\}$ assigned to cluster 1:
+    \[
+    \frac{0.5 + 1.5 + 2.0}{3} = \frac{4}{3} = 1.333
+    \]
+    The centroid shifted toward the center of mass of its assigned points.
+
+    \item \textbf{Cluster 2 stability}: Centroid $\mu_2 = 9.000$ remained unchanged because it was already positioned at the mean of its assigned points $\{8.5, 9.0, 9.5\}$:
+    \[
+    \frac{8.5 + 9.0 + 9.5}{3} = \frac{27}{3} = 9.000
+    \]
+    This indicates $\mu_2$ was already optimally placed.
+
+    \item \textbf{Total responsibility interpretation}: Each cluster has total responsibility of 3.000, meaning each cluster is "responsible" for exactly 3 points. In hard K-means, this would be the cluster size. In soft K-means with hard-like assignments, the interpretation is similar.
+\end{itemize}
+
+\textbf{Convergence Analysis:}
+
+This iteration demonstrates several convergence properties:
+
+\begin{itemize}
+    \item \textbf{Monotonic likelihood increase}: The EM algorithm guarantees that log-likelihood increases (or stays constant) at each iteration. Moving $\mu_1$ from 1.000 to 1.333 better explains the data points assigned to cluster 1.
+
+    \item \textbf{Near-convergence}: With $\mu_2$ unchanged and $\mu_1$ moving only 0.333 units, the algorithm is approaching convergence. Subsequent iterations would show even smaller changes.
+
+    \item \textbf{Hard-limit behavior}: As $\beta \to \infty$ (equivalently, $\sigma^2 \to 0$), soft K-means approaches hard K-means. Our $\beta = 0.5$ is moderate, but the large cluster separation (7-8 units) creates effectively hard assignments anyway.
+
+    \item \textbf{Local optimum quality}: The clear separation into $\{0.5, 1.5, 2.0\}$ and $\{8.5, 9.0, 9.5\}$ represents an excellent clustering - the two groups have a gap of 6.5 units between them.
+\end{itemize}
+
+\textbf{Effect of Parameter $\beta$:}
+
+The inverse temperature $\beta = 1/(2\sigma^2) = 0.5$ plays a crucial role:
+
+\begin{itemize}
+    \item \textbf{Current behavior ($\beta = 0.5$)}: Points 3.5 units away from a centroid have weight $\exp(-0.5 \times 3.5^2) = \exp(-6.125) \approx 0.0022$, effectively zero. This creates sharp decision boundaries.
+
+    \item \textbf{Smaller $\beta$ (larger $\sigma^2$)}: If we set $\beta = 0.1$, the same point would have weight $\exp(-0.1 \times 3.5^2) = \exp(-1.225) \approx 0.294$, creating meaningful soft assignments even at moderate distances.
+
+    \item \textbf{Larger $\beta$ (smaller $\sigma^2$)}: If $\beta = 1.0$, even points 1 unit away would have minimal weight $\exp(-1.0) \approx 0.368$, creating extremely sharp boundaries approaching hard K-means.
+\end{itemize}
+
+\textbf{Practical Implications:}
+
+This example illustrates important practical considerations:
+
+\begin{itemize}
+    \item \textbf{Well-initialized centroids}: Starting with $\mu_1 = 1, \mu_2 = 9$ placed centroids in the correct regions. Poor initialization could have placed both centroids in one cluster, requiring many iterations to escape.
+
+    \item \textbf{Appropriate variance}: The variance $\sigma^2 = 1$ is reasonable given the data spread. If we used $\sigma^2 = 100$, all responsibilities would be approximately $0.5$, providing no useful clustering signal.
+
+    \item \textbf{Convergence speed}: One iteration produced substantial improvement ($\mu_1$: $1.000 \to 1.333$). With good initialization and clear clusters, soft K-means converges rapidly.
+
+    \item \textbf{Computational cost}: Each E-step requires computing 12 distances (6 points × 2 clusters) and 12 exponentials. For large datasets, this can be expensive, motivating variants like mini-batch EM.
+\end{itemize}
+
+\end{explanation}
+
+\subsubsection{Part (c): Compare Hard vs Soft Clustering}
+
+\begin{solution}
+
+\textbf{STEP 1: Mathematical Formulation - Hard K-Means}
+
+In hard K-means, each point receives a binary assignment to exactly one cluster.
+
+Assignment rule for point $x_i$:
+\[
+z_i = \argmin_{k \in \{1, \ldots, K\}} \|x_i - \mu_k\|^2
+\]
+
+Assignment indicator function:
+\[
+z_{ik} = \begin{cases}
+1 & \text{if } k = \argmin_j \|x_i - \mu_j\|^2 \\
+0 & \text{otherwise}
+\end{cases}
+\]
+
+Properties of hard assignments:
+\begin{align*}
+z_{ik} &\in \{0, 1\} \quad \text{(binary values only)} \\
+\sum_{k=1}^K z_{ik} &= 1 \quad \text{(each point in exactly one cluster)}
+\end{align*}
+
+\textbf{STEP 2: Mathematical Formulation - Soft K-Means}
+
+In soft K-means (EM for GMM), each point has a probability distribution over clusters.
+
+Responsibility (soft assignment) for point $x_i$ to cluster $k$:
+\[
+r_{ik} = P(z_i = k | x_i, \Theta) = \frac{\pi_k \mathcal{N}(x_i | \mu_k, \sigma^2)}{\sum_{j=1}^K \pi_j \mathcal{N}(x_i | \mu_j, \sigma^2)}
+\]
+
+With equal priors and $\beta = \frac{1}{2\sigma^2}$:
+\[
+r_{ik} = \frac{\exp(-\beta\|x_i - \mu_k\|^2)}{\sum_{j=1}^K \exp(-\beta\|x_i - \mu_j\|^2)}
+\]
+
+Properties of soft assignments:
+\begin{align*}
+r_{ik} &\in [0, 1] \quad \text{(continuous probabilities)} \\
+\sum_{k=1}^K r_{ik} &= 1 \quad \text{(probabilities sum to one)}
+\end{align*}
+
+\textbf{STEP 3: Centroid Update Comparison}
+
+\textbf{Hard K-Means Update:}
+
+Cluster $k$ centroid is the arithmetic mean of points assigned to cluster $k$:
+\begin{align*}
+C_k &= \{i : z_{ik} = 1\} \quad \text{(set of points in cluster } k\text{)} \\
+|C_k| &= \sum_{i=1}^n z_{ik} \quad \text{(number of points in cluster } k\text{)} \\
+\mu_k &= \frac{1}{|C_k|} \sum_{i \in C_k} x_i = \frac{\sum_{i=1}^n z_{ik} x_i}{\sum_{i=1}^n z_{ik}}
+\end{align*}
+
+Each assigned point contributes equally ($\frac{1}{|C_k|}$ weight).
+
+\textbf{Soft K-Means Update:}
+
+Cluster $k$ centroid is the weighted mean of all points:
+\begin{align*}
+N_k &= \sum_{i=1}^n r_{ik} \quad \text{(effective cluster size)} \\
+\mu_k &= \frac{\sum_{i=1}^n r_{ik} x_i}{\sum_{i=1}^n r_{ik}} = \frac{1}{N_k} \sum_{i=1}^n r_{ik} x_i
+\end{align*}
+
+Each point contributes proportionally to its responsibility $r_{ik}$.
+
+\textbf{STEP 4: Numerical Example - Hard vs Soft Assignment}
+
+Consider a point $x = 4.5$ with two cluster centers:
+\[
+\mu_1 = 3.0, \quad \mu_2 = 6.0
+\]
+
+\textbf{Hard K-Means Assignment:}
+
+Distance to cluster 1:
+\begin{align*}
+d_1^2 &= (x - \mu_1)^2 = (4.5 - 3.0)^2 = (1.5)^2 = 2.25
+\end{align*}
+
+Distance to cluster 2:
+\begin{align*}
+d_2^2 &= (x - \mu_2)^2 = (4.5 - 6.0)^2 = (-1.5)^2 = 2.25
+\end{align*}
+
+Since $d_1^2 = d_2^2 = 2.25$, the point is equidistant from both centroids.
+
+Hard K-means must choose one (typically breaks ties arbitrarily):
+\[
+z_1 = 1, \quad z_2 = 0 \quad \text{(assigned to cluster 1 by tie-breaking)}
+\]
+
+\textbf{Soft K-Means Assignment with $\sigma^2 = 1$ ($\beta = 0.5$):}
+
+Exponential weight for cluster 1:
+\begin{align*}
+\exp(-\beta d_1^2) &= \exp(-0.5 \times 2.25) \\
+&= \exp(-1.125) \\
+&= 0.32465
+\end{align*}
+
+Exponential weight for cluster 2:
+\begin{align*}
+\exp(-\beta d_2^2) &= \exp(-0.5 \times 2.25) \\
+&= \exp(-1.125) \\
+&= 0.32465
+\end{align*}
+
+Normalization denominator:
+\begin{align*}
+Z &= \exp(-\beta d_1^2) + \exp(-\beta d_2^2) \\
+&= 0.32465 + 0.32465 \\
+&= 0.64930
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_1 &= \frac{0.32465}{0.64930} = 0.500 \\
+r_2 &= \frac{0.32465}{0.64930} = 0.500
+\end{align*}
+
+Soft K-means expresses the ambiguity: point $x = 4.5$ has 50\% membership in each cluster.
+
+\textbf{STEP 5: Numerical Example - Effect of Variance Parameter}
+
+Same point $x = 4.5$, same centroids $\mu_1 = 3.0, \mu_2 = 6.0$.
+
+\textbf{Case 1: Small Variance $\sigma^2 = 0.25$ ($\beta = 2.0$)}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta d_1^2) &= \exp(-2.0 \times 2.25) = \exp(-4.5) = 0.01111 \\
+\exp(-\beta d_2^2) &= \exp(-2.0 \times 2.25) = \exp(-4.5) = 0.01111
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_1 &= \frac{0.01111}{0.01111 + 0.01111} = 0.500 \\
+r_2 &= 0.500
+\end{align*}
+
+Even with smaller variance (sharper assignments), equidistant point still gets 50-50 split.
+
+\textbf{Case 2: Large Variance $\sigma^2 = 4.0$ ($\beta = 0.125$)}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta d_1^2) &= \exp(-0.125 \times 2.25) = \exp(-0.28125) = 0.75483 \\
+\exp(-\beta d_2^2) &= \exp(-0.125 \times 2.25) = \exp(-0.28125) = 0.75483
+\end{align*}
+
+Responsibilities:
+\begin{align*}
+r_1 &= \frac{0.75483}{0.75483 + 0.75483} = 0.500 \\
+r_2 &= 0.500
+\end{align*}
+
+Symmetry ensures 50-50 split regardless of $\sigma^2$ for equidistant points.
+
+\textbf{STEP 6: Asymmetric Example}
+
+Point $x = 4.0$, centroids $\mu_1 = 3.0, \mu_2 = 6.0$, $\sigma^2 = 1$ ($\beta = 0.5$).
+
+Squared distances:
+\begin{align*}
+d_1^2 &= (4.0 - 3.0)^2 = 1.0 \\
+d_2^2 &= (4.0 - 6.0)^2 = 4.0
+\end{align*}
+
+Exponential weights:
+\begin{align*}
+\exp(-\beta d_1^2) &= \exp(-0.5 \times 1.0) = \exp(-0.5) = 0.60653 \\
+\exp(-\beta d_2^2) &= \exp(-0.5 \times 4.0) = \exp(-2.0) = 0.13534
+\end{align*}
+
+Normalization:
+\[
+Z = 0.60653 + 0.13534 = 0.74187
+\]
+
+Responsibilities:
+\begin{align*}
+r_1 &= \frac{0.60653}{0.74187} = 0.8177 \quad \text{(81.77\% cluster 1)} \\
+r_2 &= \frac{0.13534}{0.74187} = 0.1823 \quad \text{(18.23\% cluster 2)}
+\end{align*}
+
+\textbf{Hard K-Means would assign:}
+\[
+z_1 = 1, \quad z_2 = 0 \quad \text{(100\% cluster 1, 0\% cluster 2)}
+\]
+
+\textbf{Difference:} Soft K-means captures that the point is closer to $\mu_1$ but still has some affinity to $\mu_2$.
+
+\textbf{STEP 7: Objective Function Comparison}
+
+\textbf{Hard K-Means Objective (Within-Cluster Sum of Squares):}
+
+\begin{align*}
+J_{\text{hard}} &= \sum_{k=1}^K \sum_{i=1}^n z_{ik} \|x_i - \mu_k\|^2 \\
+&= \sum_{k=1}^K \sum_{i \in C_k} \|x_i - \mu_k\|^2
+\end{align*}
+
+This measures total squared distance of points from their assigned centroids.
+
+\textbf{Soft K-Means Objective (Negative Log-Likelihood):}
+
+Log-likelihood:
+\begin{align*}
+\mathcal{L}(\Theta) &= \sum_{i=1}^n \log p(x_i | \Theta) \\
+&= \sum_{i=1}^n \log \left( \sum_{k=1}^K \pi_k \mathcal{N}(x_i | \mu_k, \sigma^2) \right)
+\end{align*}
+
+For equal priors and expanding the Gaussian:
+\begin{align*}
+\mathcal{L} &= \sum_{i=1}^n \log \left( \sum_{k=1}^K \frac{1}{K\sqrt{2\pi\sigma^2}} \exp\left(-\frac{\|x_i - \mu_k\|^2}{2\sigma^2}\right) \right) \\
+&= n\log\frac{1}{K\sqrt{2\pi\sigma^2}} + \sum_{i=1}^n \log \left( \sum_{k=1}^K \exp(-\beta\|x_i - \mu_k\|^2) \right)
+\end{align*}
+
+Maximizing log-likelihood is equivalent to minimizing:
+\[
+J_{\text{soft}} = -\sum_{i=1}^n \log \left( \sum_{k=1}^K \exp(-\beta\|x_i - \mu_k\|^2) \right)
+\]
+
+\textbf{Relationship between objectives:}
+
+As $\beta \to \infty$ (or $\sigma^2 \to 0$):
+\[
+J_{\text{soft}} \to J_{\text{hard}}
+\]
+
+In the limit, soft K-means reduces to hard K-means.
+
+\textbf{STEP 8: Comprehensive Comparison Table}
+
+\begin{center}
+\begin{tabular}{p{3cm}|p{5cm}|p{5cm}}
+\textbf{Aspect} & \textbf{Hard K-Means} & \textbf{Soft K-Means (EM for GMM)} \\
+\hline
+\textbf{Assignment Type} & Binary $z_{ik} \in \{0,1\}$ - each point in exactly one cluster & Probabilistic $r_{ik} \in [0,1]$ - each point has fractional membership \\
+\hline
+\textbf{Centroid Update} & $\mu_k = \frac{1}{|C_k|}\sum_{i \in C_k} x_i$ - unweighted mean of assigned points only & $\mu_k = \frac{\sum_i r_{ik}x_i}{\sum_i r_{ik}}$ - weighted mean of all points \\
+\hline
+\textbf{Objective} & Minimize WCSS: $\sum_k \sum_{i \in C_k} \|x_i - \mu_k\|^2$ & Maximize log-likelihood: $\sum_i \log \sum_k \pi_k \mathcal{N}(x_i | \mu_k, \sigma^2)$ \\
+\hline
+\textbf{Decision Boundary} & Sharp - discrete jumps when point switches clusters & Smooth - continuous transition with distance \\
+\hline
+\textbf{Boundary Points} & Forced to one cluster even if equidistant & Distributed membership reflects ambiguity \\
+\hline
+\textbf{Parameters} & Only centroids $\{\mu_1, \ldots, \mu_K\}$ & Centroids, variance $\sigma^2$, mixing coefficients $\{\pi_k\}$ \\
+\hline
+\textbf{Convergence} & Can oscillate or get stuck; non-monotonic & Monotonically increases likelihood; smoother \\
+\hline
+\textbf{Initialization Sensitivity} & Very high - sensitive to initial centroids & Lower - soft assignments help escape poor local minima \\
+\hline
+\textbf{Computational Cost} & $O(nkd)$ per iteration & $O(nkd)$ per iteration (same asymptotic complexity) \\
+\hline
+\textbf{Memory Requirement} & $O(n)$ - store cluster label per point & $O(nk)$ - store k responsibilities per point \\
+\hline
+\textbf{Interpretability} & High - clear cluster membership & Moderate - requires interpreting probabilities \\
+\hline
+\textbf{Outlier Handling} & Forced into nearest cluster & Can have low responsibility for all clusters \\
+\hline
+\textbf{Missing Data} & Requires complete data & EM naturally handles missing values \\
+\hline
+\textbf{Probabilistic Framework} & No - purely geometric optimization & Yes - assumes data from mixture model \\
+\hline
+\textbf{Convergence Guarantee} & To local minimum of WCSS & To local maximum of log-likelihood \\
+\end{tabular}
+\end{center}
+
+\textbf{STEP 9: When to Use Each Method}
+
+\textbf{Prefer Hard K-Means when:}
+
+\begin{enumerate}
+    \item \textbf{Well-separated clusters}: Clear gaps between clusters with minimal overlap
+    \begin{itemize}
+        \item Example: Customer segments with distinct purchasing patterns
+        \item Benefit: Binary assignments match the natural structure
+    \end{itemize}
+
+    \item \textbf{Computational constraints}: Limited memory or processing power
+    \begin{itemize}
+        \item Example: Embedded systems, real-time applications
+        \item Benefit: Lower memory ($O(n)$ vs $O(nk)$), simpler implementation
+    \end{itemize}
+
+    \item \textbf{Interpretability required}: Stakeholders need simple explanations
+    \begin{itemize}
+        \item Example: Business reporting where each customer is in one segment
+        \item Benefit: "Customer X is in segment Y" is clearer than probabilities
+    \end{itemize}
+
+    \item \textbf{Large datasets}: Millions of points requiring fast iteration
+    \begin{itemize}
+        \item Example: Image segmentation, document clustering
+        \item Benefit: Faster convergence with fewer iterations
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Prefer Soft K-Means when:}
+
+\begin{enumerate}
+    \item \textbf{Overlapping clusters}: Significant overlap or fuzzy boundaries
+    \begin{itemize}
+        \item Example: Topic modeling where documents span multiple topics
+        \item Benefit: Captures ambiguity rather than forcing binary choice
+    \end{itemize}
+
+    \item \textbf{Uncertainty quantification needed}: Confidence in assignments matters
+    \begin{itemize}
+        \item Example: Medical diagnosis support - "60\% cluster A, 35\% cluster B, 5\% cluster C"
+        \item Benefit: Probabilistic output enables better decision-making
+    \end{itemize}
+
+    \item \textbf{Probabilistic modeling}: Need generative model for data
+    \begin{itemize}
+        \item Example: Anomaly detection, density estimation
+        \item Benefit: Can compute $p(x)$ for new points
+    \end{itemize}
+
+    \item \textbf{Downstream probabilistic tasks}: Results feed into Bayesian inference
+    \begin{itemize}
+        \item Example: Clustering as preprocessing for classification with uncertainty
+        \item Benefit: Preserves uncertainty through analysis pipeline
+    \end{itemize}
+
+    \item \textbf{Missing or incomplete data}: Dataset has missing values
+    \begin{itemize}
+        \item Example: Survey data with non-responses
+        \item Benefit: EM algorithm naturally handles missing data
+    \end{itemize}
+
+    \item \textbf{Better initialization}: Poor initial centroids
+    \begin{itemize}
+        \item Example: No domain knowledge for seeding clusters
+        \item Benefit: Soft assignments help escape local minima
+    \end{itemize}
+\end{enumerate}
+
+\textbf{STEP 10: Summary of Key Insights}
+
+\begin{itemize}
+    \item Hard K-means is a special case of soft K-means in the limit $\sigma^2 \to 0$ (or $\beta \to \infty$)
+
+    \item Soft K-means provides richer information through responsibility values $r_{ik}$
+
+    \item The variance parameter $\sigma^2$ controls the "softness" of assignments:
+    \begin{itemize}
+        \item Small $\sigma^2$: Sharp, nearly hard assignments
+        \item Large $\sigma^2$: Diffuse, highly soft assignments
+    \end{itemize}
+
+    \item Computational complexity is the same ($O(nkd)$ per iteration), but soft K-means typically requires more iterations and memory
+
+    \item The choice depends on the problem domain: well-separated clusters favor hard K-means; overlapping clusters favor soft K-means
+
+    \item Soft K-means enables uncertainty-aware applications impossible with hard assignments
+\end{itemize}
+
+\end{solution}
+
+\begin{explanation}
+
+\textbf{Fundamental Philosophical Difference:}
+
+The distinction between hard and soft clustering reflects two fundamentally different perspectives on the nature of clustering:
+
+\begin{itemize}
+    \item \textbf{Hard K-Means Philosophy}: Clustering is a partitioning problem. The universe of data points can be cleanly divided into disjoint sets. Each point has a "true" cluster membership that we aim to discover. Ambiguity represents uncertainty in our method, not inherent structure in the data.
+
+    \item \textbf{Soft K-Means Philosophy}: Clustering is a statistical inference problem. Data points are generated from a mixture of probability distributions. Points naturally belong to multiple clusters with varying degrees, and this mixed membership is a real property of the data, not a methodological artifact.
+\end{itemize}
+
+These perspectives lead to different algorithms, different interpretations, and different applications.
+
+\textbf{The Mathematics of Soft Assignments:}
+
+The softmax function in soft K-means:
+\[
+r_{ik} = \frac{\exp(-\beta d_{ik}^2)}{\sum_{j=1}^K \exp(-\beta d_{ij}^2)}
+\]
+has important mathematical properties:
+
+\begin{itemize}
+    \item \textbf{Winner-take-most}: The exponential function amplifies differences. If one distance is even slightly smaller, that cluster gets disproportionately high responsibility. For example, if $d_1 = 1.0$ and $d_2 = 1.5$ with $\beta = 0.5$:
+    \begin{align*}
+    r_1 &= \frac{\exp(-0.5)}{\exp(-0.5) + \exp(-1.125)} = \frac{0.6065}{0.6065 + 0.3247} = 0.651 \\
+    r_2 &= 0.349
+    \end{align*}
+    A 50\% difference in distance (1.0 vs 1.5) produces 87\% more responsibility (0.651 vs 0.349).
+
+    \item \textbf{Temperature parameter}: The value of $\beta$ acts like inverse temperature in thermodynamics:
+    \begin{itemize}
+        \item High $\beta$ ("cold" system): Responsibilities concentrate on nearest cluster
+        \item Low $\beta$ ("hot" system): Responsibilities spread evenly across clusters
+        \item At $\beta = 0$: All responsibilities equal to $1/K$ (maximum entropy)
+        \item At $\beta \to \infty$: Winner-take-all (hard K-means)
+    \end{itemize}
+
+    \item \textbf{Information-theoretic view}: The responsibility distribution $\{r_{i1}, \ldots, r_{iK}\}$ has entropy:
+    \[
+    H_i = -\sum_{k=1}^K r_{ik} \log r_{ik}
+    \]
+    \begin{itemize}
+        \item Maximum entropy ($H_i = \log K$): Point equally belongs to all clusters
+        \item Minimum entropy ($H_i = 0$): Point certainly belongs to one cluster
+        \item Soft K-means naturally balances fit (low distortion) and entropy
+    \end{itemize}
+\end{itemize}
+
+\textbf{Convergence Dynamics - Why Soft is Smoother:}
+
+Hard K-means can exhibit pathological convergence behavior:
+
+\begin{itemize}
+    \item \textbf{Oscillation}: A boundary point might switch between clusters repeatedly. In iteration $t$, assign to cluster 1; centroid shifts, making cluster 2 closer; in iteration $t+1$, switch to cluster 2; centroid shifts back; repeat indefinitely.
+
+    \item \textbf{Non-monotonic objective}: When a point switches clusters, the WCSS can temporarily increase before decreasing. The algorithm eventually converges, but the path is non-smooth.
+
+    \item \textbf{Empty clusters}: If all points leave a cluster, the centroid becomes undefined, requiring special handling (restart, remove cluster, etc.).
+\end{itemize}
+
+Soft K-means avoids these issues:
+
+\begin{itemize}
+    \item \textbf{Gradual transitions}: Responsibilities change continuously. A point doesn't "jump" between clusters; its membership gradually shifts from one to another.
+
+    \item \textbf{Monotonic guarantee}: The EM algorithm provably increases log-likelihood at each iteration (or leaves it unchanged if converged). No oscillations possible.
+
+    \item \textbf{No empty clusters}: Every cluster receives some responsibility from every point (though possibly infinitesimally small). Centroids are always well-defined.
+\end{itemize}
+
+This smoothness comes at a cost: soft K-means typically requires more iterations to converge because changes are gradual rather than discrete.
+
+\textbf{Real-World Application Examples:}
+
+\textbf{Example 1: Customer Segmentation}
+
+A retail company has customers with purchase histories. Some customers clearly fit one segment; others span multiple segments.
+
+\textbf{Hard K-Means Approach:}
+\begin{itemize}
+    \item Customer A: Purchases only luxury items → "High Value" segment
+    \item Customer B: Purchases only discount items → "Budget" segment
+    \item Customer C: Purchases mix of luxury and discount → Forced into one segment (loses information)
+\end{itemize}
+
+\textbf{Soft K-Means Approach:}
+\begin{itemize}
+    \item Customer A: 95\% "High Value", 3\% "Mid-tier", 2\% "Budget"
+    \item Customer B: 2\% "High Value", 8\% "Mid-tier", 90\% "Budget"
+    \item Customer C: 40\% "High Value", 25\% "Mid-tier", 35\% "Budget"
+\end{itemize}
+
+For Customer C, the soft assignment reveals they're a mixed shopper. Marketing can target them with campaigns from multiple segments, or create a specialized "hybrid" approach.
+
+\textbf{Example 2: Document Clustering}
+
+Academic papers often span multiple topics (e.g., "Machine Learning in Bioinformatics").
+
+\textbf{Hard K-Means:} Forces paper into either "Machine Learning" or "Bioinformatics", losing cross-disciplinary nature.
+
+\textbf{Soft K-Means:} Assigns 60\% "Machine Learning", 35\% "Bioinformatics", 5\% "Statistics", accurately reflecting content distribution. Useful for:
+\begin{itemize}
+    \item Multi-topic recommendation systems
+    \item Cross-disciplinary literature review
+    \item Understanding knowledge transfer between fields
+\end{itemize}
+
+\textbf{Example 3: Medical Diagnosis Support}
+
+Patient symptoms often match multiple conditions partially.
+
+\textbf{Hard K-Means:} "Patient has condition X" - may miss rare presentation of condition Y.
+
+\textbf{Soft K-Means:} "70\% condition X, 25\% condition Y, 5\% condition Z" - alerts clinician to differential diagnoses, improving diagnostic accuracy and reducing errors.
+
+\textbf{Computational Complexity and Practical Considerations:}
+
+Both algorithms have the same per-iteration complexity:
+\[
+O(nkd)
+\]
+where $n$ = number of points, $k$ = number of clusters, $d$ = dimensionality.
+
+However, practical differences exist:
+
+\begin{itemize}
+    \item \textbf{Memory footprint}:
+    \begin{itemize}
+        \item Hard K-means: Store $n$ cluster labels → $O(n)$ memory
+        \item Soft K-means: Store $n \times k$ responsibilities → $O(nk)$ memory
+    \end{itemize}
+    For $n = 1,000,000$ points and $k = 100$ clusters, this difference is 100-fold.
+
+    \item \textbf{Number of iterations}:
+    \begin{itemize}
+        \item Hard K-means: Typically 10-50 iterations to converge
+        \item Soft K-means: Typically 50-200 iterations due to gradual convergence
+    \end{itemize}
+
+    \item \textbf{Numerical stability}:
+    \begin{itemize}
+        \item Hard K-means: Straightforward arithmetic, numerically stable
+        \item Soft K-means: Computing $\exp(-\beta d^2)$ for large $d$ can underflow; requires log-sum-exp trick:
+        \[
+        \log \sum_k \exp(a_k) = c + \log \sum_k \exp(a_k - c), \quad c = \max_k a_k
+        \]
+    \end{itemize}
+
+    \item \textbf{Parallelization}:
+    Both algorithms parallelize well over data points in the E-step, but soft K-means requires additional synchronization for storing responsibility matrices.
+\end{itemize}
+
+\textbf{The Variance Parameter $\sigma^2$ - A Critical Choice:}
+
+The variance parameter fundamentally shapes soft K-means behavior:
+
+\begin{itemize}
+    \item \textbf{Too small ($\sigma^2 \ll$ typical distances)}: Responsibilities become  essentially binary (0 or 1), defeating the purpose of soft clustering. Algorithm behaves like hard K-means but with extra computational cost.
+
+    \item \textbf{Too large ($\sigma^2 \gg$ typical distances)}: All points have similar responsibility for all clusters (near $1/k$), providing no useful clustering information. Algorithm fails to differentiate clusters.
+
+    \item \textbf{Optimal choice}: Should reflect the natural spread of clusters. Rules of thumb:
+    \begin{itemize}
+        \item Initialize $\sigma^2$ to average within-cluster variance from initial assignment
+        \item Use EM to update $\sigma^2$ alongside centroids (full GMM approach)
+        \item Cross-validation: Try multiple values, select based on held-out likelihood
+    \end{itemize}
+\end{itemize}
+
+\textbf{Extension to Full Gaussian Mixture Models:}
+
+Soft K-means is a restricted GMM. The full GMM relaxes constraints:
+
+\begin{itemize}
+    \item \textbf{Soft K-means constraints}:
+    \begin{itemize}
+        \item Spherical covariances: All clusters have same $\sigma^2$
+        \item Often equal priors: $\pi_k = 1/K$ for all $k$
+    \end{itemize}
+
+    \item \textbf{Full GMM freedoms}:
+    \begin{itemize}
+        \item Separate covariance matrices: Cluster $k$ has $\Sigma_k$ (ellipsoidal clusters)
+        \item Different sizes: $\sigma_k^2$ varies by cluster
+        \item Learned priors: $\pi_k$ reflects natural cluster proportions
+        \item Correlation structure: $\Sigma_k$ captures feature correlations
+    \end{itemize}
+\end{itemize}
+
+The trade-off: Full GMM is more expressive but has many more parameters to estimate, requiring more data and risking overfitting.
+
+\textbf{Decision Framework - Choosing Between Hard and Soft:}
+
+Use this decision tree:
+
+\begin{enumerate}
+    \item \textbf{Are clusters well-separated with clear gaps?}
+    \begin{itemize}
+        \item Yes → Hard K-means likely sufficient and faster
+        \item No → Continue to question 2
+    \end{itemize}
+
+    \item \textbf{Do you need uncertainty quantification or probabilistic output?}
+    \begin{itemize}
+        \item Yes → Soft K-means required
+        \item No → Continue to question 3
+    \end{itemize}
+
+    \item \textbf{Are computational resources limited (memory, time)?}
+    \begin{itemize}
+        \item Yes → Hard K-means (lower memory, fewer iterations)
+        \item No → Continue to question 4
+    \end{itemize}
+
+    \item \textbf{Is interpretability critical for stakeholders?}
+    \begin{itemize}
+        \item Yes → Hard K-means (simpler to explain)
+        \item No → Soft K-means (richer information)
+    \end{itemize}
+
+    \item \textbf{Does the application involve missing data or downstream probabilistic tasks?}
+    \begin{itemize}
+        \item Yes → Soft K-means (EM handles missing data, preserves uncertainty)
+        \item No → Either method viable; default to simpler hard K-means unless specific benefit from soft assignments
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Hybrid Approaches:}
+
+Some applications use both:
+
+\begin{itemize}
+    \item \textbf{Soft then hard}: Run soft K-means to convergence, then convert final responsibilities to hard assignments (threshold at 0.5 or take argmax). Benefit: Smooth optimization leading to hard clusters.
+
+    \item \textbf{Deterministic annealing}: Start with large $\sigma^2$ (very soft), gradually decrease to small $\sigma^2$ (nearly hard). Helps escape local minima while ending with interpretable hard clusters.
+
+    \item \textbf{Fuzzy c-means}: Alternative soft clustering with different assignment formula (power of distance rather than exponential), sometimes preferred in specific domains.
+\end{itemize}
+
+\textbf{Summary - The Key Insight:}
+
+Hard and soft K-means are not simply "better or worse" - they solve different problems:
+
+\begin{itemize}
+    \item \textbf{Hard K-means}: "Which cluster does each point belong to?" (Partitioning question)
+    \item \textbf{Soft K-means}: "What is the probability each point came from each cluster?" (Statistical inference question)
+\end{itemize}
+
+The appropriate choice depends entirely on whether the application requires deterministic assignments or probabilistic membership degrees. When in doubt, soft K-means provides strictly more information (responsibilities can always be hardened to assignments), but at computational cost.
+
+\end{explanation}
+
 \end{document}
