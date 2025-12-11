@@ -228,7 +228,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 1: Statistical Analysis and Array Operations
 - **File**: `Practical Assignments/Assignment 1/stats_analysis.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: September 16, 2025
 - **Topics Covered**:
   - Statistical measures (mean, median, weighted mean)
@@ -251,7 +251,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 2: Teacher Rating Data Analysis
 - **File**: `Practical Assignments/Assignment 2/Assignment_2.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 3, 2025
 - **Topics Covered**:
   - Data type identification (Cross-sectional vs Time Series)
@@ -278,7 +278,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 3: Advanced Teacher Rating Analysis
 - **File**: `Practical Assignments/Assignment 3/Assignment_3.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 9, 2025
 - **Topics Covered**:
   - Duplicate identification and handling
@@ -304,7 +304,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 4: Categorical and Continuous Variable Analysis
 - **File**: `Practical Assignments/Assignment_4/Assignment_4.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 13, 2025
 - **Topics Covered**:
   - Chi-square test of independence for categorical variables
@@ -336,7 +336,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 5: Advanced Statistical Methods
 - **File**: `Practical Assignments/Assignment_5/Assignment_5.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 2025
 - **Topics Covered**:
   - Advanced statistical testing methodologies
@@ -350,7 +350,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Assignment 6: Statistical Testing (T-Test, ANOVA, Chi-Square, Correlation)
 - **File**: `Practical Assignments/Assignment 6/Assignment_6.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 2025
 - **Topics Covered**:
   - T-Test: Gender effect on teaching evaluation rates
@@ -372,7 +372,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 7: Regression Analysis with Statistical Tests
 - **File**: `Practical Assignments/Practical 7/Practical_7.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Regression with T-test for gender effects
@@ -394,7 +394,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 8: Decision Trees
 - **File**: `Practical Assignments/Practical_8/Practical_8.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Decision tree classification
@@ -416,7 +416,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 9: K-Nearest Neighbors (KNN) Classification
 - **File**: `Practical Assignments/Practical_9/Practical_9.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Exploratory Data Analysis (EDA) on Iris dataset
@@ -440,7 +440,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 10: Principal Component Analysis (PCA)
 - **File**: `Practical Assignments/Practical 10/Practical_10.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Descriptive statistics on wine dataset
@@ -465,7 +465,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 11: Bayesian Statistics and MCMC
 - **File**: `Practical Assignments/Practical 11/Practical_11.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Sunspot data analysis (1749-2018)
@@ -489,7 +489,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical 12: Metropolis Algorithm and Deterministic Models
 - **File**: `Practical Assignments/Practical_12/Practical_12.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Topics Covered**:
   - Part A: Metropolis Algorithm implementation
@@ -513,7 +513,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Lecture Assignment 1: Statistical Foundations
 - **Files**: `Lecture Assignments/Assignment 1/`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: October 2025
 - **Format**: LaTeX + Jupyter Notebook hybrid
 - **Topics Covered**:
@@ -534,7 +534,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Lecture Assignment 2: Probability Distributions and Random Variables
 - **Files**: `Lecture Assignments/Assignment_2/`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: November 2025
 - **Format**: Pure LaTeX
 - **Topics Covered**:
@@ -560,7 +560,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Lecture Assignment 3: K-Nearest Neighbors and Clustering
 - **Files**: `Lecture Assignments/Assignment_3/`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Completion Date**: December 2025 (Deadline: Dec 20, 2025)
 - **Format**: Pure LaTeX
 - **Topics Covered**:
@@ -590,7 +590,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practical Exam 2: Comprehensive Statistical Analysis
 - **File**: `Practical_exam/Practical_Exam_2_Solution.ipynb`
-- **Status**: ✅ Completed
+- **Status**: Completed
 - **Format**: Jupyter Notebook
 - **Topics Covered**:
   - Comprehensive data analysis
@@ -613,7 +613,7 @@ Statistical-Foundation-of-Data-Science/
 
 #### Practice Problem Solutions
 - **Location**: `Practice Problems/`
-- **Status**: ✅ In Progress
+- **Status**: In Progress
 - **Format**: LaTeX
 - **Content**:
   - Comprehensive problem set (Practice_Problems.pdf)
@@ -694,32 +694,32 @@ pytest >= 8.0.0
 
 | Assignment                                       | Start Date   | Due Date       | Status        | Grade | Notes                                          |
 | ------------------------------------------------ | ------------ | -------------- | ------------- | ----- | ---------------------------------------------- |
-| Assignment 1: Statistical Analysis & Array Ops   | Sep 13, 2025 | Sep 16, 2025   | ✅ Completed  | -     | Comprehensive implementation                   |
-| Assignment 2: Teacher Rating Data Analysis       | Sep 23, 2025 | Oct 10, 2025   | ✅ Completed  | -     | 6 questions with full statistical analysis     |
-| Assignment 3: Advanced Teacher Rating Analysis   | Sep 29, 2025 | Oct 10, 2025   | ✅ Completed  | -     | 5 questions with advanced filtering            |
-| Assignment 4: Categorical & Continuous Analysis  | Oct 6, 2025  | Oct 14, 2025   | ✅ Completed  | -     | 5 questions with hypothesis testing            |
-| Assignment 5: Advanced Statistical Methods       | Oct 2025     | Oct 2025       | ✅ Completed  | -     | Advanced methodologies                         |
-| Assignment 6: Statistical Testing                | Oct 14, 2025 | Oct 24, 2025   | ✅ Completed  | -     | T-Test, ANOVA, Chi-square, Correlation         |
-| Practical 7: Regression Analysis                 | Nov 2025     | Nov 2025       | ✅ Completed  | -     | OLS regression with statistical tests          |
-| Practical 8: Decision Trees                      | Nov 2025     | Nov 2025       | ✅ Completed  | -     | Classification with tree visualization         |
-| Practical 9: KNN Classification                  | Nov 12, 2025 | Nov 18, 2025   | ✅ Completed  | -     | K-Nearest Neighbors on Iris dataset            |
-| Practical 10: Principal Component Analysis       | Nov 18, 2025 | Nov 24, 2025   | ✅ Completed  | -     | PCA on wine dataset                            |
-| Practical 11: Bayesian Statistics & MCMC         | Nov 18, 2025 | Nov 25, 2025   | ✅ Completed  | -     | Sunspot analysis with Gamma distribution       |
-| Practical 12: Metropolis Algorithm               | Nov 25, 2025 | Nov 30, 2025   | ✅ Completed  | -     | MCMC and deterministic models                  |
+| Assignment 1: Statistical Analysis & Array Ops   | Sep 13, 2025 | Sep 16, 2025   | Completed     | -     | Comprehensive implementation                   |
+| Assignment 2: Teacher Rating Data Analysis       | Sep 23, 2025 | Oct 10, 2025   | Completed     | -     | 6 questions with full statistical analysis     |
+| Assignment 3: Advanced Teacher Rating Analysis   | Sep 29, 2025 | Oct 10, 2025   | Completed     | -     | 5 questions with advanced filtering            |
+| Assignment 4: Categorical & Continuous Analysis  | Oct 6, 2025  | Oct 14, 2025   | Completed     | -     | 5 questions with hypothesis testing            |
+| Assignment 5: Advanced Statistical Methods       | Oct 2025     | Oct 2025       | Completed     | -     | Advanced methodologies                         |
+| Assignment 6: Statistical Testing                | Oct 14, 2025 | Oct 24, 2025   | Completed     | -     | T-Test, ANOVA, Chi-square, Correlation         |
+| Practical 7: Regression Analysis                 | Nov 2025     | Nov 2025       | Completed     | -     | OLS regression with statistical tests          |
+| Practical 8: Decision Trees                      | Nov 2025     | Nov 2025       | Completed     | -     | Classification with tree visualization         |
+| Practical 9: KNN Classification                  | Nov 12, 2025 | Nov 18, 2025   | Completed     | -     | K-Nearest Neighbors on Iris dataset            |
+| Practical 10: Principal Component Analysis       | Nov 18, 2025 | Nov 24, 2025   | Completed     | -     | PCA on wine dataset                            |
+| Practical 11: Bayesian Statistics & MCMC         | Nov 18, 2025 | Nov 25, 2025   | Completed     | -     | Sunspot analysis with Gamma distribution       |
+| Practical 12: Metropolis Algorithm               | Nov 25, 2025 | Nov 30, 2025   | Completed     | -     | MCMC and deterministic models                  |
 
 #### Lecture Assignments
 
 | Assignment                                       | Start Date   | Due Date       | Status        | Grade | Notes                                          |
 | ------------------------------------------------ | ------------ | -------------- | ------------- | ----- | ---------------------------------------------- |
-| Lecture Assignment 1: Statistical Foundations    | Sep 2025     | Oct 2025       | ✅ Completed  | -     | LaTeX/Jupyter hybrid format                    |
-| Lecture Assignment 2: Probability & Distributions| Oct 2025     | Nov 14, 2025   | ✅ Completed  | -     | 7 problems, pure LaTeX                         |
-| Lecture Assignment 3: KNN & Clustering           | Nov 2025     | Dec 20, 2025   | ✅ Completed  | -     | 7 problems on ML fundamentals                  |
+| Lecture Assignment 1: Statistical Foundations    | Sep 2025     | Oct 2025       | Completed     | -     | LaTeX/Jupyter hybrid format                    |
+| Lecture Assignment 2: Probability & Distributions| Oct 2025     | Nov 14, 2025   | Completed     | -     | 7 problems, pure LaTeX                         |
+| Lecture Assignment 3: KNN & Clustering           | Nov 2025     | Dec 20, 2025   | Completed     | -     | 7 problems on ML fundamentals                  |
 
 #### Examinations & Practice
 
 | Item                                             | Date         | Status        | Notes                                          |
 | ------------------------------------------------ | ------------ | ------------- | ---------------------------------------------- |
-| Practical Exam 2                                 | Nov 2025     | ✅ Completed  | Complete solution with viva preparation        |
+| Practical Exam 2                                 | Nov 2025     | Completed     | Complete solution with viva preparation        |
 | Practice Problems (Q14)                          | Ongoing      | 🔄 In Progress| Selected problem solutions                     |
 
 ### Skills Development Roadmap
