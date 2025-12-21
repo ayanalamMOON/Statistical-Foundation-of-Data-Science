@@ -1,0 +1,432 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Markov Chains, Monte Carlo \& Deterministic Models\\
+\small MIT/Stanford Level}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Stochastic Models}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% MARKOV CHAIN PROBLEMS
+% ============================================================
+
+\section{Markov Chains}
+
+\subsection*{Problem 1: Credit Rating Migration Model}
+
+A credit rating agency models corporate bond ratings using a discrete-time Markov chain with 5 states: AAA (1), AA (2), A (3), BBB (4), Default (5). Historical data from 500 companies over one year yields the following transition matrix:
+
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+From/To & AAA & AA & A & BBB & Default \\
+\midrule
+AAA & 0.92 & 0.06 & 0.01 & 0.01 & 0.00 \\
+AA & 0.03 & 0.88 & 0.08 & 0.01 & 0.00 \\
+A & 0.00 & 0.05 & 0.85 & 0.08 & 0.02 \\
+BBB & 0.00 & 0.01 & 0.08 & 0.82 & 0.09 \\
+Default & 0.00 & 0.00 & 0.00 & 0.00 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Current portfolio distribution: 150 AAA bonds, 200 AA bonds, 100 A bonds, 50 BBB bonds.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the expected distribution of ratings after 1 year by multiplying the initial distribution vector by the transition matrix. How many bonds are expected to default in the first year?
+
+\item Compute the 2-step transition probabilities by squaring the transition matrix. What is the probability that an AAA-rated bond will be BBB-rated or worse after 2 years? Compare this to the 1-year probability.
+
+\item Identify transient and absorbing states. Prove that Default is an absorbing state by showing $P(\text{Default} \to \text{Default}) = 1$. Are there any other absorbing states?
+
+\item Calculate the expected time until default for a bond currently rated A using first-step analysis. Set up the system of equations: $h_i = 1 + \sum_{j \neq 5} P_{ij}h_j$ where $h_5 = 0$ (Default state). Solve for $h_3$ (state A).
+
+\item The portfolio manager wants to know the long-term default probability starting from each non-default state. Calculate absorption probabilities $f_i$ (probability of eventual default from state $i$) by solving: $f_i = P_{i5} + \sum_{j=1}^{4} P_{ij}f_j$ with $f_5 = 1$. Order states by riskiness.
+
+\item Time-value adjustment: If the annual discount rate is 5\%, calculate the expected present value of \$100 bond cash flows assuming annual coupon payments until default or maturity (10 years). For an A-rated bond, compute: $E[PV] = \sum_{t=1}^{10} (1.05)^{-t} \times P(\text{survive to year } t) \times \$8 + (1.05)^{-10} \times P(\text{no default}) \times \$100$.
+\end{enumerate}
+
+\subsection*{Problem 2: Web Page Ranking with PageRank Algorithm}
+
+A simplified web network has 6 pages with the following link structure:
+
+\begin{center}
+\begin{tabular}{ccl}
+\toprule
+Page & Outgoing Links & Destinations \\
+\midrule
+1 & 2 & Pages 2, 3 \\
+2 & 3 & Pages 1, 4, 5 \\
+3 & 2 & Pages 2, 6 \\
+4 & 1 & Page 5 \\
+5 & 3 & Pages 1, 2, 6 \\
+6 & 2 & Pages 3, 5 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Transition probabilities: $P_{ij} = 1/(\text{outdegree of page } i)$ if page $i$ links to page $j$, else 0.
+
+Random surfer model with damping factor $d = 0.85$: At each step, with probability 0.85 follow a random outlink, with probability 0.15 jump to any page uniformly at random.
+
+\begin{enumerate}[label=(\alph*)]
+\item Construct the 6×6 transition matrix $\mathbf{P}$ for the pure random walk (without damping). Verify that each row sums to 1. Identify any dangling nodes (pages with no outlinks).
+
+\item Apply the damping factor to get the Google matrix: $\mathbf{G} = 0.85\mathbf{P} + 0.15\mathbf{E}$ where $\mathbf{E}$ is the $6 \times 6$ matrix with all entries equal to $1/6$. Calculate the first row of $\mathbf{G}$.
+
+\item Find the stationary distribution $\boldsymbol{\pi}$ satisfying $\boldsymbol{\pi}^T = \boldsymbol{\pi}^T\mathbf{G}$ and $\sum \pi_i = 1$. Use power iteration: start with uniform distribution $\boldsymbol{\pi}^{(0)} = (1/6, \ldots, 1/6)$ and iterate $\boldsymbol{\pi}^{(k+1)} = \mathbf{G}^T\boldsymbol{\pi}^{(k)}$ until convergence (change < 0.001). Report the PageRank scores.
+
+\item Rank pages by their stationary probabilities. Which page has highest PageRank? Calculate the ratio of highest to lowest PageRank. How does this relate to the link structure?
+
+\item Sensitivity analysis: Page 2 adds a new link to Page 6. Recalculate the transition matrix and stationary distribution. How much does Page 6's PageRank increase? What about Page 2's rank?
+
+\item Convergence rate: The mixing time is related to the second-largest eigenvalue magnitude $|\lambda_2|$ of $\mathbf{G}$. Given $|\lambda_2| \approx 0.85$ (the damping factor), estimate the number of iterations needed for $\|\boldsymbol{\pi}^{(k)} - \boldsymbol{\pi}\| < 0.001$ using the bound: iterations $\approx \frac{\ln(6 \times 0.001)}{\ln(0.85)}$.
+\end{enumerate}
+
+\subsection*{Problem 3: Queue Management at Service Center}
+
+A customer service center has 3 agents. Customers arrive and form a single queue. The system state is the number of customers in the system (0, 1, 2, 3, 4, 5+, capped at 5). Transition probabilities per minute:
+
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+From $\backslash$ To & 0 & 1 & 2 & 3 & 4 & 5 \\
+\midrule
+0 & 0.70 & 0.25 & 0.04 & 0.01 & 0.00 & 0.00 \\
+1 & 0.50 & 0.30 & 0.15 & 0.04 & 0.01 & 0.00 \\
+2 & 0.30 & 0.35 & 0.20 & 0.10 & 0.04 & 0.01 \\
+3 & 0.25 & 0.30 & 0.25 & 0.12 & 0.06 & 0.02 \\
+4 & 0.20 & 0.25 & 0.25 & 0.15 & 0.10 & 0.05 \\
+5 & 0.15 & 0.20 & 0.25 & 0.20 & 0.12 & 0.08 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Performance metrics from simulation: Average time between arrivals: 2.4 minutes. Average service time: 6.5 minutes.
+
+\begin{enumerate}[label=(\alph*)]
+\item Determine if this chain is irreducible by checking if all states communicate. Can you reach state 5 from state 0? Can you return to state 0 from state 5? Construct a communication diagram.
+
+\item Find the stationary distribution $\boldsymbol{\pi}$ by solving $\boldsymbol{\pi}\mathbf{P} = \boldsymbol{\pi}$ subject to $\sum \pi_i = 1$. This is equivalent to solving the system: $\pi_j = \sum_{i=0}^{5} \pi_i P_{ij}$ for $j=0,\ldots,5$ plus the normalization constraint. Use the iterative method or solve the linear system.
+
+\item Calculate the expected number of customers in the system: $L = \sum_{i=0}^{5} i \times \pi_i$. Using Little's Law $L = \lambda W$ where $\lambda = 1/2.4$ customers per minute, compute the expected waiting time $W$ in the system.
+
+\item Compute the probability that an arriving customer faces a full queue (state 5) and must wait or be turned away: $\pi_5$. If the center operates 8 hours per day (480 minutes), how many customers per day experience delays?
+
+\item Capacity planning: Management considers adding a 4th agent, which changes transition probabilities (service becomes faster). New stationary distribution: $\boldsymbol{\pi}' = (0.75, 0.18, 0.05, 0.015, 0.004, 0.001)$. Calculate the percentage reduction in expected queue length. Is the improvement worth the cost?
+
+\item Variance of queue length: Calculate $\text{Var}(N) = \sum_{i=0}^{5} i^2\pi_i - L^2$ for both 3-agent and 4-agent configurations. How does increased capacity affect variability? Use the coefficient of variation $CV = \sqrt{\text{Var}(N)}/L$ to compare relative variability.
+\end{enumerate}
+
+% ============================================================
+% MONTE CARLO PROBLEMS
+% ============================================================
+
+\section{Monte Carlo Methods}
+
+\subsection*{Problem 1: Option Pricing via Monte Carlo Simulation}
+
+A European call option on a stock has strike price $K = \$50$ and expires in 1 year ($T = 1$). Current stock price $S_0 = \$48$. The stock follows geometric Brownian motion: $S_T = S_0 \exp[(r - \sigma^2/2)T + \sigma\sqrt{T}Z]$ where $Z \sim N(0,1)$, risk-free rate $r = 0.05$, volatility $\sigma = 0.30$.
+
+Monte Carlo simulation with $N = 10,000$ paths yields:
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Statistic & Min & Q1 & Median & Q3 & Max \\
+\midrule
+Final Price $S_T$ & 18.42 & 38.65 & 49.28 & 62.14 & 125.67 \\
+Payoff $(S_T - K)^+$ & 0.00 & 0.00 & 0.00 & 12.14 & 75.67 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sample mean payoff: $\bar{X} = 6.82$, Sample standard deviation: $s = 10.45$
+
+\begin{enumerate}[label=(\alph*)]
+\item Estimate the option value by discounting the average payoff: $V_0 = e^{-rT} \times \bar{X}$. Calculate the present value using $r = 0.05$ and $T = 1$. 
+
+\item Construct a 95\% confidence interval for the true option value using $V_0 \pm 1.96 \times \frac{s}{\sqrt{N}} \times e^{-rT}$. Calculate the margin of error. What does this interval tell us about pricing accuracy?
+
+\item Variance reduction via antithetic variates: For each random $Z_i$, also simulate with $-Z_i$. This produces pairs $(S_T^i, S_T^{-i})$ with negative correlation. If the antithetic method reduces variance by 40\%, calculate the effective sample size: how many standard simulations would be needed to achieve the same precision as 10,000 antithetic pairs?
+
+\item Calculate the probability that the option expires in-the-money (payoff > 0) as the fraction of paths where $S_T > K$. From the simulation, approximately what percentage of paths resulted in positive payoff? Using this, estimate the probability $P(S_T > 50)$.
+
+\item Greeks estimation: Delta measures option sensitivity to stock price changes. Using finite difference: $\Delta \approx \frac{V(S_0 + h) - V(S_0 - h)}{2h}$ with $h = 0.01$. If simulations at $S_0 = 48.01$ and $S_0 = 47.99$ give values 6.84 and 6.80 respectively, calculate delta. Interpret: for a \$1 increase in stock price, how much does option value change?
+
+\item Compare to Black-Scholes formula value: $V_{BS} = 6.78$ (using analytical formula). Calculate the relative error: $|V_0 - V_{BS}|/V_{BS}$. Is the Monte Carlo estimate within the 95\% confidence interval? Discuss sources of simulation error (discretization, random sampling, finite paths).
+\end{enumerate}
+
+\subsection*{Problem 2: Risk Assessment via Monte Carlo Integration}
+
+A portfolio contains investments in 3 correlated assets with returns modeled as multivariate normal. Expected annual returns: $\boldsymbol{\mu} = (0.08, 0.12, 0.06)$. Covariance matrix:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+& Asset 1 & Asset 2 & Asset 3 \\
+\midrule
+Asset 1 & 0.0400 & 0.0180 & 0.0120 \\
+Asset 2 & 0.0180 & 0.0900 & 0.0090 \\
+Asset 3 & 0.0120 & 0.0090 & 0.0225 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Portfolio weights: $\mathbf{w} = (0.4, 0.3, 0.3)$. Initial investment: \$1,000,000.
+
+Monte Carlo simulation ($N = 50,000$ scenarios) of annual returns:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Percentile & Portfolio Return & Portfolio Value & Loss \\
+\midrule
+1\% & -0.198 & \$802,000 & \$198,000 \\
+5\% & -0.092 & \$908,000 & \$92,000 \\
+50\% & 0.084 & \$1,084,000 & - \\
+95\% & 0.268 & \$1,268,000 & - \\
+99\% & 0.352 & \$1,352,000 & - \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate 95\% Value at Risk (VaR): the 5th percentile loss. From the simulation output, what is the maximum loss expected with 95\% confidence? Express as both dollar amount and percentage of initial investment.
+
+\item Compute 95\% Conditional Value at Risk (CVaR): the expected loss given that loss exceeds VaR. Average all simulated losses that are worse than the 5th percentile. If the mean of the worst 5\% scenarios is a loss of \$124,000, calculate CVaR and compare to VaR.
+
+\item Estimate the probability of losing more than 15\% (portfolio value below \$850,000) as the fraction of simulated scenarios with returns below -0.15. If 3,200 out of 50,000 scenarios resulted in such losses, calculate this tail probability.
+
+\item Component VaR: Decompose total VaR into contributions from each asset. For Asset 1, calculate marginal VaR: $\text{MVaR}_1 = \frac{\partial \text{VaR}}{\partial w_1}$. If increasing $w_1$ by 0.01 (1\%) increases VaR by \$850, compute marginal VaR. The component VaR is: $\text{CVaR}_1 = w_1 \times \text{MVaR}_1$. Which asset contributes most to portfolio risk?
+
+\item Stress testing: A market crash scenario triples the volatilities (multiply covariance matrix by 9) while maintaining correlations. Re-run the simulation with adjusted parameters. If new 5\% VaR becomes \$276,000, calculate the VaR multiplier under stress. How does portfolio risk scale with volatility?
+
+\item Importance sampling: To better estimate tail probabilities, shift the mean return down by one standard deviation: $\boldsymbol{\mu}' = \boldsymbol{\mu} - \boldsymbol{\sigma}_p$ where $\boldsymbol{\sigma}_p$ is the portfolio volatility. This generates more extreme scenarios. If importance sampling estimates $P(\text{loss} > 15\%) = 0.068$ compared to crude Monte Carlo's 0.064, calculate the relative efficiency: $\text{Efficiency} = \frac{s^2}{s'^2}$ where $s'^2$ is the importance sampling variance.
+\end{enumerate}
+
+\subsection*{Problem 3: Reliability Analysis via Monte Carlo Simulation}
+
+A manufacturing system has 5 components arranged in series-parallel configuration:
+- Subsystem A: Components 1 and 2 in parallel (system works if at least one works)
+- Subsystem B: Components 3, 4, 5 in series (all must work)
+- Overall: A and B in series
+
+Component reliabilities (probability of functioning for 1000 hours):
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Component & Reliability & Mean Lifetime (hrs) & Std Dev (hrs) \\
+\midrule
+1 & 0.92 & 1200 & 180 \\
+2 & 0.88 & 1100 & 200 \\
+3 & 0.95 & 1500 & 150 \\
+4 & 0.90 & 1300 & 220 \\
+5 & 0.93 & 1400 & 190 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Monte Carlo simulation ($N = 100,000$ trials) results:
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+Configuration & Estimated Reliability & 95\% CI \\
+\midrule
+Subsystem A (1,2 parallel) & 0.9896 & [0.9886, 0.9906] \\
+Subsystem B (3,4,5 series) & 0.7979 & [0.7956, 0.8002] \\
+Overall system & 0.7896 & [0.7873, 0.7919] \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Verify the parallel subsystem reliability using the formula: $R_A = 1 - (1-r_1)(1-r_2)$ where $r_1 = 0.92$, $r_2 = 0.88$. Compare to simulation result 0.9896. Calculate the absolute error and relative error.
+
+\item Calculate series subsystem reliability analytically: $R_B = r_3 \times r_4 \times r_5 = 0.95 \times 0.90 \times 0.93$. Compare to simulation result 0.7979. Why does parallel configuration provide redundancy while series creates vulnerability?
+
+\item Estimate overall system reliability and compare to the analytical solution: $R_{\text{system}} = R_A \times R_B$. Given simulation result 0.7896, is this consistent with the theoretical value? The 95\% CI width indicates precision—calculate margin of error.
+
+\item Component importance: Which component has greatest impact on system reliability? Calculate Birnbaum importance: $I_i = \frac{\partial R_{\text{system}}}{\partial r_i}$. For component 1 in parallel: $I_1 = R_B \times (1-r_2) = 0.7979 \times 0.12$. For component 3 in series: $I_3 = R_A \times r_4 \times r_5$. Compare these sensitivities.
+
+\item Mean Time To Failure (MTTF): Simulate component lifetimes from normal distributions (truncated at 0). For each trial, record system failure time = minimum of (Subsystem A failure time, Subsystem B failure time). If simulation yields mean system lifetime 1050 hours with standard deviation 210 hours, construct a 95\% confidence interval for true MTTF.
+
+\item Cost-benefit analysis: Improving component 4's reliability from 0.90 to 0.95 costs \$50,000. System downtime costs \$10,000 per hour. Calculate expected annual savings (8760 hours per year): Annual cost without improvement vs. with improvement. If new system reliability becomes 0.8318, compute reduction in expected downtime hours and determine payback period.
+\end{enumerate}
+
+% ============================================================
+% DETERMINISTIC MODEL PROBLEMS
+% ============================================================
+
+\section{Deterministic Models}
+
+\subsection*{Problem 1: Epidemic Spread Model (SIR)}
+
+A city with population 50,000 experiences a flu outbreak. The SIR (Susceptible-Infected-Recovered) model divides the population into three groups with dynamics:
+
+Rate of new infections: $\beta = 0.00004$ (per day per contact)
+
+Rate of recovery: $\gamma = 0.1$ (per day)
+
+Basic reproduction number: $R_0 = \beta N / \gamma$ where $N = 50000$
+
+Initial conditions (Day 0): $S_0 = 49,900$, $I_0 = 100$, $R_0 = 0$
+
+Simulation results at key timepoints:
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Day & Susceptible & Infected & Recovered & New Cases \\
+\midrule
+0 & 49,900 & 100 & 0 & - \\
+10 & 47,250 & 1,850 & 900 & 265 \\
+20 & 38,100 & 6,200 & 5,700 & 892 \\
+30 & 24,300 & 9,800 & 15,900 & 1,368 \\
+40 & 12,400 & 8,600 & 29,000 & 1,220 \\
+50 & 5,800 & 4,200 & 40,000 & 750 \\
+60 & 2,900 & 1,100 & 46,000 & 290 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the basic reproduction number $R_0 = \beta N / \gamma = 0.00004 \times 50000 / 0.1$. Interpret: on average, how many new infections does one infected person cause in a fully susceptible population? Is $R_0 > 1$ indicating epidemic growth?
+
+\item Determine the peak infection day by finding when $dI/dt = 0$. From the differential equations: $dI/dt = \beta SI - \gamma I$. At the peak, $\beta SI = \gamma I$, so $S = \gamma/\beta = 0.1/0.00004$. Using the simulation data, estimate which day had maximum infected individuals. What was the peak prevalence (percentage of population infected)?
+
+\item Calculate cumulative attack rate: the total proportion of population that eventually gets infected. From day 60 data, this is $(I_{60} + R_{60})/N = (1100 + 46000)/50000$. What percentage of the population avoided infection entirely?
+
+\item Herd immunity threshold: Calculate the critical proportion that must be immune to stop epidemic spread: $p_c = 1 - 1/R_0$. Compare this theoretical threshold to the final susceptible proportion $S_{\infty}/N$. How close is the simulation result to the theoretical prediction?
+
+\item Intervention analysis: A vaccination campaign at day 15 immunizes 10,000 susceptible individuals (they move to Recovered). Adjust $S_{15}$ and $R_{15}$ accordingly. Predict the new peak infection count using the adjusted initial conditions for day 15 onward. Estimate the number of infections prevented by this intervention.
+
+\item Time-to-peak sensitivity: How does $R_0$ affect epidemic timeline? If transmission rate $\beta$ decreases by 20\% (social distancing), new $R_0' = 0.8 \times R_0$. Use the approximation: peak time $t_{\text{peak}} \propto \frac{1}{\gamma(R_0 - 1)}$. Calculate the change in peak time and interpret the public health implications of intervention delays.
+\end{enumerate}
+
+\subsection*{Problem 2: Population Growth Model with Harvesting}
+
+A fish population in a lake follows logistic growth with harvesting: $\frac{dN}{dt} = rN(1 - N/K) - H$ where $r$ is intrinsic growth rate, $K$ is carrying capacity, and $H$ is harvest rate.
+
+Parameters: $r = 0.4$ per year, $K = 100,000$ fish, current population $N_0 = 60,000$.
+
+Harvest scenarios:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Scenario & Harvest Rate $H$ & Equilibrium $N^*$ & Time to Equilibrium \\
+\midrule
+No Harvest & 0 & 100,000 & 8.5 years \\
+Sustainable & 10,000/yr & 75,000 & 5.2 years \\
+Moderate & 18,000/yr & 55,000 & 4.8 years \\
+Heavy & 25,000/yr & 0 (collapse) & 12 years \\
+Critical & 10,000/yr & 50,000 & 6.1 years \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Find equilibrium points by solving $rN(1 - N/K) = H$. For sustainable harvest $H = 10,000$, solve: $0.4N(1 - N/100000) = 10000$. This gives quadratic: $0.4N - 0.000004N^2 = 10000$. Calculate both equilibrium points and determine which is stable.
+
+\item Maximum Sustainable Yield (MSY): The maximum harvest rate that maintains equilibrium occurs at $N^* = K/2$. Calculate $H_{\text{MSY}} = rK/4 = 0.4 \times 100000 / 4$. Compare to the harvest scenarios in the table. Which scenarios exceed MSY and risk population collapse?
+
+\item Stability analysis: For equilibrium $N^*$, calculate $\frac{d}{dN}[rN(1 - N/K) - H]$ evaluated at $N^*$. If this derivative is negative, equilibrium is stable. For $N^* = 75,000$ under sustainable harvesting, compute: $r(1 - 2N^*/K) = 0.4(1 - 150000/100000)$. Is this equilibrium stable?
+
+\item Recovery time: Starting from depleted population $N_0 = 30,000$ with no harvesting ($H = 0$), estimate time to reach 90\% of carrying capacity. Use the logistic growth solution: $N(t) = \frac{K N_0}{N_0 + (K - N_0)e^{-rt}}$. Solve for $t$ when $N(t) = 0.9K = 90,000$.
+
+\item Economic optimization: Each fish sells for \$15. Annual discount rate is 8\%. Calculate present value of perpetual sustainable yield: $PV = \frac{H \times \text{price}}{r_{\text{discount}}} = \frac{10000 \times 15}{0.08}$. Compare this to the one-time value of harvesting entire population: $100000 \times 15$. Which strategy maximizes long-term value?
+
+\item Stochastic effects: Environmental variability causes growth rate to fluctuate: $r \sim \text{Uniform}(0.3, 0.5)$ per year. Using Monte Carlo simulation over 20 years with $H = 10,000$ per year, if 15\% of simulations result in population below 20,000 (threatened status), calculate the probability of population decline. Should harvest rate be reduced for precautionary reasons?
+\end{enumerate}
+
+\subsection*{Problem 3: Chemical Reactor Dynamics}
+
+A continuous stirred-tank reactor (CSTR) processes chemical A into product B via first-order reaction: $A \to B$ with rate constant $k = 0.5$ per minute. The reactor has volume $V = 100$ liters with inflow rate $Q = 10$ L/min.
+
+Mass balance for concentration of A: $\frac{dC_A}{dt} = \frac{Q}{V}(C_{A,\text{in}} - C_A) - kC_A$
+
+Input concentration: $C_{A,\text{in}} = 2.0$ mol/L
+
+Steady-state and transient data:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Time (min) & $C_A$ (mol/L) & $C_B$ (mol/L) & Conversion (\%) \\
+\midrule
+0 & 0.00 & 0.00 & 0 \\
+2 & 0.52 & 0.38 & 19 \\
+5 & 0.92 & 0.87 & 43.5 \\
+10 & 1.18 & 1.48 & 59 \\
+20 & 1.29 & 1.91 & 64.5 \\
+40 & 1.32 & 2.05 & 66 \\
+$\infty$ & 1.33 & 2.07 & 66.5 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate steady-state concentration of A by setting $\frac{dC_A}{dt} = 0$: solve $\frac{Q}{V}(C_{A,\text{in}} - C_A^*) = kC_A^*$ for $C_A^*$. Using $Q/V = 0.1$ per minute and $k = 0.5$ per minute, compute $C_A^* = \frac{C_{A,\text{in}}}{1 + kV/Q} = \frac{2.0}{1 + 5}$. Compare to simulation result 1.33 mol/L.
+
+\item Determine conversion at steady state: $X = \frac{C_{A,\text{in}} - C_A^*}{C_{A,\text{in}}} \times 100\%$. From calculated $C_A^* = 1.33$, conversion is $(2.0 - 1.33)/2.0 = 0.335$ or 33.5\%. Note discrepancy with table value 66.5\%—reconcile by considering product formation: true conversion uses $C_B/C_{A,\text{in}}$.
+
+\item Calculate time constant for reactor approach to steady state. The solution to the differential equation is: $C_A(t) = C_A^* + (C_A(0) - C_A^*)\exp(-t/\tau)$ where time constant $\tau = 1/(k + Q/V) = 1/(0.5 + 0.1) = 1/0.6$ minutes. After how many time constants (multiples of $\tau$) does the reactor reach 95\% of steady state?
+
+\item Residence time distribution: Average time a molecule spends in reactor is $\tau_{\text{res}} = V/Q = 100/10 = 10$ minutes. The fraction of molecules with residence time less than $t$ follows: $F(t) = 1 - e^{-t/\tau_{\text{res}}}$. Calculate the percentage of molecules that exit within 5 minutes (half the average residence time).
+
+\item Damköhler number: This dimensionless parameter compares reaction rate to flow rate: $Da = \frac{kV}{Q} = \frac{0.5 \times 100}{10} = 5$. Interpret: $Da >> 1$ means reaction-limited (fast flow, slow reaction), $Da << 1$ means mixing-limited. Is this reactor reaction-limited or mixing-limited? What does this imply for conversion efficiency?
+
+\item Process optimization: To increase conversion to 80\%, either decrease flow rate $Q$ or increase reaction rate $k$ (higher temperature). If doubling temperature increases $k$ to 1.0 per minute (Arrhenius law), calculate new steady-state conversion using $C_A^* = C_{A,\text{in}}/(1 + kV/Q)$. Alternatively, if $Q$ is reduced to 5 L/min (keeping $k = 0.5$), compute the new conversion. Which approach is more effective?
+\end{enumerate}
+
+\end{document}
