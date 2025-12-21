@@ -1,0 +1,289 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Principal Component Analysis \& Standard Deviation Control\\
+\small MIT/Stanford Level}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{PCA \& SD Control}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% PCA PROBLEMS
+% ============================================================
+
+\section{Principal Component Analysis (PCA)}
+
+\subsection*{Problem 1: Stock Portfolio Dimensionality Reduction}
+
+An investment firm tracks 4 stock indices over 5 trading days. The centered return data (\%) is:
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Day & Tech & Energy & Finance & Healthcare \\
+\midrule
+1 & 1.2 & -0.5 & 2.1 & -1.8 \\
+2 & -0.8 & 0.3 & -1.5 & 1.2 \\
+3 & 2.3 & -1.1 & 3.8 & -3.2 \\
+4 & -1.5 & 0.7 & -2.6 & 2.2 \\
+5 & 0.4 & -0.2 & 0.9 & -0.8 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+PCA results: Eigenvalues are $\lambda_1 = 12.85$, $\lambda_2 = 3.42$, $\lambda_3 = 1.18$, $\lambda_4 = 0.35$. First PC loading vector: (0.48, -0.22, 0.75, -0.63).
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the 4×4 covariance matrix using the formula $\mathbf{C} = \frac{1}{n-1}\mathbf{X}^T\mathbf{X}$ where $n=5$ days. Verify symmetry and identify which pair of indices shows the strongest correlation from the off-diagonal elements.
+
+\item Using the given eigenvalues, verify they are in descending order. Calculate the condition number $\kappa = \lambda_1/\lambda_4$. What does this indicate about the stability of the covariance matrix?
+
+\item Calculate the proportion of variance explained by each PC. How many components are needed to retain 90\% of total variance? Using the elbow method, where would you truncate?
+
+\item Project the original data onto the first two PCs. Calculate the reconstruction error (Frobenius norm squared) when using only 2 components versus the total variance. What percentage of information is lost?
+
+\item Interpret the first PC loading vector. Which index contributes most to PC1? If PC1 score increases by 1 unit, how does the Tech Index return change? What economic relationship does the sign pattern (positive for Tech/Finance, negative for Energy/Healthcare) suggest about market sectors?
+
+\item Calculate the Mahalanobis distance from origin to the point (1.5, -0.8, 2.5, -2.0) in both the original 4D space and the PC space using all 4 components. Verify that PCA preserves this distance measure.
+\end{enumerate}
+
+\subsection*{Problem 2: Image Compression with PCA}
+
+A grayscale $6 \times 6$ image patch (pixel intensities 0-255) is mean-centered for PCA compression. The image shows a lighting gradient from dark (rows 1-2, intensity ~45) to medium (rows 3-4, intensity ~120) to bright (rows 5-6, intensity ~195).
+
+SVD analysis yields singular values: $\sigma_1 = 523.4$, $\sigma_2 = 8.7$, $\sigma_3 = 3.2$, $\sigma_4 = 1.8$, $\sigma_5 = 0.9$, $\sigma_6 = 0.3$.
+
+Reconstruction quality:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+k & Storage (values) & Compression Ratio & Reconstruction Error (\%) \\
+\midrule
+1 & 13 & 2.77:1 & 2.8 \\
+2 & 26 & 1.38:1 & 1.2 \\
+3 & 39 & 0.92:1 & 0.8 \\
+6 (full) & 78 & 0.46:1 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Verify the relationship between singular values and eigenvalues using $\lambda_i = \sigma_i^2/(n-1)$ where $n=6$. Calculate the Frobenius norm squared $\|\mathbf{X}\|_F^2$ and confirm it equals $\sum_{i=1}^{6} \sigma_i^2$.
+
+\item For each k=1,2,3, calculate the compression ratio comparing original storage (36 values) to compressed storage (k×13 values for PC scores, loadings, and singular values). Which k achieves reconstruction error below 5\% with maximum compression?
+
+\item The first PC captures the lighting gradient. To remove this artifact, project the image onto the subspace orthogonal to PC1 using $\mathbf{P}_{\perp} = \mathbf{I} - \mathbf{u}_1\mathbf{u}_1^T$. Calculate the Frobenius norm before and after this de-lighting operation. What percentage of energy is removed?
+
+\item Storage break-even analysis: PCA becomes storage-efficient when $k(m + n + 1) < mn$. For $m=n=6$, solve for maximum k. Repeat for a $100 \times 100$ image. At what k does PCA become inefficient?
+
+\item Scale to 1000 patches of $6 \times 6$ pixels. If global PCA on all patches finds the first 3 PCs explain 95\% variance, calculate: (a) total storage for raw data, (b) storage using 3-component PCA, (c) overall compression ratio.
+
+\item White noise with variance $\sigma_n^2 = 25$ contaminates the image. Using Marcenko-Pastur threshold $\sigma_{opt} = \sigma_n\sqrt{m}(1 + \sqrt{n/m})$ with $m=n=6$, determine which singular values exceed the noise floor and should be retained. Compare $\sigma_{opt}$ to each $\sigma_i$.
+\end{enumerate}
+
+\subsection*{Problem 3: Gene Expression Analysis with High-Dimensional PCA}
+
+A genomics study measures expression levels of $p=1000$ genes across $n=50$ patients (20 healthy, 30 diseased). The standardized data matrix $\mathbf{X}_{50 \times 1000}$ has zero mean and unit variance columns.
+
+PCA eigenvalue results:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Component & Eigenvalue & Variance Explained (\%) & Cumulative (\%) \\
+\midrule
+PC1 & 125.3 & 12.5 & 12.5 \\
+PC2 & 87.6 & 8.8 & 21.3 \\
+PC3 & 62.4 & 6.2 & 27.5 \\
+PC4 & 45.8 & 4.6 & 32.1 \\
+PC5 & 38.2 & 3.8 & 35.9 \\
+PC6-50 & varies & 64.1 & 100.0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sum of all 50 non-zero eigenvalues: 1000 (by standardization). PC1 separates healthy vs diseased with 85\% classification accuracy.
+
+Cross-validation reconstruction errors:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+k components & CV Error & Std. Error & Relative to k=1 \\
+\midrule
+1 & 15200 & 850 & 1.00 \\
+2 & 9800 & 620 & 0.64 \\
+3 & 7200 & 490 & 0.47 \\
+5 & 5400 & 380 & 0.36 \\
+10 & 4100 & 320 & 0.27 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item In the high-dimensional regime ($p=1000 \gg n=50$), the covariance matrix $\mathbf{X}^T\mathbf{X}$ is $1000 \times 1000$ but rank-deficient. Calculate its rank. How many eigenvalues are exactly zero? Explain why we can equivalently perform PCA using the $50 \times 50$ Gram matrix $\mathbf{X}\mathbf{X}^T$.
+
+\item Calculate cumulative variance explained by first 5 PCs. Under the Marcenko-Pastur null (random matrix theory), the expected largest eigenvalue is $\lambda_{\max}^{null} = 49(\sqrt{p/n} + 1)^2 \approx 1465$ for random data. Compare this to the observed $\lambda_1 = 125.3$. Does this suggest meaningful structure or random noise?
+
+\item Sparse PCA with L1 regularization identifies 50 genes (5\% sparsity) with non-zero PC1 loadings. The top 5 gene loadings are: 0.18, 0.15, 0.14, 0.12, 0.11. Calculate the participation ratio $PR = (\sum|w_i|)^2 / \sum w_i^2$ to measure effective dimensionality. How many genes are "effectively" contributing?
+
+\item Permutation test: Disease labels are shuffled 1000 times and PC1 separation (ROC AUC) recalculated each time. The observed AUC of 0.85 is exceeded in only 12 permutations. Calculate the empirical p-value. Is PC1 significantly associated with disease at $\alpha = 0.05$?
+
+\item Using the cross-validation results table, apply the one-standard-error rule to select the optimal number of PCs: choose the smallest k whose CV error is within 1 SE of the minimum. Calculate SE thresholds and determine the optimal k. Justify whether k=3 or k=5 is preferable.
+
+\item Kernel PCA using polynomial kernel $K(\mathbf{x}_i, \mathbf{x}_j) = (1 + \mathbf{x}_i^T\mathbf{x}_j)^2$ captures non-linear interactions. After centering, the kernel matrix has eigenvalues $\mu_1 = 18500$, $\mu_2 = 12300$, with trace 250000. Calculate the variance explained by the first kernel PC (7.4\%). Compare to linear PCA's first PC (12.5\%). What does the lower variance in kernel space suggest about gene interaction patterns?
+\end{enumerate}
+
+% ============================================================
+% STANDARD DEVIATION CONTROL PROBLEMS
+% ============================================================
+
+\section{Controlling Standard Deviation and Variance}
+
+\subsection*{Problem 1: Quality Control in Manufacturing Process}
+
+A semiconductor manufacturer monitors wafer thickness (in micrometers) to maintain quality. Target specifications: mean $\mu_0 = 500\mu m$ with standard deviation $\sigma_0 = 2\mu m$. A random sample of $n=25$ wafers yields:
+
+Sample statistics: $\bar{x} = 500.04\mu m$, $s^2 = 2.87$, $s = 1.69\mu m$
+
+Critical values for testing: $\chi^2_{0.05,24} = 36.415$, $\chi^2_{0.025,24} = 39.364$, $\chi^2_{0.975,24} = 12.401$, $F_{0.05,24,24} = 1.984$
+
+\begin{enumerate}[label=(\alph*)]
+\item Test if process variance has increased from target $\sigma_0^2 = 4$. Calculate the chi-square test statistic $(n-1)s^2/\sigma_0^2$ and compare to the critical value. Should the null hypothesis be rejected at $\alpha = 0.05$? What does this mean for manufacturing quality?
+
+\item Construct a 95\% confidence interval for $\sigma^2$ using the chi-square distribution. Calculate both bounds. Does this interval contain the target variance $\sigma_0^2 = 4$? Is the process within acceptable limits?
+
+\item The manufacturer wants to detect when $\sigma$ exceeds $2.5\mu m$ (25\% increase) with power 0.80. Using $z_{0.05} = 1.645$ and $z_{0.20} = 0.84$, calculate required sample size from the formula $n \approx \frac{1}{2}[(z_\alpha + z_\beta)/\ln(\sigma_1/\sigma_0)]^2$. Round up to ensure adequate power.
+
+\item Moving range control chart: Calculate $MR_i = |x_i - x_{i-1}|$ for consecutive measurements. The average moving range is $\overline{MR} = 1.92$. Using the constant $d_2 = 1.128$ for $n=2$, estimate process standard deviation $\hat{\sigma} = \overline{MR}/d_2$. Calculate upper control limit: $UCL = 3.267 \times \overline{MR}$. If 3 consecutive MR values exceed UCL, what action should be taken?
+
+\item Variance reduction test: A new stabilization technique is proposed. Current process: $n_1 = 25$, $s_1^2 = 2.87$. New process: $n_2 = 25$, $s_2^2 = 1.92$. Perform F-test for $H_0: \sigma_1^2 = \sigma_2^2$ vs $H_1: \sigma_1^2 > \sigma_2^2$. Calculate F-statistic and compare to critical value. If significant, what is the percentage reduction in standard deviation?
+
+\item Economic analysis: Defective wafers (thickness outside $\mu \pm 3\sigma$) cost \$450 each. With current $\sigma = 1.69$, defect rate is 0.27\%. New process reduces $\sigma$ to $1.39$ (same rate but tighter control). For 10,000 wafers per day over 2 years (500 working days), calculate total savings. Is a \$50,000 equipment investment justified?
+\end{enumerate}
+
+\subsection*{Problem 2: Portfolio Risk Management and Variance Reduction}
+
+A quantitative fund manages a portfolio of $p=10$ assets. The returns covariance matrix has eigenvalues:
+
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+Component & Eigenvalue \\
+\midrule
+$\lambda_1$ & 0.045 \\
+$\lambda_2$ & 0.028 \\
+$\lambda_3$ & 0.019 \\
+$\lambda_{4-10}$ & < 0.01 (each) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Current equal-weighted portfolio ($w_i = 0.1$ for all assets) has:
+- Portfolio variance: $\sigma_p^2 = 0.0089$ (so $\sigma_p = 9.43\%$ annual)
+- Minimum variance portfolio (MVP) achieves: $\sigma_{MVP}^2 = 0.0062$
+- Average pairwise correlation: $\bar{\rho} = 0.35$
+- Average individual variance: $\bar{\sigma}^2 = 0.012$
+
+Risk contributions: Asset 1 has $MRC_1 = 0.15$, Asset 2 has $MRC_2 = 0.08$
+
+Inverse covariance vector: $\boldsymbol{\Sigma}^{-1}\mathbf{1} = (12.3, 8.7, 15.2, 6.8, 11.4, 9.6, 13.1, 7.9, 10.5, 8.2)^T$
+
+\begin{enumerate}[label=(\alph*)]
+\item The minimum variance portfolio solution is $\mathbf{w}_{MVP} = \boldsymbol{\Sigma}^{-1}\mathbf{1} / (\mathbf{1}^T\boldsymbol{\Sigma}^{-1}\mathbf{1})$. Given $\sigma_{MVP}^2 = 0.0062$, calculate the percentage reduction in volatility from equal-weighted portfolio. What is the new annualized standard deviation?
+
+\item Diversification benefit formula: $\sigma_p^2 = \bar{\sigma}^2/n + (1-1/n)\bar{\rho}\bar{\sigma}^2$. Verify this equals the given portfolio variance using $n=10$, $\bar{\rho} = 0.35$, $\bar{\sigma}^2 = 0.012$. As $n \to \infty$, show that $\sigma_p^2 \to \bar{\rho}\bar{\sigma}^2$, proving systematic risk cannot be diversified away.
+
+\item Risk parity allocates capital so each asset contributes equally: $w_i \times MRC_i = \sigma_p/p$ for all $i$. The marginal risk contribution is $MRC_i = [\boldsymbol{\Sigma}\mathbf{w}]_i/\sigma_p$. Given $MRC_1 = 0.15$ and $MRC_2 = 0.08$, derive the optimal weight ratio $w_1/w_2$. Using the inverse covariance vector, calculate risk parity weights for all 10 assets.
+
+\item Value at Risk (VaR): For normal returns, 95\% daily VaR is $\mu_p - 1.645\sigma_p$. Given daily expected return 0.08\% and daily $\sigma_p = 1.2\%$, calculate 95\% and 99\% VaR ($z_{0.01} = 2.33$). For a \$10 million portfolio, what is the maximum expected one-day loss at 95\% confidence?
+
+\item Conditional VaR (CVaR or Expected Shortfall) measures average loss beyond VaR: $CVaR_{0.05} = \mu_p - \sigma_p \times \phi(1.645)/0.05$ where $\phi(1.645) = 0.103$ (standard normal PDF). Calculate CVaR and compare to VaR. Explain why CVaR is more conservative for risk budgeting.
+
+\item Dynamic variance targeting maintains constant volatility $\sigma^* = 8\%$ by adjusting leverage: $Leverage_t = \sigma^*/\hat{\sigma}_t$. Volatility is estimated using EWMA: $\hat{\sigma}_t^2 = 0.94\hat{\sigma}_{t-1}^2 + 0.06r_{t-1}^2$. If previous volatility was $\hat{\sigma}_{t-1} = 9.5\%$ and yesterday's return was $r_{t-1} = -2.1\%$, calculate updated volatility and required leverage adjustment. By what factor should positions be scaled?
+\end{enumerate}
+
+\subsection*{Problem 3: Experimental Design and Variance Partitioning}
+
+A pharmaceutical company tests a new drug across 3 dosage levels with 4 patients per level ($n=12$ total). Response times (minutes to symptom relief):
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Dosage & Patient 1 & Patient 2 & Patient 3 & Patient 4 & Mean \\
+\midrule
+Low & 45 & 52 & 48 & 50 & 48.75 \\
+Medium & 38 & 42 & 40 & 36 & 39.00 \\
+High & 28 & 32 & 30 & 26 & 29.00 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Grand mean: $\bar{y}_{..} = 38.92$
+
+Critical value: $F_{0.05,2,9} = 4.26$
+
+Two-way ANOVA results (with age blocking): $SS_{\text{Dosage}} = 756$, $SS_{\text{Age}} = 124$, $SS_{\text{Error}} = 82$
+
+Sample size calculation constants: $z_{0.025} = 1.96$, $z_{0.20} = 0.84$
+
+\begin{enumerate}[label=(\alph*)]
+\item Perform one-way ANOVA variance decomposition: $SST = SSB + SSW$. Calculate total sum of squares $SST = \sum\sum(y_{ij} - \bar{y}_{..})^2$, between-group $SSB = 4\sum(\bar{y}_i - \bar{y}_{..})^2$, and within-group $SSW = \sum\sum(y_{ij} - \bar{y}_i)^2$. Verify the partition holds.
+
+\item Calculate mean squares: $MSB = SSB/2$ and $MSW = SSW/9$. Compute F-statistic $F = MSB/MSW$ and compare to critical value 4.26. Is there significant variation between dosage groups at $\alpha = 0.05$? What does this mean for drug effectiveness?
+
+\item Estimate variance components. Within-group variance: $\hat{\sigma}_W^2 = MSW$. Between-group variance: $\hat{\sigma}_B^2 = (MSB - MSW)/4$. Calculate intraclass correlation $\rho_I = \hat{\sigma}_B^2/(\hat{\sigma}_B^2 + \hat{\sigma}_W^2)$ which measures proportion of variance due to dosage. Interpret the result.
+
+\item Power analysis: To detect effect size $f = \sigma_B/\sigma_W = 0.5$ (medium) with power 0.80 at $\alpha = 0.05$, calculate required sample size per group using $n \approx 2(z_{\alpha/2} + z_\beta)^2/[(a-1)f^2]$ where $a=3$ groups. Is the current design ($n=4$ per group) adequately powered?
+
+\item Blocking design: Using the two-way ANOVA sums of squares given, calculate: (a) Efficiency of blocking = $(SS_{\text{Age}} + SS_{\text{Error}})/SS_{\text{Error}}$, showing how much larger error would be without blocking. (b) Proportion of variance explained by age = $SS_{\text{Age}}/(SS_{\text{Dosage}} + SS_{\text{Age}} + SS_{\text{Error}})$. Was age blocking effective?
+
+\item Sample size determination: For estimating mean response time at Medium dosage with margin of error $E = 2$ minutes at 95\% confidence, using pilot $s = 4.5$, calculate $n = (z_{\alpha/2} \cdot s / E)^2$. For variance precision (CI width $\leq$ 50\% of 2$\sigma$), approximately $n \geq 40$ is needed. Which constraint (mean or variance) dominates the required sample size?
+\end{enumerate}
+
+\end{document}
