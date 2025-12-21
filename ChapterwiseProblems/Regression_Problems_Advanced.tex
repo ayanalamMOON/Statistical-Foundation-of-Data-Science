@@ -1,0 +1,679 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Advanced Regression Analysis\\
+\small MIT/Stanford Level}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Advanced Regression}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% LINEAR REGRESSION PROBLEMS
+% ============================================================
+
+\section{Linear Regression}
+
+\subsection*{Problem 1: Real Estate Valuation and Market Analysis}
+
+A real estate analyst collects data on 50 apartment sales in a metropolitan area. The selling price (in thousands of dollars) is modeled based on apartment size (square feet), distance from city center (miles), and building age (years). Summary statistics from the fitted model are:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Variable & Coefficient & Std. Error & t-statistic & p-value \\
+\midrule
+Intercept & 120.5 & 15.2 & 7.93 & $< 0.001$ \\
+Size (sq ft) & 0.185 & 0.025 & 7.40 & $< 0.001$ \\
+Distance (miles) & -12.3 & 3.1 & -3.97 & $< 0.001$ \\
+Age (years) & -2.8 & 0.9 & -3.11 & 0.003 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Additional information: SSE = 2450, SST = 8920, Mean square error (MSE) = 53.26.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate and interpret the coefficient of determination. What percentage of price variation is unexplained by the model?
+
+\item An investor is comparing two apartments: Apartment A is 1200 sq ft, 5 miles from center, 10 years old; Apartment B is 1000 sq ft, 3 miles from center, 5 years old. Predict the selling price for each and determine which is expected to be more expensive.
+
+\item Construct 95\% confidence intervals for the coefficient of the distance variable. Does this interval suggest that location significantly impacts price?
+
+\item A developer claims that each additional 100 square feet adds at least \$20,000 to the selling price. Test this claim at the 0.05 significance level using the appropriate hypothesis test.
+\end{enumerate}
+
+\subsection*{Problem 2: Energy Consumption Modeling}
+
+An energy company models monthly electricity consumption (kWh) for residential customers based on house size (1000 sq ft), number of occupants, and average outdoor temperature (°F). Data from 75 households yields:
+
+Design matrix properties:
+- Sum of squared deviations for size: 450
+- Sum of squared deviations for occupants: 180
+- Sum of squared deviations for temperature: 2700
+- Correlation between size and occupants: 0.62
+- Correlation between size and temperature: -0.15
+- Correlation between occupants and temperature: -0.08
+
+Fitted coefficients: Intercept = 250, Size = 180, Occupants = 95, Temperature = -4.5
+
+Sample statistics: Mean consumption = 850 kWh, Standard deviation = 220 kWh
+
+\begin{enumerate}[label=(\alph*)]
+\item For a household with 2.5 (1000 sq ft units), 4 occupants, and average temperature of 75°F, predict the monthly consumption. Calculate a 95\% prediction interval assuming the standard error of prediction is 45 kWh.
+
+\item Multicollinearity is suspected between house size and number of occupants. Calculate the variance inflation factor (VIF) for the occupants variable. Is multicollinearity a concern?
+
+\item The company wants to identify "high consumption" outliers for energy audit recommendations. Using the standardized residual criterion (threshold of ±3), determine the threshold values (in kWh) for identifying outliers.
+
+\item Conduct an F-test to assess whether the full model (all three predictors) is significantly better than a reduced model with only temperature. Given that the reduced model has SSE = 3200 and the full model has SSE = 2400, make your conclusion at the 0.01 significance level.
+\end{enumerate}
+
+\subsection*{Problem 3: Sales Performance Attribution}
+
+A retail company analyzes quarterly sales (in millions) for 40 stores based on: advertising spend (thousands), store size (1000 sq ft), local median income (thousands), and competitor density (number of competitors within 5 miles). The analysis reveals:
+
+Fitted model output:
+- Adjusted R² = 0.742
+- F-statistic = 32.5 (p < 0.001)
+- Residual standard error = 0.85
+- Durbin-Watson statistic = 1.85
+
+Coefficient estimates:
+- Advertising: 0.042 (SE = 0.008, p < 0.001)
+- Store size: 0.135 (SE = 0.045, p = 0.005)
+- Median income: 0.028 (SE = 0.012, p = 0.025)
+- Competitor density: -0.15 (SE = 0.055, p = 0.010)
+
+\begin{enumerate}[label=(\alph*)]
+\item The marketing director proposes doubling the advertising budget from \$50,000 to \$100,000. Estimate the expected increase in quarterly sales, holding other factors constant. Calculate a 90\% confidence interval for this increase.
+
+\item Compare the relative importance of each predictor by calculating standardized coefficients. If the standard deviations are: advertising = 25, store size = 8, median income = 15, competitor density = 3, which variable has the strongest effect on sales?
+
+\item Test the hypothesis that the combined effect of local median income and competitor density is zero. Given that the restricted model (without these two variables) has SSE = 45 and the full model has SSE = 28, perform the appropriate test at 0.05 significance level.
+
+\item The Durbin-Watson statistic suggests potential autocorrelation. Calculate the estimated first-order autocorrelation coefficient and discuss whether this violates the independence assumption. Should the company consider time-series methods?
+\end{enumerate}
+
+\subsection*{Problem 4: Medical Cost Prediction}
+
+A health insurance company builds a model to predict annual medical costs (in thousands) based on: age (years), BMI, number of chronic conditions, smoking status (0/1), and exercise hours per week. Analysis of 120 patient records shows:
+
+Model diagnostics:
+- Total sum of squares: 15,600
+- Regression sum of squares: 12,480
+- Mean squared error: 27.83
+- Cook's distance for patient #47: 0.85
+- Leverage for patient #47: 0.18
+
+Coefficient table:
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Variable & Estimate & Std. Error & VIF \\
+\midrule
+Intercept & -8.5 & 3.2 & - \\
+Age & 0.35 & 0.08 & 1.8 \\
+BMI & 0.42 & 0.12 & 2.1 \\
+Chronic conditions & 2.8 & 0.45 & 1.5 \\
+Smoking & 5.2 & 1.1 & 1.3 \\
+Exercise hours & -0.65 & 0.18 & 1.6 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the model's R² and adjusted R². If one predictor is removed, estimate how the adjusted R² might change.
+
+\item Patient #47 is 65 years old, BMI 32, has 2 chronic conditions, is a smoker, and exercises 1 hour per week. Predict their annual medical cost. Given the Cook's distance and leverage values, is this patient influential? Should they be investigated further?
+
+\item The company wants to implement a wellness program that increases exercise by 3 hours per week on average. Estimate the potential annual cost savings per participant with 95\% confidence.
+
+\item Test whether the effect of smoking is significantly different from \$5,000 per year at the 0.01 significance level. What is the minimum detectable effect size given the current sample size and standard error?
+\end{enumerate}
+
+\subsection*{Problem 5: Agricultural Yield Optimization}
+
+An agricultural researcher studies crop yield (tons per hectare) based on: fertilizer amount (kg/hectare), irrigation frequency (times per week), soil pH, and growing season temperature (°C average). Data from 60 experimental plots gives:
+
+Correlation matrix:
+\begin{center}
+\begin{tabular}{lcccc}
+& Fertilizer & Irrigation & pH & Temperature \\
+Fertilizer & 1.00 & 0.45 & 0.12 & -0.08 \\
+Irrigation & 0.45 & 1.00 & -0.05 & 0.35 \\
+pH & 0.12 & -0.05 & 1.00 & -0.15 \\
+Temperature & -0.08 & 0.35 & -0.15 & 1.00 \\
+\end{tabular}
+\end{center}
+
+Fitted results: Intercept = -5.2, Fertilizer = 0.018, Irrigation = 0.42, pH = 1.8, Temperature = 0.15
+
+Model statistics: R² = 0.68, RMSE = 0.85, n = 60
+
+Partial F-statistics for individual variables: Fertilizer (8.5), Irrigation (12.3), pH (15.7), Temperature (6.2)
+
+\begin{enumerate}[label=(\alph*)]
+\item A farmer currently uses 250 kg/hectare of fertilizer, irrigates 4 times per week, has soil pH of 6.5, and average temperature of 22°C. Predict the expected yield. If the farmer increases fertilizer to 300 kg/hectare, what yield increase is expected?
+
+\item The partial F-statistic for temperature is 6.2. Test whether temperature significantly contributes to the model at 0.05 significance level. What is the critical F-value for this test?
+
+\item Calculate the VIF for the irrigation variable given its correlation with other predictors. Based on common VIF thresholds, is multicollinearity a serious issue?
+
+\item A competing model includes only irrigation and pH (reduced model) with R² = 0.61. Perform an F-test to determine whether adding fertilizer and temperature significantly improves the model. Make your conclusion at the 0.01 level.
+\end{enumerate}
+
+% ============================================================
+% LOGISTIC REGRESSION PROBLEMS
+% ============================================================
+
+\section{Logistic Regression}
+
+\subsection*{Problem 6: Credit Default Prediction}
+
+A financial institution develops a logistic regression model to predict loan default (1 = default, 0 = no default) based on: debt-to-income ratio, credit score, loan amount (thousands), and employment years. From 500 loan applications, the fitted model yields:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Variable & Coefficient & Std. Error \\
+\midrule
+Intercept & 3.5 & 0.8 \\
+Debt-to-income & 4.2 & 0.9 \\
+Credit score (per 100 points) & -2.8 & 0.5 \\
+Loan amount & 0.015 & 0.005 \\
+Employment years & -0.18 & 0.08 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Model performance: Log-likelihood = -180.5, AIC = 371.0, Null deviance = 450.2, Residual deviance = 361.0
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the probability of default for an applicant with: debt-to-income ratio 0.45, credit score 680, loan amount \$50,000, and 6 years of employment.
+
+\item For the same applicant, if their credit score improves to 720 (all else equal), calculate the new default probability. What is the absolute and relative reduction in default risk?
+
+\item Compute the odds ratio for a 100-point increase in credit score. Interpret this value in practical terms for loan officers.
+
+\item Perform a likelihood ratio test to assess model significance. Compare the null deviance with the residual deviance and determine if the model is significantly better than a null model at 0.001 significance level.
+\end{enumerate}
+
+\subsection*{Problem 7: Disease Diagnosis Model}
+
+A medical AI system predicts disease presence (1 = positive, 0 = negative) using: age, systolic blood pressure, cholesterol level, BMI, and family history (0/1). Validation on 200 patients produces:
+
+Confusion matrix (threshold = 0.5):
+\begin{center}
+\begin{tabular}{cc|cc}
+& & \multicolumn{2}{c}{Predicted} \\
+& & Negative & Positive \\
+\hline
+\multirow{2}{*}{Actual} & Negative & 95 & 15 \\
+& Positive & 12 & 78 \\
+\end{tabular}
+\end{center}
+
+ROC curve analysis: AUC = 0.88
+
+Coefficients: Intercept = -8.2, Age = 0.08, BP = 0.04, Cholesterol = 0.015, BMI = 0.12, Family history = 1.8
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the model's accuracy, sensitivity, specificity, positive predictive value, and negative predictive value. Which metric is most important if false negatives are more costly than false positives?
+
+\item A patient has: age 55, BP 145, cholesterol 240, BMI 28, no family history. Calculate their disease probability. If the decision threshold changes to 0.3 (more conservative), would this patient's classification change?
+
+\item The hospital decides that sensitivity must be at least 90\%. Estimate the new classification threshold needed. If the new threshold is 0.35, predict how many additional false positives would occur in the validation set.
+
+\item Calculate the F1-score for the current model. If the cost of a false negative is 5 times that of a false positive, compute the expected cost per 1000 patients screened (assume false positive costs \$200).
+\end{enumerate}
+
+\subsection*{Problem 8: Customer Churn Analysis}
+
+A telecommunications company models customer churn (1 = churned, 0 = retained) based on: monthly charges, total tenure (months), number of support calls, contract type (month-to-month = 1, contract = 0), and data usage (GB). Analysis of 800 customers shows:
+
+Model output:
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Predictor & Log-odds coefficient & 95\% CI \\
+\midrule
+Intercept & -2.1 & (-3.2, -1.0) \\
+Monthly charges (\$100) & 1.5 & (0.9, 2.1) \\
+Tenure (years) & -0.6 & (-0.9, -0.3) \\
+Support calls & 0.35 & (0.18, 0.52) \\
+Month-to-month & 1.8 & (1.3, 2.3) \\
+Data usage (per 10 GB) & -0.12 & (-0.25, 0.01) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+McFadden's pseudo-R²  = 0.38, Hosmer-Lemeshow test p-value = 0.42
+
+\begin{enumerate}[label=(\alph*)]
+\item A customer pays \$85 monthly, has 18 months tenure, made 3 support calls, has month-to-month contract, and uses 25 GB data. Calculate their churn probability and odds of churning.
+
+\item The retention team can offer a 12-month contract (changing month-to-month status) to high-risk customers. For the above customer, calculate the new churn probability if they accept the contract. What is the percentage reduction in churn probability?
+
+\item Based on the confidence intervals, which predictors are statistically significant at the 0.05 level? Is data usage a significant predictor?
+
+\item The company wants to identify the top 20\% highest-risk customers for targeted retention campaigns. If the customer population has the following churn probability distribution: mean = 0.25, std = 0.15 (approximately normal), what probability threshold should be used to identify this top 20\%?
+\end{enumerate}
+
+\subsection*{Problem 9: Multi-class Product Preference}
+
+A market research firm uses multinomial logistic regression to predict customer preference among three smartphone brands (Apple, Samsung, Google). Using Apple as reference, the model predicts choice based on: age, income (thousands), tech-savviness score (1-10), and price sensitivity (1-10). Data from 600 consumers yields:
+
+Log-odds coefficients (relative to Apple):
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Predictor & Samsung & Google \\
+\midrule
+Intercept & 0.8 & -0.5 \\
+Age (per 10 years) & 0.3 & 0.1 \\
+Income & -0.008 & -0.012 \\
+Tech-savviness & -0.2 & 0.4 \\
+Price sensitivity & 0.25 & 0.35 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item For a consumer aged 35, income \$75,000, tech-savviness 7, and price sensitivity 6, calculate the probability of choosing each brand. Which brand has the highest predicted probability?
+
+\item Calculate the relative risk ratio for choosing Samsung over Apple when tech-savviness increases by 2 points (all else constant). Interpret this value.
+
+\item If this consumer's income increases to \$100,000 (all else equal), recalculate the choice probabilities. Which brand benefits most from the income increase?
+
+\item The firm wants to identify customer segments where Google has at least 40\% market share. For customers with tech-savviness = 8 and price sensitivity = 7, what combination of age and income would achieve this?
+\end{enumerate}
+
+\subsection*{Problem 10: Online Ad Click Prediction}
+
+An advertising platform predicts whether users will click an ad (1 = click, 0 = no click) based on: time of day (categorical: morning/afternoon/evening), device type (mobile/desktop), user age, ad position, and historical click-through rate. Training on 50,000 impressions with 1,200 clicks (2.4\% base rate) produces:
+
+Model coefficients (using morning + desktop as reference):
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Variable & Coefficient & Odds Ratio \\
+\midrule
+Intercept & -5.2 & - \\
+Afternoon & 0.15 & 1.16 \\
+Evening & -0.25 & 0.78 \\
+Mobile & 0.42 & 1.52 \\
+Age (per 10 years) & -0.18 & 0.84 \\
+Ad position (1-5) & -0.35 & 0.70 \\
+Historical CTR & 8.5 & 4914.8 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Validation metrics: Precision = 0.08, Recall = 0.65, AUC = 0.82
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the click probability for an evening mobile ad shown to a 40-year-old user in position 2, with historical CTR of 0.03. How does this compare to the base rate?
+
+\item The platform charges advertisers per impression but only generates revenue from clicks. If ad position 1 costs \$2 per impression and position 3 costs \$0.80, which position is more cost-effective for an advertiser given a typical user profile (afternoon, mobile, age 30, historical CTR 0.025)?
+
+\item The recall is 0.65, meaning 35\% of actual clicks are missed. If the classification threshold is lowered from 0.5 to 0.3, estimate the new recall assuming a linear relationship. How many additional clicks would be captured from 10,000 impressions with 240 actual clicks?
+
+\item Calculate the number needed to screen (NNS): how many positive predictions are needed to find one actual click, given the precision of 0.08. Is this model useful for targeting, or would random selection be nearly as effective?
+\end{enumerate}
+
+% ============================================================
+% POLYNOMIAL REGRESSION PROBLEMS
+% ============================================================
+
+\section{Polynomial Regression}
+
+\subsection*{Problem 11: Drug Dose-Response Relationship}
+
+A pharmaceutical study investigates the relationship between drug dose (mg) and therapeutic response (0-100 scale). A quadratic model is fitted to data from 40 patients:
+
+Response = -5.2 + 8.5×Dose - 0.15×Dose²
+
+Model statistics: R² = 0.87, Adjusted R² = 0.86, RMSE = 6.2, Residual df = 37
+
+Coefficient standard errors: Intercept (3.1), Linear term (1.2), Quadratic term (0.04)
+
+Linear model comparison: R² = 0.72, RMSE = 9.5
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the optimal dose that maximizes therapeutic response. What is the predicted maximum response at this dose?
+
+\item A patient receives 25 mg dose. Predict their response with a 95\% prediction interval (use the RMSE as approximation for prediction error).
+
+\item Test whether the quadratic term is necessary by comparing the quadratic and linear models. Compute the F-statistic for the additional quadratic term and make your decision at 0.01 significance level.
+
+\item The therapeutic window is defined as doses producing response between 60 and 80. Solve for the dose range that falls within this window. Are there one or two intervals?
+\end{enumerate}
+
+\subsection*{Problem 12: Economic Growth Trajectory}
+
+An economist models GDP growth rate (percentage) as a cubic function of unemployment rate for 50 quarters of data:
+
+Growth = 12.5 - 3.2×Unemployment + 0.45×Unemployment² - 0.018×Unemployment³
+
+The unemployment rate ranges from 3\% to 10\% in the dataset.
+
+Model fit: R² = 0.78, F-statistic = 54.2 (p < 0.001)
+
+Standard errors: Intercept (2.1), Linear (0.8), Quadratic (0.12), Cubic (0.006)
+
+Comparison models: Quadratic only (R² = 0.75), Linear only (R² = 0.58)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the predicted GDP growth when unemployment is 5\% and when it is 8\%. What is the growth rate difference?
+
+\item Find the inflection point(s) of the cubic curve by solving the second derivative equals zero. Interpret what this inflection point means economically.
+
+\item Test whether the cubic term significantly improves upon the quadratic model. Perform an incremental F-test at the 0.05 level.
+
+\item The government aims to maintain GDP growth above 2\%. Using the cubic model, determine the maximum unemployment rate consistent with this target. (You may solve numerically or graphically.)
+\end{enumerate}
+
+\subsection*{Problem 13: Material Strength Under Temperature}
+
+A materials engineer studies how temperature (°C) affects tensile strength (MPa) of a polymer. A quadratic model is fitted to 30 experimental observations:
+
+Strength = 85 + 1.2×Temperature - 0.008×Temperature²
+
+Valid temperature range: 20°C to 120°C
+
+Analysis results:
+- Sum of squared residuals (SSE) = 450
+- Total sum of squares (SST) = 2800
+- Coefficient covariance matrix shows Var(β₁) = 0.16, Var(β₂) = 0.000025, Cov(β₁,β₂) = -0.0015
+
+Linear model for comparison: SSE = 1200
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate R² for the quadratic model. How much improvement in explained variance does the quadratic term provide over the linear model?
+
+\item At what temperature is tensile strength maximized? Calculate the maximum strength value. Is this temperature within the valid experimental range?
+
+\item Test the hypothesis that strength decreases at temperatures above 75°C. This requires testing if the derivative at 75°C is negative. Calculate the derivative and construct a 95\% confidence interval for the slope at this temperature using the delta method.
+
+\item An application requires minimum strength of 100 MPa. Determine the temperature range that satisfies this requirement. How wide is this safe operating window?
+\end{enumerate}
+
+\subsection*{Problem 14: Agricultural Yield Response Curve}
+
+A study examines wheat yield (tons/hectare) as a function of nitrogen fertilizer (kg/hectare). Four models are compared on 45 field trials:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Model & R² & AIC & BIC \\
+\midrule
+Linear & 0.65 & 145.2 & 150.8 \\
+Quadratic & 0.82 & 128.5 & 136.4 \\
+Cubic & 0.84 & 127.8 & 138.0 \\
+Quartic & 0.85 & 129.2 & 141.7 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Selected quadratic model: Yield = 2.1 + 0.085×N - 0.00025×N²
+
+Standard errors: Intercept (0.3), Linear (0.008), Quadratic (0.00004)
+
+Average fertilizer cost: \$2.50/kg, Wheat price: \$300/ton
+
+\begin{enumerate}[label=(\alph*)]
+\item Based on AIC and BIC, which model provides the best balance between fit and complexity? Justify your choice.
+
+\item Calculate the economically optimal fertilizer level that maximizes profit per hectare. Account for both the yield increase and fertilizer cost.
+
+\item At the optimal fertilizer level, compute a 95\% confidence interval for the expected yield. Use the delta method or bootstrap approximation.
+
+\item A farmer currently applies 100 kg/hectare of nitrogen. According to the model, is this underfertilizing or overfertilizing? Calculate the potential profit gain/loss from switching to the optimal level.
+\end{enumerate}
+
+\subsection*{Problem 15: Vehicle Fuel Efficiency}
+
+An automotive study models fuel efficiency (miles per gallon) as a polynomial function of vehicle speed (mph) using data from 60 test runs:
+
+Quadratic fit: MPG = 10.5 + 0.82×Speed - 0.0065×Speed²
+
+Model diagnostics:
+- Residual standard error: 2.8 mpg
+- Multiple R²: 0.91
+- Breusch-Pagan test p-value: 0.08 (testing heteroscedasticity)
+- Shapiro-Wilk test p-value: 0.15 (testing normality)
+
+Speed range in data: 30-75 mph
+
+Competitor models: Cubic (R² = 0.915), Square root transformation (R² = 0.88)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the speed that maximizes fuel efficiency according to the quadratic model. What is the maximum MPG achieved?
+
+\item A vehicle travels at constant 55 mph. Predict its fuel efficiency with a 90\% confidence interval for the mean response.
+
+\item The cubic model adds a Speed³ term with coefficient -0.00003. Is this improvement statistically significant at 0.05 level? The F-statistic for adding this term is 2.8.
+
+\item Compare fuel consumption (gallons used) for a 300-mile trip at 55 mph versus 70 mph using the quadratic model. What is the percentage increase in fuel consumption at the higher speed?
+\end{enumerate}
+
+% ============================================================
+% RIDGE REGRESSION PROBLEMS
+% ============================================================
+
+\section{Ridge Regression}
+
+\subsection*{Problem 16: High-Dimensional Gene Expression Analysis}
+
+A bioinformatics study predicts disease outcome using expression levels of 50 genes measured in 80 patients. Standard OLS fails due to multicollinearity and overfitting. Ridge regression is applied:
+
+Cross-validation results across different λ values:
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+λ & CV MSE & Coefficients ≠ 0 & Max |coef| & Df(effective) \\
+\midrule
+0 & 8.5 & 50 & 12.5 & 50 \\
+0.1 & 4.2 & 50 & 4.8 & 42 \\
+1.0 & 2.8 & 50 & 2.1 & 28 \\
+10 & 3.1 & 50 & 0.8 & 15 \\
+100 & 4.9 & 50 & 0.3 & 8 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Test set performance: OLS (MSE = 12.3), Ridge with λ = 1 (MSE = 3.5), Ridge with λ = 10 (MSE = 3.8)
+
+\begin{enumerate}[label=(\alph*)]
+\item Based on cross-validation MSE, which λ value should be selected? Justify using the one-standard-error rule if CV standard error is 0.4.
+
+\item Calculate the percentage reduction in test MSE achieved by optimal ridge regression compared to OLS. What does this suggest about overfitting in the OLS model?
+
+\item At λ = 1, the effective degrees of freedom is 28. Interpret what this means in terms of model complexity compared to the full OLS model with 50 parameters.
+
+\item A new patient has gene expression values that produce predicted outcomes of 7.2 (OLS) and 5.8 (Ridge λ = 1). Given the test MSE values, which prediction is more reliable? Calculate approximate 95\% prediction intervals for both.
+\end{enumerate}
+
+\subsection*{Problem 17: Housing Price Prediction with Collinear Features}
+
+A real estate model predicts house prices using 20 features including various size measurements (total area, living area, lot size), location factors (distance to amenities), and property characteristics. Severe multicollinearity exists:
+
+OLS diagnostics: Condition number = 850, Average VIF = 15.3, R² = 0.89, Test RMSE = \$85,000
+
+Ridge regression path analysis shows coefficient shrinkage:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Feature & OLS & Ridge λ=5 & Ridge λ=50 & Ridge λ=500 \\
+\midrule
+Total area (per sqft) & 125 & 88 & 52 & 18 \\
+Living area (per sqft) & -45 & 12 & 28 & 16 \\
+Lot size (per sqft) & 15 & 18 & 20 & 15 \\
+Distance to downtown & -8500 & -6200 & -4100 & -1800 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Cross-validation: Optimal λ = 50 (CV RMSE = \$62,000), Test RMSE at λ=50: \$58,000
+
+\begin{enumerate}[label=(\alph*)]
+\item The OLS coefficients for total area and living area have opposite signs despite both being size measures. Explain why this occurs and how ridge regression addresses this issue.
+
+\item Calculate the percentage improvement in test RMSE from OLS to optimal ridge regression. Is this improvement practically significant for a typical house price of \$400,000?
+
+\item At λ = 50, predict the price of a house with: total area 2500 sqft, living area 2000 sqft, lot size 8000 sqft, distance 5 miles from downtown. Compare this with the OLS prediction.
+
+\item The condition number drops to 45 at λ = 50. Calculate the reduction in condition number as a percentage. Does this indicate that multicollinearity has been adequately addressed?
+\end{enumerate}
+
+\subsection*{Problem 18: Financial Returns Prediction with Factor Models}
+
+A quantitative hedge fund models stock returns using 30 technical and fundamental factors. With 120 months of data, the model faces the n < p challenge (more predictors than observations for some subperiods).
+
+Performance metrics:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Method & In-sample R² & Out-of-sample R² & Sharpe Ratio \\
+\midrule
+OLS (all factors) & 0.68 & -0.12 & -0.4 \\
+Ridge (λ = 0.5) & 0.52 & 0.24 & 1.2 \\
+Ridge (λ = 2.0) & 0.45 & 0.31 & 1.5 \\
+Ridge (λ = 10) & 0.38 & 0.28 & 1.3 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Ridge λ = 2.0 selected: Training MSE = 0.045, Test MSE = 0.038
+
+Top 5 coefficient magnitudes at λ = 2.0: 0.28, 0.22, 0.19, 0.15, 0.14
+
+\begin{enumerate}[label=(\alph*)]
+\item The OLS model has negative out-of-sample R² and negative Sharpe ratio. Explain what this indicates about model overfitting and why it performs worse than a naive baseline.
+
+\item Compare the optimal ridge model (λ = 2.0) with λ = 10 in terms of bias-variance tradeoff. Which has higher bias? Which has higher variance? Which is preferred for trading?
+
+\item Calculate the reduction in coefficient magnitudes from OLS to ridge (λ = 2.0). If the largest OLS coefficient is 1.25, estimate the shrinkage factor.
+
+\item The fund manager must explain model predictions to clients. How does ridge regression complicate interpretation compared to OLS? Propose a method to identify the most important predictors from the ridge model.
+\end{enumerate}
+
+\subsection*{Problem 19: Text Analytics and Document Classification}
+
+A document classification system uses bag-of-words features with 500 unique words to predict document category. With 200 training documents, the feature matrix is extremely sparse (95\% zeros) and highly collinear.
+
+Model comparison:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+λ & Training Acc & Test Acc & Avg |coef| & Effective Rank \\
+\midrule
+0 (OLS) & 0.98 & 0.62 & 0.85 & 180 \\
+0.01 & 0.94 & 0.71 & 0.42 & 145 \\
+0.1 & 0.88 & 0.79 & 0.28 & 95 \\
+1.0 & 0.82 & 0.81 & 0.15 & 52 \\
+10 & 0.75 & 0.77 & 0.06 & 28 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Additional information:
+- Null accuracy (most common class): 0.35
+- λ = 0.1 confidence interval: Test accuracy [0.75, 0.83]
+- λ = 1.0 confidence interval: Test accuracy [0.77, 0.85]
+
+\begin{enumerate}[label=(\alph*)]
+\item The OLS model achieves 98\% training accuracy but only 62\% test accuracy. Calculate the overfitting gap and compare it with ridge λ = 0.1. Which model generalizes better?
+
+\item Based on test accuracy confidence intervals, is the difference between λ = 0.1 and λ = 1.0 statistically significant? Which would you recommend for deployment?
+
+\item At λ = 1.0, the effective rank is 52 compared to 180 for OLS. Interpret this in terms of model dimensionality reduction. How many "effective dimensions" have been eliminated?
+
+\item A sparse model is preferred for computational efficiency. If the goal is to retain only features with |coefficient| > 0.10, which λ value achieves this? How many words would be retained as important features?
+\end{enumerate}
+
+\subsection*{Problem 20: Time Series Forecasting with Lagged Variables}
+
+An energy demand forecasting model uses 24 lagged hourly temperatures plus day-of-week and hour-of-day indicators (total 38 predictors) to predict next-hour electricity demand. With 720 hourly observations, multicollinearity among lags causes instability.
+
+Ridge regression results:
+
+GCV (Generalized Cross-Validation) scores:
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+λ & GCV Score \\
+\midrule
+0 & 245 \\
+1 & 198 \\
+5 & 178 \\
+10 & 175 \\
+20 & 182 \\
+50 & 205 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Optimal λ = 10: Coefficient decay pattern shows lag-1 (0.45), lag-6 (0.28), lag-12 (0.18), lag-24 (0.12)
+
+Forecast performance: Mean Absolute Error = 125 MW, Mean Absolute Percentage Error = 3.2\%
+
+OLS forecast: MAE = 185 MW, MAPE = 4.8\%
+
+\begin{enumerate}[label=(\alph*)]
+\item Based on GCV scores, confirm that λ = 10 is optimal. Calculate the percentage improvement in GCV score compared to OLS (λ = 0).
+
+\item The coefficient decay pattern shows decreasing importance for older lags. Calculate the approximate decay rate (percentage decrease per 6-hour lag). Does this make intuitive sense for temperature effects on energy demand?
+
+\item Forecast next-hour demand for a scenario where current temperature is 75°F, 6-hour lag is 78°F, 12-hour lag is 80°F, 24-hour lag is 72°F. Assume current demand is 5000 MW and use the coefficient pattern to estimate the prediction (simplified calculation).
+
+\item The utility company uses these forecasts for unit commitment decisions. With MAPE of 3.2\%, calculate the 95\% prediction interval width as a percentage of the forecast (assume normal errors). Is this precision adequate for operational planning?
+\end{enumerate}
+
+\end{document}

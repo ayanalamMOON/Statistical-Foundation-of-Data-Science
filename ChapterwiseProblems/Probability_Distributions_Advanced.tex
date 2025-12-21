@@ -1,0 +1,389 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Advanced Probability Distributions\\
+\small MIT/Stanford Level}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Advanced Distributions}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% BERNOULLI DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Bernoulli Distribution}
+
+\subsection*{Problem 1: Signal Detection in Communication Systems}
+
+A wireless communication system transmits binary signals (0 or 1) through a noisy channel. Each transmitted bit has a probability of 0.08 of being corrupted during transmission. A message consists of transmitting the same bit three times (triple modular redundancy), and the receiver uses majority voting to decode.
+
+\begin{enumerate}[label=(\alph*)]
+\item If bit ``1'' is transmitted three times, calculate the probability that the receiver correctly decodes it as ``1'' (i.e., at least 2 out of 3 received bits are ``1'').
+
+\item Compare this reliability with a system that transmits only once (no redundancy). What is the improvement in reliability?
+
+\item If 1,000,000 bits are transmitted using triple redundancy, compute the expected number of incorrectly decoded bits.
+
+\item Determine the minimum number of redundant transmissions (odd number) required to achieve at least 99.9\% correct decoding probability per bit.
+\end{enumerate}
+
+\subsection*{Problem 2: Machine Learning Classifier Performance}
+
+A binary classifier predicts whether an email is spam (1) or not spam (0). The classifier has an accuracy of 0.92 on spam emails and 0.88 on legitimate emails. The training dataset contains 40\% spam emails and 60\% legitimate emails.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the overall accuracy of the classifier on the entire dataset.
+
+\item If an email is randomly selected and the classifier predicts it as spam, what is the probability that it actually is spam? (Use Bayes' theorem)
+
+\item The classifier is deployed and processes 50,000 emails per day. Calculate the expected number of false positives (legitimate emails incorrectly classified as spam) and false negatives (spam emails incorrectly classified as legitimate).
+
+\item A cost analysis reveals that a false positive costs \$0.50 (user inconvenience) while a false negative costs \$2.00 (security risk). Compute the expected daily cost of classification errors.
+\end{enumerate}
+
+\subsection*{Problem 3: Genetic Inheritance and Hardy-Weinberg Equilibrium}
+
+In a population, a particular gene has two alleles: A (dominant) with frequency \(p = 0.6\) and a (recessive) with frequency \(q = 0.4\). Assume Hardy-Weinberg equilibrium where genotype frequencies are: AA with probability \(p^2\), Aa with probability \(2pq\), and aa with probability \(q^2\).
+
+\begin{enumerate}[label=(\alph*)]
+\item In a random sample of 200 individuals from this population, calculate the expected number of individuals with each genotype (AA, Aa, aa).
+
+\item A genetic disorder is expressed only in individuals with genotype aa. What fraction of the population is affected? If the population size is 1 million, how many individuals have the disorder?
+
+\item Two individuals with genotype Aa mate. Calculate the probability distribution for the genotype of their offspring and determine the probability that their first two children both have the disorder.
+
+\item Over many generations, natural selection acts against the aa genotype, reducing its survival rate to 70\% compared to AA and Aa. Derive the new equilibrium allele frequency after one generation of selection. (Calculate the new frequency of the a allele after selection.)
+\end{enumerate}
+
+% ============================================================
+% BINOMIAL DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Binomial Distribution}
+
+\subsection*{Problem 4: Quality Control in Semiconductor Manufacturing}
+
+A semiconductor fabrication plant produces microchips where each chip has a 2\% probability of having a critical defect. Chips are packaged in lots of 50, and each lot undergoes inspection.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the probability that a randomly selected lot contains exactly 2 defective chips.
+
+\item The lot is rejected if it contains 3 or more defective chips. What is the probability that a lot is rejected?
+
+\item The plant produces 500 lots per day. Using a suitable approximation, estimate the probability that at least 40 lots are rejected on a given day.
+
+\item Quality engineers want to implement a sampling plan: randomly test 10 chips from each lot and reject the lot if 2 or more tested chips are defective. Calculate the probability that a lot with exactly 5 defective chips (out of 50) will be accepted under this sampling plan. (Use hypergeometric distribution or binomial approximation)
+\end{enumerate}
+
+\subsection*{Problem 5: Network Reliability and Redundancy}
+
+A distributed computing system has 12 independent servers, each with availability probability 0.95 (probability of being operational at any given time). The system requires at least 8 servers to be operational to function properly.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the probability that the system is operational.
+
+\item The company decides to add more servers to increase reliability to at least 99.99\%. Assuming each new server also has 0.95 availability and the minimum requirement remains 8 servers, determine the minimum total number of servers needed.
+
+\item Under the original 12-server configuration, calculate the expected number of operational servers and the standard deviation.
+
+\item During a major software update, server availability temporarily drops to 0.85. Calculate the new system reliability and determine how many additional servers would be needed to maintain the original reliability level.
+\end{enumerate}
+
+\subsection*{Problem 6: Clinical Trial Design and Statistical Power}
+
+A pharmaceutical company is testing a new drug. Historical data shows that 30\% of patients improve with the standard treatment. The new drug is expected to increase this rate to 45\%. A clinical trial will enroll 80 patients who will receive the new drug.
+
+\begin{enumerate}[label=(\alph*)]
+\item Under the null hypothesis (drug is no better than standard treatment, \(p = 0.30\)), calculate the probability of observing 40 or more patients improving.
+
+\item Under the alternative hypothesis (drug effect is real, \(p = 0.45\)), calculate the power of the test (probability of observing 40 or more improvements).
+
+\item The company wants to achieve 90\% power while maintaining 5\% Type I error rate. Using normal approximation, determine the minimum sample size required if the decision rule is to reject the null hypothesis when the number of improvements exceeds \(c = np_0 + 1.645\sqrt{np_0(1-p_0)}\) where \(p_0 = 0.30\).
+
+\item Calculate the p-value if 42 out of 80 patients show improvement. Should the null hypothesis be rejected at the 0.01 significance level?
+\end{enumerate}
+
+% ============================================================
+% POISSON DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Poisson Distribution}
+
+\subsection*{Problem 7: Network Traffic Analysis}
+
+A web server receives requests at an average rate of 150 requests per minute during peak hours. Assume request arrivals follow a Poisson process.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the probability that the server receives exactly 5 requests in a 2-second interval.
+
+\item The server can handle a maximum of 4 requests per second. Calculate the probability that the server is overloaded during any given second (receives more than 4 requests).
+
+\item During a 10-minute peak period, estimate the probability that there exists at least one 1-second interval where the server is overloaded. Use appropriate approximations.
+
+\item The server logs show that during non-peak hours, the request rate drops to 40 requests per minute. If we observe a 30-second interval with 35 requests, calculate the likelihood ratio for testing whether this interval is from peak hours versus non-peak hours. Which hypothesis is more likely?
+\end{enumerate}
+
+\subsection*{Problem 8: Radioactive Decay and Particle Physics}
+
+A radioactive isotope emits particles at an average rate of 7.2 particles per second. A detector counts particles over various time intervals.
+
+\begin{enumerate}[label=(\alph*)]
+\item In a 0.5-second measurement interval, calculate the probability of detecting exactly 3 particles.
+
+\item The background radiation contributes an additional 1.8 particles per second on average. Calculate the probability of detecting at most 5 particles in a 1-second interval when both the isotope and background are present.
+
+\item A quality check measures 10 consecutive 1-second intervals. Calculate the probability that at least 8 of these intervals have between 6 and 10 detected particles (inclusive).
+
+\item The detector has a dead time of 10 milliseconds after each detected particle (cannot detect another particle during this time). Estimate the actual emission rate if the detector counts an average of 6.5 particles per second. Assume detected particles follow a Poisson process with rate \(\lambda_{\text{detected}}\) and solve for the true rate \(\lambda_{\text{true}}\).
+\end{enumerate}
+
+\subsection*{Problem 9: Queuing Theory and Service Operations}
+
+Customers arrive at a bank teller following a Poisson process with rate 45 customers per hour. Service times are independent of arrival times.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the probability that fewer than 3 customers arrive during a 5-minute period.
+
+\item The bank manager observes a 20-minute window where 22 customers arrived. Conduct a hypothesis test at the 5\% significance level to determine if the arrival rate has increased from the historical average of 45 per hour.
+
+\item During lunch hour (12:00-1:00 PM), the arrival rate increases to 75 customers per hour. Calculate the probability that in a randomly selected 2-minute interval during lunch hour, the number of arrivals is within one standard deviation of the mean.
+
+\item The bank has two tellers. Assuming arrivals split equally between them (each sees a Poisson process with rate 22.5 per hour), calculate the probability that both tellers have at least one customer arrive in the same 3-minute period.
+\end{enumerate}
+
+% ============================================================
+% GAUSSIAN (NORMAL) DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Gaussian (Normal) Distribution}
+
+\subsection*{Problem 10: Portfolio Risk Management}
+
+A portfolio manager has investments in two assets. Asset A has expected annual return 12\% with standard deviation 18\%, and Asset B has expected return 8\% with standard deviation 12\%. The portfolio consists of 60\% Asset A and 40\% Asset B. Assume returns are normally distributed and independent.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the expected return and standard deviation of the portfolio.
+
+\item What is the probability that the portfolio loses money in a given year (negative return)?
+
+\item Calculate the Value at Risk (VaR) at the 95\% confidence level: the maximum loss that will not be exceeded with 95\% probability.
+
+\item The manager wants to adjust the portfolio allocation to minimize the probability of losing more than 5\% in a year while maintaining an expected return of at least 10\%. Determine the optimal allocation (let \(w\) be the weight in Asset A, find \(w\) that minimizes the probability of return below -5\% subject to the constraint).
+\end{enumerate}
+
+\subsection*{Problem 11: Manufacturing Tolerance and Six Sigma}
+
+A precision manufacturing process produces cylindrical parts with target diameter 25.00 mm. The process has mean 25.02 mm and standard deviation 0.08 mm. Parts are acceptable if diameter is between 24.85 mm and 25.15 mm.
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the proportion of parts that meet specifications (process capability).
+
+\item In a production run of 10,000 parts, estimate the number of defective parts and their expected cost if each defect costs \$15 to scrap.
+
+\item A Six Sigma quality initiative aims to reduce the defect rate to 3.4 defects per million. Calculate the maximum allowable standard deviation to achieve this target, keeping the mean at 25.02 mm.
+
+\item The process mean shifts to 25.00 mm (on target) but standard deviation increases to 0.10 mm. Compare the new defect rate with the original. Which scenario (original vs. new) produces fewer defects?
+\end{enumerate}
+
+\subsection*{Problem 12: Hypothesis Testing and Sample Size Determination}
+
+A pharmaceutical research team is testing whether a new drug reduces cholesterol levels. The current standard treatment reduces cholesterol by an average of 40 mg/dL with standard deviation 15 mg/dL. The team wants to detect a minimum improvement of 5 mg/dL (new drug reduces by 45 mg/dL on average).
+
+\begin{enumerate}[label=(\alph*)]
+\item For a sample of 50 patients, assuming the new drug indeed has mean reduction 45 mg/dL with the same standard deviation 15 mg/dL, calculate the power of a one-sided test at significance level 0.05 against the null hypothesis that the mean reduction is 40 mg/dL.
+
+\item Determine the minimum sample size needed to achieve 90\% power with the same significance level.
+
+\item In the actual trial with 50 patients, the sample mean reduction is 43.5 mg/dL with sample standard deviation 14 mg/dL. Calculate the p-value for testing whether the new drug is better than the standard treatment.
+
+\item Construct a 95\% confidence interval for the true mean reduction with the new drug. Based on this interval, can we conclude that the new drug is superior to the standard treatment? Can we conclude it achieves at least 5 mg/dL additional reduction?
+\end{enumerate}
+
+% ============================================================
+% BAYESIAN STATISTICS PROBLEMS
+% ============================================================
+
+\section{Bayesian Statistics}
+
+\subsection*{Problem 13: Bayesian A/B Testing for E-commerce}
+
+An online retailer runs an A/B test comparing two website designs. Version A (control) has historical conversion rate of 8\% based on 10,000 visitors. Version B (treatment) is tested on 500 new visitors with 52 conversions observed.
+
+Prior beliefs:
+- Version A: Beta(80, 920) distribution based on historical data (equivalent to 80 successes in 1000 trials)
+- Version B: Uninformative prior Beta(1, 1) initially
+
+After observing data:
+- Version A maintains Beta(80, 920)
+- Version B updates to Beta(1+52, 1+448) = Beta(53, 449)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the posterior mean conversion rate for both versions. What is the posterior standard deviation for Version B?
+
+\item Compute the probability that Version B is better than Version A: P(p\_B > p\_A | data). Use Monte Carlo sampling or Beta distribution properties: if X \(\sim\) Beta(\(\alpha_1\), \(\beta_1\)) and Y \(\sim\) Beta(\(\alpha_2\), \(\beta_2\)), then P(X > Y) can be approximated numerically.
+
+\item The business requires 95\% confidence that Version B improves conversion by at least 1 percentage point (absolute) to justify the redesign cost of \$50,000. Calculate P(p\_B - p\_A > 0.01 | data). Should the company proceed with the redesign?
+
+\item If the test continues and Version B gets 30 more conversions from 300 additional visitors, update the posterior to Beta(83, 749). Recalculate the probability that Version B is superior. How much did the additional data strengthen the conclusion?
+\end{enumerate}
+
+\subsection*{Problem 14: Bayesian Clinical Trial with Conjugate Priors}
+
+A pharmaceutical company conducts a Bayesian clinical trial for a new drug. The response rate (probability of improvement) is unknown. Based on similar drugs, they use a Beta(20, 80) prior, representing prior belief equivalent to 20 successes in 100 trials (20\% expected success rate).
+
+Phase I trial results: 45 patients treated, 18 showed improvement.
+
+Phase II trial results: Additional 120 patients, 55 showed improvement.
+
+\begin{enumerate}[label=(\alph*)]
+\item After Phase I, calculate the posterior distribution parameters. What is the posterior mean and 95\% credible interval for the success rate?
+
+\item A competing drug has a known success rate of 35\%. Calculate the posterior probability that the new drug is better than the competitor after Phase I data. Use the fact that for Beta(\(\alpha\), \(\beta\)), P(p > 0.35) can be computed using the incomplete beta function or approximation.
+
+\item After Phase II (combining both phases), update the posterior distribution. Calculate the new posterior mean and 95\% credible interval. How much has the credible interval width reduced compared to Phase I?
+
+\item The FDA requires 90\% posterior probability that the true success rate exceeds 30\% for approval. Does the drug meet this threshold after Phase II? If not, calculate the minimum number of additional successes needed (assuming similar success rate) to reach this threshold.
+\end{enumerate}
+
+\subsection*{Problem 15: Bayesian Inference for Rare Disease Diagnosis}
+
+A diagnostic test for a rare disease (prevalence 0.2\% in the population) has sensitivity 95\% (true positive rate) and specificity 98\% (true negative rate). A patient with specific symptoms has an increased prior probability of having the disease: 5\%.
+
+A patient tests positive on the first test.
+
+\begin{enumerate}[label=(\alph*)]
+\item Using Bayes' theorem, calculate the posterior probability that the patient has the disease given the positive test result. Compare this with the result if the prior was the general population prevalence (0.2\%).
+
+\item The patient undergoes a second independent test (same sensitivity and specificity) and tests positive again. Update the posterior probability. Assume the second test is conditionally independent given disease status.
+
+\item A more expensive confirmatory test has sensitivity 99\% and specificity 99.5\%. If this test is administered next and returns positive, calculate the final posterior probability of disease.
+
+\item From a decision theory perspective, treatment costs \$5,000 and cures the disease if present. No treatment leads to \$50,000 in healthcare costs if the disease progresses. False treatment (treating when disease is absent) causes \$500 in side effect costs. After two positive tests (from part b), calculate the expected cost of treating vs. not treating. What is the optimal decision?
+\end{enumerate}
+
+\subsection*{Problem 16: Bayesian Update in Machine Learning - Spam Filter}
+
+An email spam filter uses Bayesian updating to learn from user feedback. Initially, the system has prior beliefs based on 1,000 labeled emails: 300 spam, 700 legitimate. For a specific word "prize", the initial estimates are:
+- P("prize" | spam) = 0.15 (45 occurrences in 300 spam emails)
+- P("prize" | legitimate) = 0.03 (21 occurrences in 700 legitimate emails)
+
+Over one week, users provide feedback on 50 emails containing "prize":
+- 35 emails confirmed as spam
+- 15 emails confirmed as legitimate
+
+\begin{enumerate}[label=(\alph*)]
+\item Using Bayesian updating with Beta-Binomial conjugate prior, calculate the updated probability estimates P("prize" | spam) and P("prize" | legitimate). Treat the initial counts as prior data.
+
+\item A new email arrives containing "prize" (and assume no other informative words). Using the updated probabilities and equal prior odds P(spam) = P(legitimate) = 0.5, calculate the posterior probability that this email is spam.
+
+\item The system uses a decision threshold of 0.7 for classifying as spam. How does this threshold translate to required likelihood ratio P(email | spam) / P(email | legitimate)?
+
+\item Over time, concept drift occurs: "prize" appears in 8\% of legitimate marketing emails. If 100 new legitimate emails contain "prize", update the probability P("prize" | legitimate) again. Calculate how much the likelihood ratio has changed from the original to this final estimate. Does "prize" remain a strong spam indicator?
+\end{enumerate}
+
+\subsection*{Problem 17: Hierarchical Bayesian Model for Multi-Site Study}
+
+A pharmaceutical company conducts a drug trial across 5 hospitals. Each hospital reports different success rates due to varying patient populations and practices. Instead of pooling all data or analyzing separately, a hierarchical Bayesian model is used.
+
+Hospital results:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Hospital & Patients & Successes & Sample Rate \\
+\midrule
+A & 100 & 35 & 0.35 \\
+B & 80 & 32 & 0.40 \\
+C & 120 & 30 & 0.25 \\
+D & 60 & 27 & 0.45 \\
+E & 140 & 42 & 0.30 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The hierarchical model assumes:
+- Each hospital has its own success rate \(\theta_i\) \(\sim\) Beta(\(\alpha\), \(\beta\))
+- Hyperpriors: \(\alpha\) and \(\beta\) are estimated from data to have mean \(\mu = 0.34\) and standard deviation \(\sigma = 0.07\)
+
+For Beta distribution: mean = \(\alpha\)/(\(\alpha\)+\(\beta\)), variance = \(\alpha\beta\)/((\(\alpha\)+\(\beta\))^2(\(\alpha\)+\(\beta\)+1))
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the hyperparameters \(\alpha\) and \(\beta\) from the given mean (0.34) and standard deviation (0.07) of the Beta distribution.
+
+\item For Hospital C (lowest observed rate at 25\%), calculate the posterior mean using the hierarchical model. The posterior mean is a weighted average of the hospital's sample rate and the overall mean. Compare this with the simple sample proportion.
+
+\item A new Hospital F will join the study. Before any data is collected, what is the predictive distribution for Hospital F's success rate? Calculate the 95\% credible interval for this prediction.
+
+\item Calculate the probability that Hospital D (highest observed rate at 45\%) truly has a better success rate than Hospital C using the posterior distributions. If both hospitals have posterior distributions Beta(27+\(\alpha\), 33+\(\beta\)) and Beta(30+\(\alpha\), 90+\(\beta\)) respectively, estimate this probability.
+\end{enumerate}
+
+\subsection*{Problem 18: Bayesian Model Comparison and Selection}
+
+A data scientist compares three models for predicting customer churn:
+
+Model 1 (Simple): Uses only account age and monthly charges
+- Prior probability: P(M1) = 0.5 (strongly favored due to simplicity)
+- Marginal likelihood: P(data | M1) = 0.0012
+
+Model 2 (Moderate): Adds customer service calls and contract type
+- Prior probability: P(M2) = 0.35
+- Marginal likelihood: P(data | M2) = 0.0045
+
+Model 3 (Complex): Adds 10 additional features
+- Prior probability: P(M3) = 0.15 (penalized for complexity)
+- Marginal likelihood: P(data | M3) = 0.0052
+
+Training data: 500 customers (150 churned, 350 retained)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the posterior probability for each model using Bayes' theorem: P(Mi | data) \(\propto\) P(data | Mi) × P(Mi). Normalize so probabilities sum to 1.
+
+\item Compute the Bayes factor comparing Model 2 to Model 1: BF\(_{21}\) = P(data | M2) / P(data | M1). Interpret this value using Kass-Raftery scale (BF > 3 is positive evidence, BF > 10 is strong evidence).
+
+\item Calculate the Bayesian Information Criterion (BIC) for each model. BIC = -2 ln(P(data | Mi)) + k\_i ln(n), where k\_i is the number of parameters (M1: 3, M2: 5, M3: 15) and n = 500. Lower BIC is preferred. Which model does BIC select?
+
+\item In practice, Model 2 has test accuracy 0.78, Model 3 has test accuracy 0.80. Given the posterior probabilities and predictive performance, which model should be deployed? Consider both Bayesian evidence and practical performance. If deployment cost scales with model complexity (\$1000 per additional feature), perform a cost-benefit analysis.
+\end{enumerate}
+
+\end{document}

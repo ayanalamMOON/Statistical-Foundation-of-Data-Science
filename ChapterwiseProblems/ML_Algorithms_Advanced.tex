@@ -1,0 +1,547 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Machine Learning Algorithms\\
+\small MIT/Stanford Level}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ML Algorithms}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% KNN PROBLEMS
+% ============================================================
+
+\section{K-Nearest Neighbors (KNN)}
+
+\subsection*{Problem 1: Medical Diagnosis with Weighted KNN}
+
+A hospital uses KNN to classify tumors as benign (0) or malignant (1) based on two features: tumor size (cm) and cell density (cells per sq mm). Training data from 8 patients:
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Patient & Size & Density & Normalized Size & Normalized Density & Class \\
+\midrule
+A & 2.1 & 450 & 0.10 & 0.22 & 0 \\
+B & 3.5 & 680 & 0.27 & 0.42 & 0 \\
+C & 5.8 & 1250 & 0.56 & 0.78 & 1 \\
+D & 6.2 & 1400 & 0.62 & 0.89 & 1 \\
+E & 4.1 & 850 & 0.35 & 0.55 & 0 \\
+F & 7.0 & 1580 & 0.74 & 1.00 & 1 \\
+G & 1.8 & 380 & 0.05 & 0.15 & 0 \\
+H & 5.2 & 1100 & 0.49 & 0.69 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+New patient X has: Size = 4.8 cm, Density = 950 cells/sq mm (Normalized: 0.43, 0.60)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate Euclidean distances from patient X to all training patients using normalized features. Identify the 3 nearest neighbors.
+
+\item Using k=3 with majority voting, classify patient X. What is the classification confidence (proportion of votes for the winning class)?
+
+\item Apply inverse-distance weighted voting where weight = 1/distance. Recalculate the weighted votes for each class. Does the classification change?
+
+\item The misclassification cost for a false negative (missing malignant tumor) is 10 times that of a false positive. Adjust the decision threshold accordingly. If benign votes total 0.45 (weighted) and malignant votes total 0.55, what should the threshold be to account for asymmetric costs? Should the classification change?
+\end{enumerate}
+
+\subsection*{Problem 2: Credit Card Fraud Detection with Imbalanced Data}
+
+A fraud detection system uses KNN on transaction features: amount (normalized 0-1), time since last transaction (minutes, normalized), merchant category (one-hot encoded: 3 categories), and location distance from home (km, normalized).
+
+Training set: 1000 legitimate transactions, 50 fraudulent transactions (4.8\% fraud rate).
+
+A test transaction has these normalized features and distances to nearest neighbors:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Neighbor & Distance & Class & Frequency Weight \\
+\midrule
+1 & 0.08 & Fraud & 1/0.048 = 20.83 \\
+2 & 0.12 & Legit & 1/0.952 = 1.05 \\
+3 & 0.15 & Legit & 1.05 \\
+4 & 0.18 & Fraud & 20.83 \\
+5 & 0.19 & Legit & 1.05 \\
+6 & 0.21 & Legit & 1.05 \\
+7 & 0.23 & Legit & 1.05 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item For k=5, classify using standard majority voting. What is the predicted class?
+
+\item Apply class-weighted voting where each class is weighted by the inverse of its frequency in the training set. Calculate weighted votes for fraud and legitimate. Does this change the classification?
+
+\item Calculate the probability estimate for fraud using inverse-distance weighting (weight = 1/distance) combined with class weighting. Normalize to get a probability between 0 and 1.
+
+\item If the bank blocks any transaction with fraud probability above 30\%, should this transaction be blocked? The average fraud loss is \$850 per incident, while incorrectly blocking a legitimate transaction costs \$5 in customer service. Calculate the expected cost for blocking vs. not blocking this transaction.
+\end{enumerate}
+
+\subsection*{Problem 3: Real Estate Price Prediction with KNN Regression}
+
+A real estate platform uses KNN regression to predict house prices based on three features: square footage, bedrooms, and age (years). All features are standardized (z-score normalization). For a query house with standardized features (0.5, 0.3, -0.8), the nearest neighbors are:
+
+\begin{center}
+\begin{tabular}{cccccc}
+\toprule
+Neighbor & Std Distance & Price (\$1000s) & Sqft & Bedrooms & Age \\
+\midrule
+1 & 0.35 & 425 & High & 3 & New \\
+2 & 0.42 & 380 & Medium & 3 & New \\
+3 & 0.51 & 450 & High & 4 & Medium \\
+4 & 0.63 & 395 & Medium & 3 & New \\
+5 & 0.71 & 410 & High & 3 & Old \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{enumerate}[label=(\alph*)]
+\item Using k=3 with uniform weighting, predict the house price. Calculate the prediction variance assuming the residuals follow a normal distribution with estimated standard deviation of \$35,000.
+
+\item Apply Gaussian kernel weighting where weight = exp(-distance²/(2h²)) with bandwidth h = 0.5. Calculate the kernel-weighted prediction.
+
+\item Compare predictions from k=3 and k=5 (uniform weights). Calculate the bias-variance tradeoff: which k value likely has lower bias? Lower variance? If the test MSE for k=3 is 1820 and for k=5 is 1650, which should be preferred?
+
+\item A real estate agent wants 95\% prediction intervals. Using the k=3 prediction and assuming normal errors with standard deviation \$35,000, construct the prediction interval. If actual prices in the test set show standard deviation of \$52,000, what does this suggest about model uncertainty?
+\end{enumerate}
+
+\subsection*{Problem 4: Image Classification with High-Dimensional KNN}
+
+A computer vision system classifies images into 4 categories using 128-dimensional feature vectors (extracted from a pre-trained CNN). For a query image, the k=10 nearest neighbors are found with distances and classes:
+
+\begin{center}
+\begin{tabular}{ccc|ccc}
+\toprule
+Neighbor & Distance & Class & Neighbor & Distance & Class \\
+\midrule
+1 & 2.45 & A & 6 & 3.28 & B \\
+2 & 2.67 & A & 7 & 3.35 & A \\
+3 & 2.81 & B & 8 & 3.41 & C \\
+4 & 2.95 & A & 9 & 3.52 & B \\
+5 & 3.15 & B & 10 & 3.68 & A \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Performance metrics from validation set (1000 images):
+- k=5: Accuracy = 0.842, Average inference time = 125ms
+- k=10: Accuracy = 0.856, Average inference time = 180ms
+- k=20: Accuracy = 0.851, Average inference time = 285ms
+
+\begin{enumerate}[label=(\alph*)]
+\item For k=10, predict the class using majority voting. Calculate the confidence score (max class votes / total votes). Is this a high-confidence prediction?
+
+\item The curse of dimensionality affects distance metrics in high dimensions. Calculate the ratio of the farthest to nearest neighbor distance (3.68/2.45). In low dimensions (2D-3D), this ratio is typically > 3 for meaningful neighborhood structure. What does this ratio suggest about the effectiveness of KNN in 128 dimensions?
+
+\item Construct a confusion matrix given these validation results for k=10: True positives for each class are [230, 195, 215, 216], and the misclassification distribution shows most errors occur between classes B and C (35 B→C, 28 C→B). Calculate precision and recall for class B.
+
+\item The system requires real-time classification (< 150ms per image). Based on the accuracy-speed tradeoff, which k value should be deployed? If reducing to k=5 saves 55ms but costs 1.4 percentage points in accuracy, calculate the cost per percentage point of accuracy in terms of milliseconds.
+\end{enumerate}
+
+\subsection*{Problem 5: Text Document Similarity and Nearest Neighbor Search}
+
+A document retrieval system represents 5000 documents as TF-IDF vectors in 2000-dimensional space. For a query document, an approximate nearest neighbor search using locality-sensitive hashing (LSH) returns candidate neighbors. Exact distance computation on 200 candidates yields:
+
+Top 10 neighbors with cosine distances (1 - cosine similarity):
+\begin{center}
+\begin{tabular}{cc|cc}
+\toprule
+Neighbor & Distance & Neighbor & Distance \\
+\midrule
+1 & 0.15 & 6 & 0.34 \\
+2 & 0.18 & 7 & 0.36 \\
+3 & 0.22 & 8 & 0.38 \\
+4 & 0.28 & 9 & 0.41 \\
+5 & 0.31 & 10 & 0.43 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Exhaustive search on all 5000 documents (ground truth) shows the true 10th nearest neighbor has distance 0.39.
+
+System statistics:
+- LSH computation: 12ms
+- Exact distance for 200 candidates: 45ms
+- Total: 57ms per query
+
+- Exhaustive search: 1250ms per query
+- Recall@10 (fraction of true top-10 found): 0.88
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the speedup factor achieved by the LSH-based approximate search compared to exhaustive search. What is the tradeoff in recall?
+
+\item The system retrieved 200 candidates but only needs 10 neighbors. Calculate the computational waste: what percentage of distance computations were unnecessary? Estimate the optimal number of candidates to retrieve if we assume linear scaling.
+
+\item For k=5 document retrieval, calculate the overlap between approximate and exact methods. If approximate KNN returns distances [0.15, 0.18, 0.22, 0.28, 0.31] and exact KNN returns [0.15, 0.18, 0.21, 0.22, 0.28], compute the Jaccard similarity of the two result sets.
+
+\item A user study shows that recommendation quality (measured by click-through rate) is 0.12 for exhaustive search and 0.11 for approximate search. The system handles 10,000 queries per hour. Calculate the total time saved per hour using approximate search and the reduction in user engagement (in absolute number of clicks per hour assuming 10,000 queries).
+\end{enumerate}
+
+% ============================================================
+% K-MEANS CLUSTERING PROBLEMS
+% ============================================================
+
+\section{K-Means Clustering}
+
+\subsection*{Problem 6: Customer Segmentation Analysis}
+
+A retail company segments customers based on annual spending (\$1000s) and visit frequency (days per year). Initial dataset of 10 customers:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Customer & Spending & Visits & Initial Assignment \\
+\midrule
+1 & 2.5 & 12 & C1 \\
+2 & 3.8 & 18 & C1 \\
+3 & 8.2 & 45 & C2 \\
+4 & 7.5 & 38 & C2 \\
+5 & 1.9 & 8 & C1 \\
+6 & 9.1 & 52 & C2 \\
+7 & 3.2 & 15 & C1 \\
+8 & 8.8 & 48 & C2 \\
+9 & 2.1 & 10 & C1 \\
+10 & 7.9 & 42 & C2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Initial centroids: C1 = (2.5, 12), C2 = (8.2, 45)
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate new centroids after the first iteration by averaging assigned points. Compute the total within-cluster sum of squares (WCSS) for the initial and new clustering.
+
+\item Perform one complete iteration: reassign all points to nearest centroids (using Euclidean distance), then recalculate centroids. How many points changed clusters? Has the algorithm converged?
+
+\item Calculate the silhouette coefficient for customer 3 in iteration 2. Its distance to C2 centroid is 2.8, average distance to all C2 points is 3.5, and average distance to all C1 points is 8.2. Interpret the silhouette value.
+
+\item Compare k=2 vs k=3 clustering using the elbow method. For k=3, WCSS = 45.2; for k=2, WCSS = 78.5; for k=1, WCSS = 245.0. Calculate the percentage reduction in WCSS from k=2 to k=3. Is adding a third cluster justified?
+\end{enumerate}
+
+\subsection*{Problem 7: Image Compression via Color Quantization}
+
+A 100×100 pixel RGB image (30,000 total pixels in vectorized form) undergoes color quantization using k-means in 3D RGB space. The goal is to reduce from 16,777,216 possible colors (24-bit) to k representative colors.
+
+Results for different k values:
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+k & WCSS & Compression Ratio & PSNR (dB) & Iterations \\
+\midrule
+8 & 125000 & 8:1 & 28.5 & 12 \\
+16 & 89000 & 6:1 & 31.2 & 15 \\
+32 & 62000 & 5.3:1 & 33.8 & 18 \\
+64 & 43000 & 4:1 & 35.9 & 22 \\
+128 & 31000 & 2.7:1 & 37.5 & 28 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Original file size: 30KB (8 bits per channel), Compressed using k=16: 5KB
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the average squared distance per pixel for k=16. If the RGB values range from 0-255, interpret what this error means in terms of color accuracy.
+
+\item Using the elbow method, determine the optimal k by calculating the percentage decrease in WCSS from each k to the next. At which k does the improvement become marginal (< 20\% reduction)?
+
+\item The compression ratio for k=16 is 6:1. Verify this calculation: the original image needs 3 bytes per pixel (RGB), while the compressed version needs a codebook of 16 colors (48 bytes total) plus 4 bits per pixel for indexing. Calculate the total compressed size.
+
+\item A designer requires PSNR ≥ 32 dB for acceptable quality. Which is the smallest k that meets this requirement? Calculate the storage savings compared to the original for a dataset of 1000 similar images.
+\end{enumerate}
+
+\subsection*{Problem 8: Anomaly Detection in Network Traffic}
+
+A cybersecurity system monitors network traffic using 5 features: packet size (bytes), connection duration (seconds), port number, packet count, and flag combinations (encoded). K-means with k=4 clusters normal behavior. Statistics from 5000 normal connections:
+
+Cluster characteristics:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Cluster & Size & Avg Distance to Center & Max Distance to Center \\
+\midrule
+1 & 1850 & 12.5 & 28.3 \\
+2 & 1200 & 8.7 & 22.1 \\
+3 & 1500 & 10.2 & 25.6 \\
+4 & 450 & 15.8 & 35.2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A new connection has distances to cluster centers: [42.5, 38.7, 45.2, 31.8]
+
+\begin{enumerate}[label=(\alph*)]
+\item Assign the new connection to the nearest cluster (Cluster 4). Calculate its distance relative to the maximum normal distance for that cluster. Is this connection an outlier based on a threshold of 1.5× max distance?
+
+\item Define an anomaly score as: score = min(distance to all centers) / average(all normal distances). Calculate this score for the new connection. If scores > 3.0 trigger alerts, should this connection be flagged?
+
+\item False positive rate in the validation set is 2\% (normal connections flagged as anomalies). True positive rate (detecting actual attacks) is 87\%. If 0.1\% of all connections are actual attacks, calculate the precision (positive predictive value) of the anomaly detection system using Bayes' theorem.
+
+\item The security team can manually investigate 100 alerts per day. The system processes 50,000 connections daily with 0.1\% attack rate. With 87\% TPR and 2\% FPR, calculate the number of daily alerts. Should the threshold be adjusted? What new threshold (as multiple of average distance) would reduce alerts to 100 while maintaining at least 70\% TPR?
+\end{enumerate}
+
+\subsection*{Problem 9: Market Basket Analysis and Product Clustering}
+
+An e-commerce platform uses k-means to cluster 500 products based on 8 features: price, rating, review count, sales volume, return rate, category similarity scores, and seasonal demand. After clustering with k=6:
+
+Cluster profiles:
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+Cluster & Products & Avg Price & Avg Rating & Avg Sales/mo \\
+\midrule
+1 & 120 & \$15 & 4.1 & 850 \\
+2 & 85 & \$89 & 4.6 & 320 \\
+3 & 95 & \$145 & 4.5 & 180 \\
+4 & 78 & \$12 & 3.8 & 1250 \\
+5 & 67 & \$225 & 4.7 & 95 \\
+6 & 55 & \$48 & 4.3 & 580 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Silhouette scores: [0.52, 0.61, 0.58, 0.48, 0.65, 0.55], Overall average: 0.565
+
+Davies-Bouldin Index: 0.85 (lower is better)
+
+\begin{enumerate}[label=(\alph*)]
+\item Interpret the cluster profiles. Which cluster represents "premium low-volume" products? Which represents "budget high-volume"? Justify based on the statistics.
+
+\item A new product has: price \$125, rating 4.4, sales 210/mo. Calculate its distance to clusters 2, 3, and 6 using a simplified formula (assuming normalized features where price range is 0-1 mapped from \$0-\$250, rating from 0-5, sales from 0-1500). Assign to the nearest cluster.
+
+\item Compare this k=6 clustering with k=5 (average silhouette: 0.548, DBI: 0.92) and k=7 (average silhouette: 0.571, DBI: 0.88). Using both metrics, which k is optimal? Do the two metrics agree?
+
+\item The marketing team uses clusters for targeted campaigns with different costs per cluster based on size. Cluster 1 costs \$0.50 per product, Cluster 2 costs \$1.20, etc. Calculate the total cost of a campaign targeting all products if cost scales inversely with cluster size (cost = base × 100/cluster\_size, where base = \$50). Which cluster is most expensive to target per product?
+\end{enumerate}
+
+\subsection*{Problem 10: Initialization Sensitivity and K-Means++}
+
+A dataset of 8 points in 2D space is clustered with k=3:
+
+Points: A(1,1), B(2,1), C(1,2), D(2,2), E(8,8), F(9,8), G(8,9), H(9,9)
+
+Three initialization strategies are tested:
+
+Strategy 1 (Random): Initial centers at A, B, E
+- Final WCSS: 4.5, Iterations: 3
+
+Strategy 2 (Random): Initial centers at A, E, H
+- Final WCSS: 2.0, Iterations: 4
+
+Strategy 3 (K-Means++): Initial centers selected with probability proportional to distance-squared
+- Final WCSS: 2.0, Iterations: 3
+
+\begin{enumerate}[label=(\alph*)]
+\item For Strategy 1, calculate the final cluster assignments and centroids. Show that this initialization converged to a local optimum (suboptimal solution). What are the three clusters?
+
+\item Explain why Strategy 2 converges to a better solution. Calculate the distance from point A to the nearest center for each strategy at initialization. Which strategy better captures the data structure?
+
+\item K-Means++ probability for selecting the second center after A is chosen first: For each remaining point, calculate P(point) ∝ d²(point, A) / Σd²(all points, A). What is the probability of selecting point E as the second center?
+
+\item Run 100 random initializations and get final WCSS values: 20 converge to 4.5, 80 converge to 2.0. Calculate the expected WCSS. If K-Means++ always converges to 2.0 but takes 50\% more computation time per initialization, is it worth using? Consider that random init needs averaging over 5 runs to be reliable.
+\end{enumerate}
+
+% ============================================================
+% NAIVE BAYES PROBLEMS
+% ============================================================
+
+\section{Naive Bayes}
+
+\subsection*{Problem 11: Email Spam Classification}
+
+A spam filter uses Naive Bayes with word frequency features. Training data consists of 500 spam emails and 2000 legitimate (ham) emails. Word occurrence statistics:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Word & P(word|Spam) & P(word|Ham) & Likelihood Ratio \\
+\midrule
+"free" & 0.35 & 0.08 & 4.38 \\
+"meeting" & 0.05 & 0.28 & 0.18 \\
+"winner" & 0.22 & 0.02 & 11.00 \\
+"urgent" & 0.18 & 0.06 & 3.00 \\
+"report" & 0.04 & 0.25 & 0.16 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A new email contains words: "urgent", "free", "report"
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the prior probabilities P(Spam) and P(Ham) from the training set.
+
+\item Using the Naive Bayes assumption, calculate P(email|Spam) and P(email|Ham) by multiplying the individual word probabilities for words present in the email.
+
+\item Apply Bayes' theorem to compute P(Spam|email). Should this email be classified as spam using a 0.5 decision threshold?
+
+\item Laplace smoothing is applied with α=1 and vocabulary size V=10,000. If a word "blockchain" appears in 0 spam emails and 5 ham emails out of the training set, calculate the smoothed probabilities P("blockchain"|Spam) and P("blockchain"|Ham). How does smoothing prevent zero-probability issues?
+\end{enumerate>
+
+\subsection*{Problem 12: Medical Diagnosis with Continuous and Discrete Features}
+
+A diagnostic system predicts disease presence (Disease+/Disease-) using Gaussian Naive Bayes for continuous features and categorical Naive Bayes for discrete features. Training data from 300 patients (100 Disease+, 200 Disease-):
+
+Feature distributions:
+
+Continuous features (Disease+):
+- Age: Mean=55, SD=12
+- Blood Pressure: Mean=145, SD=18
+- Cholesterol: Mean=240, SD=35
+
+Continuous features (Disease-):
+- Age: Mean=48, SD=15
+- Blood Pressure: Mean=125, SD=15
+- Cholesterol: Mean=195, SD=28
+
+Discrete features:
+- P(Smoker|Disease+) = 0.40, P(Smoker|Disease-) = 0.15
+- P(Family History|Disease+) = 0.55, P(Family History|Disease-) = 0.25
+
+A new patient: Age=52, BP=138, Cholesterol=220, Smoker=Yes, No Family History
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the likelihood P(Age=52|Disease+) using the Gaussian probability density function. Repeat for P(Age=52|Disease-).
+
+\item Compute the overall likelihood P(data|Disease+) by multiplying all feature likelihoods (continuous and discrete). Repeat for P(data|Disease-).
+
+\item Calculate the posterior probability P(Disease+|data) using the prior P(Disease+) = 100/300 = 0.333. What is the classification?
+
+\item The conditional independence assumption is likely violated. If Age and Blood Pressure have correlation 0.6 within each class, how would this affect the accuracy of predictions? The actual joint distribution shows P(Age∈[50,55] AND BP∈[135,140]|Disease+) = 0.08, while independence would predict 0.12. Calculate the overconfidence factor.
+\end{enumerate>
+
+\subsection*{Problem 13: Sentiment Analysis with Multinomial Naive Bayes}
+
+A movie review classifier uses bag-of-words with 5000-word vocabulary. Training on 10,000 reviews (6000 positive, 4000 negative):
+
+Total word counts:
+- Positive reviews: 2,400,000 words total
+- Negative reviews: 1,600,000 words total
+
+Sample word counts in positive/negative reviews:
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Word & Count(Positive) & Count(Negative) \\
+\midrule
+"excellent" & 8500 & 950 \\
+"terrible" & 450 & 6200 \\
+"mediocre" & 1200 & 2800 \\
+"acting" & 12000 & 8500 \\
+"plot" & 15000 & 11000 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A test review contains: "excellent" (2×), "acting" (1×), "plot" (1×), length=4 words
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate P(word|Positive) for each word in the test review using the word count method (count(word in positive)/total words in positive). Apply the same for P(word|Negative).
+
+\item Using multinomial Naive Bayes, calculate the log-likelihood log P(review|Positive). The formula accounts for word frequency: sum over words of count(word) × log P(word|class). Repeat for Negative.
+
+\item Add log priors: log P(Positive) and log P(Negative). Compare the total log-posteriors. Which sentiment is predicted?
+
+\item Without Laplace smoothing, a rare word "cinematography" appears 20 times in positive reviews but 0 times in negative reviews. Calculate P("cinematography"|Negative) without and with smoothing (α=1, V=5000). If a positive review contains this word, how much would the zero-probability affect classification?
+\end{enumerate>
+
+\subsection*{Problem 14: Multi-class Document Classification}
+
+A news classifier categorizes articles into 4 topics: Politics (P), Sports (S), Technology (T), Entertainment (E). Training set contains 4000 articles distributed as: P=1200, S=800, T=1500, E=500.
+
+TF-IDF based features for a test article show top terms and their weighted scores:
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+Term & P(term|P) & P(term|S) & P(term|T) & P(term|E) \\
+\midrule
+"election" & 0.15 & 0.02 & 0.01 & 0.03 \\
+"champion" & 0.01 & 0.18 & 0.01 & 0.02 \\
+"algorithm" & 0.02 & 0.01 & 0.22 & 0.01 \\
+"debate" & 0.12 & 0.03 & 0.02 & 0.04 \\
+"analysis" & 0.08 & 0.12 & 0.15 & 0.06 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Test article contains: "election", "debate", "analysis"
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate the prior probability for each class based on the training distribution. Which class has the highest prior?
+
+\item For each class, calculate the likelihood P(article|class) by multiplying the probabilities of the three terms. Which class has the highest likelihood?
+
+\item Compute the posterior probability for each class using Bayes' theorem. Normalize so posteriors sum to 1. Which class should the article be assigned to?
+
+\item The classifier achieves these accuracies per class: P=0.85, S=0.88, T=0.82, E=0.75. Calculate the macro-averaged accuracy and weighted accuracy (weighted by class size). Which metric is more appropriate when class sizes are imbalanced?
+\end{enumerate>
+
+\subsection*{Problem 15: Real-time Fraud Detection with Streaming Data}
+
+An online payment system uses Naive Bayes for real-time fraud detection with 6 features: transaction amount (binned into 5 ranges), merchant category (10 categories), time of day (4 bins), location match (binary), device fingerprint match (binary), and velocity (transactions per hour, 3 bins).
+
+Current model statistics after processing 1,000,000 transactions (5,000 fraudulent):
+- P(Fraud) = 0.005
+- P(Amount > \$500|Fraud) = 0.35, P(Amount > \$500|Legit) = 0.08
+- P(Foreign location|Fraud) = 0.62, P(Foreign location|Legit) = 0.12
+- P(Night time|Fraud) = 0.48, P(Night time|Legit) = 0.15
+- P(Device mismatch|Fraud) = 0.58, P(Device mismatch|Legit) = 0.05
+- P(High velocity|Fraud) = 0.72, P(High velocity|Legit) = 0.03
+
+New transaction: Amount > \$500, Foreign location, Night time, Device mismatch, High velocity
+
+\begin{enumerate}[label=(\alph*)]
+\item Calculate P(transaction|Fraud) and P(transaction|Legit) using the Naive Bayes independence assumption.
+
+\item Compute the fraud probability P(Fraud|transaction). If the threshold for blocking is 0.70, should this transaction be blocked?
+
+\item The cost of a false positive (blocking legitimate transaction) is \$25 in lost revenue and customer service. The cost of a false negative (allowing fraud) is \$450 average fraud loss. Calculate the expected cost of blocking vs not blocking this transaction. Which decision minimizes expected cost?
+
+\item The model updates incrementally as new labeled data arrives. After processing 1000 new transactions (10 fraudulent), the fraud rate estimate should be updated. Using Bayesian updating, calculate the new prior P(Fraud) if the old prior was based on 1,000,000 transactions. Should the model be retrained, or is incremental updating sufficient?
+\end{enumerate}
+
+\end{document}

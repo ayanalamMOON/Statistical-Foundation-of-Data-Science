@@ -1,0 +1,701 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Regression Analysis}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Regression Problems}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% LINEAR REGRESSION PROBLEMS
+% ============================================================
+
+\section{Linear Regression}
+
+\subsection*{Problem 1: Simple Linear Regression with Hypothesis Testing}
+
+A researcher studies the relationship between study hours (\(x\)) and exam scores (\(y\)) for 6 students:
+
+\[
+\begin{array}{c|cccccc}
+x & 2 & 4 & 5 & 7 & 9 & 11 \\
+\hline
+y & 45 & 62 & 68 & 78 & 85 & 92
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the OLS estimates \(\hat{\beta}_0\) and \(\hat{\beta}_1\) using formulas:
+\[
+\hat{\beta}_1 = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}, \quad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1\bar{x}
+\]
+
+\item Calculate the residuals \(e_i = y_i - \hat{y}_i\), sum of squared errors (SSE), total sum of squares (SST), and coefficient of determination \(R^2\).
+
+\item Compute the residual standard error \(s = \sqrt{\text{SSE}/(n-2)}\) and test the null hypothesis \(H_0: \beta_1 = 0\) at \(\alpha = 0.05\). Use the test statistic:
+\[
+t = \frac{\hat{\beta}_1 - 0}{s/\sqrt{\sum(x_i - \bar{x})^2}}
+\]
+
+\item Construct a 95\% confidence interval for \(\beta_1\).
+\end{enumerate}
+
+\subsection*{Problem 2: Multiple Linear Regression Matrix Formulation}
+
+Consider a real estate dataset with house prices (\(y\), in thousands) predicted by area (\(x_1\), in 100 sq ft) and number of bedrooms (\(x_2\)):
+
+\[
+X = \begin{pmatrix}
+1 & 12 & 2 \\
+1 & 15 & 3 \\
+1 & 18 & 3 \\
+1 & 20 & 4 \\
+1 & 25 & 4
+\end{pmatrix}, \quad
+\mathbf{y} = \begin{pmatrix} 180 \\ 220 \\ 260 \\ 280 \\ 340 \end{pmatrix}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute \(X^TX\) and \(X^T\mathbf{y}\).
+
+\item Calculate the OLS solution using the normal equations:
+\[
+\hat{\beta} = (X^TX)^{-1}X^T\mathbf{y}
+\]
+
+\item Compute the fitted values \(\hat{\mathbf{y}} = X\hat{\beta}\) and residuals \(\mathbf{e} = \mathbf{y} - \hat{\mathbf{y}}\).
+
+\item Calculate \(R^2 = 1 - \frac{\text{SSE}}{\text{SST}}\) where \(\text{SSE} = \mathbf{e}^T\mathbf{e}\) and \(\text{SST} = \sum(y_i - \bar{y})^2\).
+\end{enumerate}
+
+\subsection*{Problem 3: Linear Regression with Categorical Predictors}
+
+A company analyzes employee salaries (\(y\), in thousands) based on years of experience (\(x_1\)) and department (categorical: Sales, Tech, HR). Data for 8 employees:
+
+\[
+\begin{array}{c|c|c|c}
+\text{Employee} & \text{Experience } (x_1) & \text{Department} & \text{Salary } (y) \\
+\hline
+1 & 2 & \text{Sales} & 45 \\
+2 & 5 & \text{Sales} & 58 \\
+3 & 3 & \text{Tech} & 62 \\
+4 & 7 & \text{Tech} & 78 \\
+5 & 4 & \text{Tech} & 68 \\
+6 & 2 & \text{HR} & 42 \\
+7 & 6 & \text{HR} & 55 \\
+8 & 8 & \text{Sales} & 72
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Create dummy variables for the department (use Sales as reference category):
+\[
+D_{\text{Tech}} = \begin{cases} 1 & \text{if Tech} \\ 0 & \text{otherwise} \end{cases}, \quad
+D_{\text{HR}} = \begin{cases} 1 & \text{if HR} \\ 0 & \text{otherwise} \end{cases}
+\]
+Write out the design matrix \(X\) (including intercept).
+
+\item Set up and solve the normal equations to find \(\hat{\beta} = (\hat{\beta}_0, \hat{\beta}_1, \hat{\beta}_2, \hat{\beta}_3)^T\) where:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 D_{\text{Tech}} + \beta_3 D_{\text{HR}} + \epsilon
+\]
+
+\item Interpret each coefficient: What does \(\hat{\beta}_2\) represent?
+
+\item Predict the salary for a Tech employee with 5 years of experience.
+\end{enumerate}
+
+\subsection*{Problem 4: Residual Analysis and Assumptions}
+
+Given the simple linear model \(y = \beta_0 + \beta_1 x + \epsilon\) with fitted values and residuals:
+
+\[
+\begin{array}{c|c|c|c}
+x & y & \hat{y} & e \\
+\hline
+1 & 3.2 & 2.8 & 0.4 \\
+2 & 4.5 & 4.6 & -0.1 \\
+3 & 6.8 & 6.4 & 0.4 \\
+4 & 8.1 & 8.2 & -0.1 \\
+5 & 10.5 & 10.0 & 0.5 \\
+6 & 11.8 & 11.8 & 0.0 \\
+7 & 14.2 & 13.6 & 0.6 \\
+8 & 15.1 & 15.4 & -0.3
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute the mean and variance of residuals. Verify that \(\sum e_i = 0\).
+
+\item Calculate standardized residuals: \(r_i = e_i / s\) where \(s = \sqrt{\sum e_i^2/(n-2)}\).
+
+\item Check for outliers: Are any \(|r_i| > 2\)?
+
+\item Compute the Durbin-Watson statistic to test for autocorrelation:
+\[
+DW = \frac{\sum_{i=2}^{n}(e_i - e_{i-1})^2}{\sum_{i=1}^{n}e_i^2}
+\]
+Values near 2 indicate no autocorrelation. Interpret your result.
+\end{enumerate}
+
+\subsection*{Problem 5: Weighted Least Squares}
+
+When error variance is not constant (\(\text{Var}(\epsilon_i) = \sigma^2/w_i\)), we use weighted least squares (WLS). Consider data with known weights:
+
+\[
+\begin{array}{c|c|c}
+x & y & w_i \\
+\hline
+1 & 2.5 & 1 \\
+2 & 3.8 & 2 \\
+3 & 5.5 & 2 \\
+4 & 6.8 & 4 \\
+5 & 8.2 & 4
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item The WLS estimator minimizes \(\sum w_i(y_i - \beta_0 - \beta_1 x_i)^2\). Show that the WLS solution is:
+\[
+\hat{\beta}_1^{WLS} = \frac{\sum w_i(x_i - \bar{x}_w)(y_i - \bar{y}_w)}{\sum w_i(x_i - \bar{x}_w)^2}
+\]
+where \(\bar{x}_w = \sum w_i x_i / \sum w_i\).
+
+\item Compute \(\bar{x}_w\), \(\bar{y}_w\), and the weighted sums needed for \(\hat{\beta}_1^{WLS}\) and \(\hat{\beta}_0^{WLS}\).
+
+\item Compare the WLS estimates with OLS (unweighted) estimates. Which should be preferred?
+
+\item Calculate the weighted residuals \(e_i^w = \sqrt{w_i}(y_i - \hat{y}_i)\) and verify the WLS fit quality.
+\end{enumerate}
+
+% ============================================================
+% LOGISTIC REGRESSION PROBLEMS
+% ============================================================
+
+\section{Logistic Regression}
+
+\subsection*{Problem 6: Binary Logistic Regression Fundamentals}
+
+A credit card company models default probability based on debt-to-income ratio (\(x\)). Data for 8 customers:
+
+\[
+\begin{array}{c|c|c}
+\text{Customer} & \text{Debt-to-Income } (x) & \text{Default } (y) \\
+\hline
+1 & 0.15 & 0 \\
+2 & 0.25 & 0 \\
+3 & 0.35 & 0 \\
+4 & 0.40 & 1 \\
+5 & 0.50 & 1 \\
+6 & 0.60 & 1 \\
+7 & 0.70 & 1 \\
+8 & 0.80 & 1
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the logistic regression model:
+\[
+\log\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1 x
+\]
+where \(p = P(y = 1 | x)\). Express \(p\) in terms of the logit function.
+
+\item Suppose the estimated coefficients are \(\hat{\beta}_0 = -2.5\) and \(\hat{\beta}_1 = 8\). Calculate the predicted probability of default for \(x = 0.45\).
+
+\item Find the decision boundary: At what debt-to-income ratio is \(p = 0.5\)?
+
+\item Compute the odds ratio for a 0.1 unit increase in debt-to-income ratio:
+\[
+OR = \frac{p(x + 0.1) / (1 - p(x + 0.1))}{p(x) / (1 - p(x))} = e^{0.1\beta_1}
+\]
+Interpret this value.
+\end{enumerate}
+
+\subsection*{Problem 7: Maximum Likelihood Estimation for Logistic Regression}
+
+For the logistic model with one predictor, the likelihood function is:
+\[
+L(\beta_0, \beta_1) = \prod_{i=1}^{n} p_i^{y_i}(1-p_i)^{1-y_i}
+\]
+where \(p_i = \frac{e^{\beta_0 + \beta_1 x_i}}{1 + e^{\beta_0 + \beta_1 x_i}}\).
+
+Consider simplified data with 3 observations:
+
+\[
+\begin{array}{c|c|c}
+x & y & \text{Group} \\
+\hline
+1 & 0 & A \\
+2 & 1 & B \\
+3 & 1 & C
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the log-likelihood function:
+\[
+\ell(\beta_0, \beta_1) = \sum_{i=1}^{n} \left[y_i(\beta_0 + \beta_1 x_i) - \log(1 + e^{\beta_0 + \beta_1 x_i})\right]
+\]
+
+\item Derive the gradient (score equations):
+\[
+\frac{\partial \ell}{\partial \beta_0} = \sum_{i=1}^{n}(y_i - p_i), \quad \frac{\partial \ell}{\partial \beta_1} = \sum_{i=1}^{n}x_i(y_i - p_i)
+\]
+
+\item For \(\beta_0 = 0\) and \(\beta_1 = 1\), evaluate the log-likelihood \(\ell(0, 1)\) and the gradient components.
+
+\item Explain why we need iterative methods (Newton-Raphson or gradient descent) to find MLEs.
+\end{enumerate}
+
+\subsection*{Problem 8: Multinomial Logistic Regression}
+
+A marketing study predicts customer preference (Low, Medium, High) based on price sensitivity (\(x\)). Use High as the reference category. The model is:
+
+\[
+\log\left(\frac{P(y = \text{Low})}{P(y = \text{High})}\right) = \beta_{01} + \beta_{11}x
+\]
+\[
+\log\left(\frac{P(y = \text{Medium})}{P(y = \text{High})}\right) = \beta_{02} + \beta_{12}x
+\]
+
+Given: \(\beta_{01} = 2\), \(\beta_{11} = -3\), \(\beta_{02} = 1\), \(\beta_{12} = -1.5\).
+
+\begin{enumerate}[label=(\alph*)]
+\item For a customer with \(x = 0.5\), compute the linear predictors:
+\[
+\eta_1 = \beta_{01} + \beta_{11}(0.5), \quad \eta_2 = \beta_{02} + \beta_{12}(0.5)
+\]
+
+\item Calculate the probabilities using the softmax function:
+\[
+P(y = \text{Low}) = \frac{e^{\eta_1}}{1 + e^{\eta_1} + e^{\eta_2}}, \quad P(y = \text{Medium}) = \frac{e^{\eta_2}}{1 + e^{\eta_1} + e^{\eta_2}}, \quad P(y = \text{High}) = \frac{1}{1 + e^{\eta_1} + e^{\eta_2}}
+\]
+
+\item Verify that probabilities sum to 1.
+
+\item Which category has the highest predicted probability for this customer?
+\end{enumerate}
+
+\subsection*{Problem 9: Model Evaluation with Confusion Matrix}
+
+A logistic regression classifier predicts disease status (1 = diseased, 0 = healthy) for 10 patients. The threshold for classification is \(p \geq 0.5\):
+
+\[
+\begin{array}{c|c|c|c}
+\text{Patient} & \text{True } y & \text{Predicted } p & \text{Predicted } \hat{y} \\
+\hline
+1 & 0 & 0.15 & 0 \\
+2 & 0 & 0.30 & 0 \\
+3 & 0 & 0.55 & 1 \\
+4 & 1 & 0.45 & 0 \\
+5 & 1 & 0.65 & 1 \\
+6 & 1 & 0.75 & 1 \\
+7 & 1 & 0.80 & 1 \\
+8 & 0 & 0.20 & 0 \\
+9 & 1 & 0.70 & 1 \\
+10 & 0 & 0.40 & 0
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Construct the confusion matrix:
+\[
+\begin{array}{cc|cc}
+ & & \multicolumn{2}{c}{\text{Predicted}} \\
+ & & 0 & 1 \\
+\hline
+\text{Actual} & 0 & TN & FP \\
+ & 1 & FN & TP
+\end{array}
+\]
+
+\item Calculate accuracy, precision, recall (sensitivity), and specificity:
+\[
+\text{Accuracy} = \frac{TP + TN}{n}, \quad \text{Precision} = \frac{TP}{TP + FP}, \quad \text{Recall} = \frac{TP}{TP + FN}, \quad \text{Specificity} = \frac{TN}{TN + FP}
+\]
+
+\item Compute the F1-score:
+\[
+F1 = 2 \cdot \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\]
+
+\item If the threshold is changed to \(p \geq 0.6\), how does the confusion matrix change? Discuss the trade-off between sensitivity and specificity.
+\end{enumerate}
+
+\subsection*{Problem 10: ROC Curve and AUC}
+
+For the data in Problem 9, we vary the classification threshold to generate the ROC curve.
+
+\begin{enumerate}[label=(\alph*)]
+\item For thresholds \(\tau = 0.4, 0.5, 0.6, 0.7\), compute the true positive rate (TPR) and false positive rate (FPR):
+\[
+TPR = \frac{TP}{TP + FN}, \quad FPR = \frac{FP}{FP + TN}
+\]
+Create a table of (FPR, TPR) pairs.
+
+\item Plot the ROC curve conceptually (sketch the points and connect them).
+
+\item The area under the ROC curve (AUC) can be approximated using the trapezoidal rule. For two consecutive points \((FPR_i, TPR_i)\) and \((FPR_{i+1}, TPR_{i+1})\):
+\[
+\text{Area}_i = \frac{1}{2}(FPR_{i+1} - FPR_i)(TPR_i + TPR_{i+1})
+\]
+Compute the total AUC.
+
+\item Interpret the AUC value. What does AUC = 0.5 represent? What about AUC = 1.0?
+\end{enumerate}
+
+% ============================================================
+% POLYNOMIAL REGRESSION PROBLEMS
+% ============================================================
+
+\section{Polynomial Regression}
+
+\subsection*{Problem 11: Quadratic Regression Fitting}
+
+A physicist models the height (\(y\), in meters) of a projectile as a function of time (\(x\), in seconds):
+
+\[
+\begin{array}{c|cccccc}
+x & 0 & 0.5 & 1.0 & 1.5 & 2.0 & 2.5 \\
+\hline
+y & 0 & 11 & 18 & 21 & 20 & 15
+\end{array}
+\]
+
+Model: \(y = \beta_0 + \beta_1 x + \beta_2 x^2 + \epsilon\)
+
+\begin{enumerate}[label=(\alph*)]
+\item Construct the design matrix \(X\):
+\[
+X = \begin{pmatrix}
+1 & x_1 & x_1^2 \\
+1 & x_2 & x_2^2 \\
+\vdots & \vdots & \vdots \\
+1 & x_6 & x_6^2
+\end{pmatrix}
+\]
+
+\item Compute \(X^TX\) and \(X^T\mathbf{y}\).
+
+\item Solve the normal equations to find \(\hat{\beta} = (X^TX)^{-1}X^T\mathbf{y}\).
+
+\item Find the vertex of the parabola (maximum height): \(x^* = -\hat{\beta}_1/(2\hat{\beta}_2)\). Calculate the maximum height \(\hat{y}(x^*)\).
+
+\item Compute \(R^2\) for the quadratic model. Compare conceptually with a linear model (without \(x^2\) term).
+\end{enumerate}
+
+\subsection*{Problem 12: Orthogonal Polynomials}
+
+When fitting high-degree polynomials, multicollinearity among \(x, x^2, x^3, \ldots\) causes numerical instability. Orthogonal polynomials solve this.
+
+Consider data: \(x = (-2, -1, 0, 1, 2)\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that the raw polynomial design matrix columns are correlated. Compute the correlation between \(x\) and \(x^2\):
+\[
+\text{cor}(x, x^2) = \frac{\sum(x_i - \bar{x})(x_i^2 - \overline{x^2})}{\sqrt{\sum(x_i - \bar{x})^2 \sum(x_i^2 - \overline{x^2})^2}}
+\]
+
+\item Construct orthogonal polynomials using Gram-Schmidt:
+\begin{itemize}
+\item \(P_0(x) = 1\)
+\item \(P_1(x) = x - \bar{x}\)
+\item \(P_2(x) = x^2 - \langle x^2, P_0 \rangle P_0 - \langle x^2, P_1 \rangle P_1\)
+\end{itemize}
+where \(\langle u, v \rangle = \sum u_i v_i / n\).
+
+\item Verify orthogonality: \(\sum P_1(x_i) P_2(x_i) = 0\).
+
+\item Explain why using orthogonal polynomials improves numerical stability in regression.
+\end{enumerate}
+
+\subsection*{Problem 13: Overfitting in Polynomial Regression}
+
+A data analyst fits polynomials of varying degrees to the data:
+
+\[
+\begin{array}{c|ccccc}
+x & 1 & 2 & 3 & 4 & 5 \\
+\hline
+y & 2.1 & 3.9 & 6.2 & 7.8 & 10.1
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item For a degree-1 polynomial (linear), the fitted equation is \(\hat{y} = 0.1 + 2.0x\) with \(R^2 = 0.985\).
+
+For a degree-4 polynomial, \(R^2 = 1.000\) (perfect fit).
+
+Compute the residual sum of squares (SSE) for both models. Which has smaller training error?
+
+\item Calculate the adjusted \(R^2\) for both models:
+\[
+R^2_{\text{adj}} = 1 - \frac{(1-R^2)(n-1)}{n-p-1}
+\]
+where \(p\) is the number of predictors. Which model is preferred by adjusted \(R^2\)?
+
+\item Explain the bias-variance trade-off: Why might the degree-4 polynomial perform poorly on new data despite perfect training fit?
+
+\item Compute Akaike Information Criterion (AIC) for model selection:
+\[
+AIC = n \log(\text{SSE}/n) + 2p
+\]
+Use \(\text{SSE}_{\text{linear}} = 0.5\) and \(\text{SSE}_{\text{degree-4}} = 0.001\). Which model is preferred by AIC?
+\end{enumerate}
+
+\subsection*{Problem 14: Polynomial Regression with Interaction Terms}
+
+A botanist studies plant growth (\(y\)) as a function of sunlight hours (\(x_1\)) and water amount (\(x_2\)). The model includes a quadratic term and interaction:
+
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1^2 + \beta_4 x_1 x_2 + \epsilon
+\]
+
+Data for 5 plants:
+\[
+\begin{array}{c|c|c|c}
+\text{Plant} & x_1 & x_2 & y \\
+\hline
+1 & 4 & 2 & 15 \\
+2 & 6 & 3 & 25 \\
+3 & 5 & 4 & 28 \\
+4 & 8 & 2 & 30 \\
+5 & 7 & 5 & 40
+\end{array}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Construct the design matrix \(X\) including all terms: intercept, \(x_1\), \(x_2\), \(x_1^2\), and \(x_1 x_2\).
+
+\item Given the fitted coefficients: \(\hat{\beta} = (2, 3, 2.5, -0.2, 0.5)^T\), predict the growth for a plant with \(x_1 = 6\) and \(x_2 = 4\).
+
+\item Interpret the interaction term \(\beta_4\): How does the effect of sunlight on growth depend on water amount?
+
+\item Find the optimal sunlight hours (maximizing \(y\)) for \(x_2 = 3\) by taking \(\frac{\partial y}{\partial x_1} = 0\) and solving:
+\[
+\beta_1 + 2\beta_3 x_1 + \beta_4 x_2 = 0
+\]
+\end{enumerate}
+
+\subsection*{Problem 15: Spline Regression as Piecewise Polynomials}
+
+Spline regression fits different polynomials in different regions, connected smoothly at knots. Consider a cubic spline with one knot at \(x = 3\):
+
+\[
+f(x) = \begin{cases}
+\beta_{01} + \beta_{11}x + \beta_{21}x^2 + \beta_{31}x^3 & \text{if } x \leq 3 \\
+\beta_{02} + \beta_{12}x + \beta_{22}x^2 + \beta_{32}x^3 & \text{if } x > 3
+\end{cases}
+\]
+
+For continuity and smoothness, we require:
+\begin{itemize}
+\item Continuity at \(x = 3\): \(f(3^-) = f(3^+)\)
+\item First derivative continuity: \(f'(3^-) = f'(3^+)\)
+\item Second derivative continuity: \(f''(3^-) = f''(3^+)\)
+\end{itemize}
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the three continuity conditions in terms of the coefficients.
+
+\item Given \(\beta_{01} = 1\), \(\beta_{11} = 2\), \(\beta_{21} = -0.5\), \(\beta_{31} = 0.1\), and assuming the constraints are satisfied, compute \(f(3)\) and \(f'(3)\).
+
+\item Explain why splines are preferred over high-degree polynomials for flexible curve fitting.
+
+\item In practice, splines are often represented using basis functions. Write the truncated power basis function for a cubic spline:
+\[
+(x - c)_+^3 = \begin{cases} (x-c)^3 & \text{if } x > c \\ 0 & \text{otherwise} \end{cases}
+\]
+How does this represent a knot at \(x = c\)?
+\end{enumerate}
+
+% ============================================================
+% RIDGE REGRESSION PROBLEMS
+% ============================================================
+
+\section{Ridge Regression}
+
+\subsection*{Problem 16: Ridge Regression Derivation and Computation}
+
+Consider the housing price model with severe multicollinearity:
+
+\[
+X = \begin{pmatrix}
+1 & 1200 & 2.4 \\
+1 & 1800 & 3.6 \\
+1 & 2000 & 4.0 \\
+1 & 2500 & 5.0
+\end{pmatrix}, \quad
+\mathbf{y} = \begin{pmatrix} 250 \\ 320 \\ 360 \\ 420 \end{pmatrix}
+\]
+
+Note: The second and third columns are perfectly correlated (\(x_2 = 0.002 x_1\)).
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute \(X^TX\) and show that it has a very small eigenvalue (near-singular), indicating multicollinearity. Calculate the condition number \(\kappa = \lambda_{\max}/\lambda_{\min}\).
+
+\item Derive the ridge regression estimator by minimizing:
+\[
+\|\mathbf{y} - X\beta\|^2 + \lambda\|\beta\|^2
+\]
+Show that the solution is:
+\[
+\hat{\beta}^{\text{ridge}} = (X^TX + \lambda I)^{-1}X^T\mathbf{y}
+\]
+
+\item For \(\lambda = 50\), compute \(X^TX + 50I\) and find \(\hat{\beta}^{\text{ridge}}\).
+
+\item Compare with the OLS solution (if computable). Show that ridge shrinks coefficients toward zero.
+\end{enumerate}
+
+\subsection*{Problem 17: Bias-Variance Trade-off in Ridge Regression}
+
+The mean squared error (MSE) of an estimator decomposes as:
+\[
+\text{MSE}(\hat{\beta}) = \text{Bias}^2(\hat{\beta}) + \text{Var}(\hat{\beta})
+\]
+
+For ridge regression, the bias and variance are:
+\[
+\text{Bias}(\hat{\beta}^{\text{ridge}}) = -\lambda(X^TX + \lambda I)^{-1}\beta
+\]
+\[
+\text{Var}(\hat{\beta}^{\text{ridge}}) = \sigma^2 X(X^TX + \lambda I)^{-2}X^T
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that as \(\lambda \to 0\), ridge reduces to OLS: \(\hat{\beta}^{\text{ridge}} \to \hat{\beta}^{\text{OLS}}\). What happens to bias and variance?
+
+\item Show that as \(\lambda \to \infty\), \(\hat{\beta}^{\text{ridge}} \to \mathbf{0}\). What happens to bias and variance?
+
+\item For the simple case where \(X^TX = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_p)\) (diagonal), show that the ridge shrinkage factor for the \(j\)-th coefficient is:
+\[
+\frac{\lambda_j}{\lambda_j + \lambda}
+\]
+
+\item Explain intuitively: Why does ridge regression improve prediction accuracy despite introducing bias?
+\end{enumerate}
+
+\subsection*{Problem 18: Cross-Validation for Lambda Selection}
+
+To choose the optimal regularization parameter \(\lambda\), we use cross-validation. Consider Leave-One-Out CV (LOOCV):
+
+Data: \(X = \begin{pmatrix} 1 & 2 \\ 1 & 4 \\ 1 & 6 \\ 1 & 8 \end{pmatrix}\), \(\mathbf{y} = \begin{pmatrix} 3 \\ 7 \\ 11 \\ 15 \end{pmatrix}\)
+
+\begin{enumerate}[label=(\alph*)]
+\item For \(\lambda = 1\), compute the ridge coefficients \(\hat{\beta}^{\text{ridge}}\) using all data.
+
+\item For LOOCV, we leave out observation \(i\) and compute \(\hat{y}_{-i}\) (prediction for \(i\) using model trained on remaining data). The LOOCV shortcut formula is:
+\[
+\hat{y}_i - \hat{y}_{-i} = \frac{e_i}{1 - H_{ii}}
+\]
+where \(H = X(X^TX + \lambda I)^{-1}X^T\) is the hat matrix and \(e_i = y_i - \hat{y}_i\).
+
+Compute the hat matrix \(H\) for \(\lambda = 1\).
+
+\item Calculate the LOOCV error:
+\[
+CV(\lambda) = \frac{1}{n}\sum_{i=1}^{n}\left(\frac{e_i}{1 - H_{ii}}\right)^2
+\]
+
+\item Repeat for \(\lambda = 0.5\) and \(\lambda = 2\). Which \(\lambda\) minimizes CV error?
+\end{enumerate}
+
+\subsection*{Problem 19: Ridge Regression Path and Degrees of Freedom}
+
+The ridge trace plots coefficient paths \(\hat{\beta}_j(\lambda)\) as \(\lambda\) varies. The effective degrees of freedom is:
+\[
+df(\lambda) = \text{tr}(H_\lambda) = \text{tr}(X(X^TX + \lambda I)^{-1}X^T)
+\]
+
+For the dataset:
+\[
+X = \begin{pmatrix} 1 & 1 \\ 1 & 2 \\ 1 & 3 \end{pmatrix}, \quad \mathbf{y} = \begin{pmatrix} 2 \\ 3 \\ 5 \end{pmatrix}
+\]
+
+\begin{enumerate}[label=(\alph*)]
+\item Compute \(\hat{\beta}^{\text{ridge}}\) for \(\lambda = 0, 1, 5, 10\).
+
+\item For each \(\lambda\), calculate \(df(\lambda) = \text{tr}(H_\lambda)\). Verify that \(df(0) = p\) (number of predictors) and \(df(\infty) \to 0\).
+
+\item Plot the ridge path conceptually: Sketch how \(\hat{\beta}_1\) and \(\hat{\beta}_2\) change as \(\lambda\) increases from 0 to 10.
+
+\item The generalized cross-validation (GCV) criterion is:
+\[
+GCV(\lambda) = \frac{\sum e_i^2}{(1 - df(\lambda)/n)^2}
+\]
+For \(\lambda = 1\), compute GCV if \(\sum e_i^2 = 0.5\) and \(df(1) = 1.5\).
+\end{enumerate}
+
+\subsection*{Problem 20: Ridge Regression vs LASSO}
+
+Compare ridge regression with LASSO (Least Absolute Shrinkage and Selection Operator):
+
+\textbf{Ridge:} \(\min_\beta \|\mathbf{y} - X\beta\|^2 + \lambda\|\beta\|_2^2\)
+
+\textbf{LASSO:} \(\min_\beta \|\mathbf{y} - X\beta\|^2 + \lambda\|\beta\|_1\)
+
+Consider a simple case with two predictors and OLS estimates \(\hat{\beta}^{\text{OLS}} = (6, 8)^T\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Sketch the constraint regions in \((\beta_1, \beta_2)\) space:
+\begin{itemize}
+\item Ridge: \(\beta_1^2 + \beta_2^2 \leq t\) (circle)
+\item LASSO: \(|\beta_1| + |\beta_2| \leq t\) (diamond)
+\end{itemize}
+Also sketch the OLS contours (ellipses centered at \(\hat{\beta}^{\text{OLS}}\)).
+
+\item Explain geometrically why LASSO can produce exact zeros (sparse solutions) while ridge only shrinks toward zero.
+
+\item For the constraint \(\beta_1^2 + \beta_2^2 = 25\), if ridge yields \(\hat{\beta}^{\text{ridge}} = (3, 4)^T\), find the corresponding \(\lambda\) by solving:
+\[
+\hat{\beta}^{\text{ridge}} = (X^TX + \lambda I)^{-1}X^T\mathbf{y}
+\]
+(Assume \(X^TX = I\) for simplicity and \(X^T\mathbf{y} = (6, 8)^T\)).
+
+\item Discuss when to use ridge vs LASSO: Which is better for prediction? For interpretation?
+\end{enumerate}
+
+\end{document}

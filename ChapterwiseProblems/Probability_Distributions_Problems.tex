@@ -1,0 +1,430 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+\setlength{\headheight}{14.5pt}
+\addtolength{\topmargin}{-2.5pt}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Binom}{Binomial}
+\DeclareMathOperator{\Pois}{Poisson}
+
+% Define solution environment
+\newtcolorbox{solution}{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    title=Solution,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{explanation}{
+    colback=green!5!white,
+    colframe=green!75!black,
+    title=Explanation,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\title{CHAPTER-WISE PROBLEMS\\
+\large Probability Distributions}
+\author{Statistical Foundation of Data Science\\
+CSU1658}
+\date{December 2025}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Probability Distributions}
+\lhead{CSU1658}
+\cfoot{\thepage}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ============================================================
+% BERNOULLI DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Bernoulli Distribution}
+
+\subsection*{Problem 1: Basic Bernoulli Properties and Moments}
+
+A biased coin has probability \(p = 0.65\) of showing heads (success). Let \(X\) be the Bernoulli random variable indicating the outcome.
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the probability mass function (PMF) of \(X\):
+\[
+P(X = x) = \begin{cases}
+p & \text{if } x = 1 \\
+1-p & \text{if } x = 0
+\end{cases}
+\]
+Compute \(P(X = 0)\) and \(P(X = 1)\) for \(p = 0.65\).
+
+\item Derive the expected value \(\mathbb{E}[X]\) using the definition:
+\[
+\mathbb{E}[X] = \sum_{x} x \cdot P(X = x)
+\]
+
+\item Derive the variance \(\Var(X)\) using both methods:
+\begin{itemize}
+\item Method 1: \(\Var(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2\)
+\item Method 2: Direct formula \(\Var(X) = p(1-p)\)
+\end{itemize}
+Verify both methods give the same result for \(p = 0.65\).
+
+\item Calculate the standard deviation \(\sigma = \sqrt{\Var(X)}\). At what value of \(p\) is the variance maximized? Prove this by taking \(\frac{d}{dp}\Var(X) = 0\).
+\end{enumerate}
+
+\subsection*{Problem 2: Bernoulli Process and Geometric Distribution}
+
+A quality inspector tests manufactured items where each item has probability \(p = 0.15\) of being defective (independent trials).
+
+\begin{enumerate}[label=(\alph*)]
+\item If the inspector tests 5 items independently, write the probability that exactly 2 are defective using Bernoulli trials:
+\[
+P(X_1 = x_1, X_2 = x_2, \ldots, X_5 = x_5) = \prod_{i=1}^{5} p^{x_i}(1-p)^{1-x_i}
+\]
+Calculate for the sequence: Defective, Good, Defective, Good, Good.
+
+\item Let \(Y\) be the number of items tested until the first defective is found (geometric distribution). The PMF is:
+\[
+P(Y = k) = (1-p)^{k-1}p, \quad k = 1, 2, 3, \ldots
+\]
+Compute \(P(Y = 1)\), \(P(Y = 2)\), and \(P(Y \leq 3)\).
+
+\item Derive the expected number of trials until first success:
+\[
+\mathbb{E}[Y] = \sum_{k=1}^{\infty} k(1-p)^{k-1}p
+\]
+Use the formula for the sum of a geometric series: \(\sum_{k=1}^{\infty} kx^{k-1} = \frac{1}{(1-x)^2}\) for \(|x| < 1\).
+
+Show that \(\mathbb{E}[Y] = \frac{1}{p}\) and compute for \(p = 0.15\).
+
+\item Calculate the probability that the inspector needs to test more than 10 items to find the first defective:
+\[
+P(Y > 10) = (1-p)^{10}
+\]
+\end{enumerate}
+
+\subsection*{Problem 3: Maximum Likelihood Estimation for Bernoulli}
+
+A data scientist observes \(n = 8\) independent Bernoulli trials with outcomes: \(X_1 = 1, X_2 = 0, X_3 = 1, X_4 = 1, X_5 = 0, X_6 = 1, X_7 = 1, X_8 = 1\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the likelihood function:
+\[
+L(p) = \prod_{i=1}^{8} p^{x_i}(1-p)^{1-x_i} = p^{\sum x_i}(1-p)^{n - \sum x_i}
+\]
+Calculate \(\sum x_i\) and express \(L(p)\) explicitly.
+
+\item Write the log-likelihood function:
+\[
+\ell(p) = \log L(p) = \left(\sum x_i\right) \log p + \left(n - \sum x_i\right) \log(1-p)
+\]
+
+\item Find the maximum likelihood estimator (MLE) by solving:
+\[
+\frac{d\ell}{dp} = \frac{\sum x_i}{p} - \frac{n - \sum x_i}{1-p} = 0
+\]
+Show that \(\hat{p}_{\text{MLE}} = \frac{\sum x_i}{n}\) (sample proportion).
+
+\item Verify this is a maximum by checking the second derivative:
+\[
+\frac{d^2\ell}{dp^2} = -\frac{\sum x_i}{p^2} - \frac{n - \sum x_i}{(1-p)^2}
+\]
+Show that this is negative at \(\hat{p}_{\text{MLE}}\), confirming a maximum. Compute the MLE numerically for the given data.
+\end{enumerate}
+
+% ============================================================
+% BINOMIAL DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Binomial Distribution}
+
+\subsection*{Problem 4: Binomial Probability Calculations}
+
+A multiple-choice exam has 10 questions, each with 4 options. A student guesses randomly on all questions. Let \(X\) be the number of correct answers, so \(X \sim \Binom(n=10, p=0.25)\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the binomial PMF:
+\[
+P(X = k) = \binom{n}{k}p^k(1-p)^{n-k}, \quad k = 0, 1, \ldots, n
+\]
+Compute \(P(X = 3)\) exactly.
+
+\item Calculate the probability of passing (at least 6 correct):
+\[
+P(X \geq 6) = \sum_{k=6}^{10} \binom{10}{k}(0.25)^k(0.75)^{10-k}
+\]
+
+\item Compute the expected number of correct answers:
+\[
+\mathbb{E}[X] = np
+\]
+and the variance:
+\[
+\Var(X) = np(1-p)
+\]
+Calculate the standard deviation \(\sigma = \sqrt{\Var(X)}\).
+
+\item Use the normal approximation to estimate \(P(X \geq 6)\). Apply continuity correction:
+\[
+P(X \geq 6) \approx P\left(Z \geq \frac{5.5 - \mu}{\sigma}\right)
+\]
+where \(Z \sim \mathcal{N}(0,1)\), \(\mu = \mathbb{E}[X]\), and \(\sigma = \sqrt{\Var(X)}\). Compare with the exact binomial calculation from part (b).
+\end{enumerate}
+
+\subsection*{Problem 5: Binomial Distribution as Sum of Bernoulli Trials}
+
+Let \(X_1, X_2, \ldots, X_n\) be independent Bernoulli(\(p\)) random variables, and \(S_n = \sum_{i=1}^{n} X_i\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that \(S_n \sim \Binom(n, p)\) by computing the probability:
+\[
+P(S_n = k) = P\left(\sum_{i=1}^{n} X_i = k\right)
+\]
+Use the fact that there are \(\binom{n}{k}\) ways to choose which \(k\) trials result in success, and each specific sequence has probability \(p^k(1-p)^{n-k}\).
+
+\item Using the linearity of expectation, show that:
+\[
+\mathbb{E}[S_n] = \mathbb{E}\left[\sum_{i=1}^{n} X_i\right] = \sum_{i=1}^{n} \mathbb{E}[X_i] = np
+\]
+
+\item For independent random variables, \(\Var(X + Y) = \Var(X) + \Var(Y)\). Use this to show:
+\[
+\Var(S_n) = \Var\left(\sum_{i=1}^{n} X_i\right) = \sum_{i=1}^{n} \Var(X_i) = np(1-p)
+\]
+
+\item For \(n = 20\) and \(p = 0.4\), compute:
+\begin{itemize}
+\item The mode (most likely value) of the distribution
+\item The probability that \(S_n\) is within one standard deviation of its mean: \(P(\mu - \sigma \leq S_n \leq \mu + \sigma)\)
+\end{itemize}
+\end{enumerate}
+
+\subsection*{Problem 6: Hypothesis Testing with Binomial}
+
+A pharmaceutical company claims their drug has a success rate of \(p = 0.70\). In a clinical trial with \(n = 25\) patients, only \(k = 14\) show improvement.
+
+\begin{enumerate}[label=(\alph*)]
+\item State the null and alternative hypotheses:
+\[
+H_0: p = 0.70 \quad \text{vs} \quad H_1: p < 0.70
+\]
+Under \(H_0\), \(X \sim \Binom(25, 0.70)\).
+
+\item Calculate the p-value: the probability of observing \(k = 14\) or fewer successes under \(H_0\):
+\[
+\text{p-value} = P(X \leq 14 | p = 0.70) = \sum_{k=0}^{14} \binom{25}{k}(0.70)^k(0.30)^{25-k}
+\]
+
+\item Using the normal approximation with continuity correction:
+\[
+\text{p-value} \approx P\left(Z \leq \frac{14.5 - np}{\sqrt{np(1-p)}}\right)
+\]
+where \(Z \sim \mathcal{N}(0,1)\). Compute the z-score and find the p-value from the standard normal table.
+
+\item At significance level \(\alpha = 0.05\), should we reject \(H_0\)? Construct a 95\% confidence interval for \(p\) using the normal approximation:
+\[
+\hat{p} \pm 1.96\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}
+\]
+where \(\hat{p} = 14/25\). Does this interval contain 0.70?
+\end{enumerate}
+
+% ============================================================
+% POISSON DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Poisson Distribution}
+
+\subsection*{Problem 7: Poisson Process and Probability Calculations}
+
+Customers arrive at a bank at an average rate of \(\lambda = 4\) per hour. Let \(X\) be the number of arrivals in one hour, where \(X \sim \Pois(\lambda = 4)\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the Poisson PMF:
+\[
+P(X = k) = \frac{e^{-\lambda}\lambda^k}{k!}, \quad k = 0, 1, 2, \ldots
+\]
+Compute \(P(X = 0)\), \(P(X = 2)\), and \(P(X = 5)\).
+
+\item Calculate the probability that at most 3 customers arrive:
+\[
+P(X \leq 3) = \sum_{k=0}^{3} \frac{e^{-4} \cdot 4^k}{k!}
+\]
+
+\item The mean and variance of a Poisson distribution are both equal to \(\lambda\). Verify that:
+\[
+\mathbb{E}[X] = \lambda, \quad \Var(X) = \lambda
+\]
+Calculate the standard deviation for \(\lambda = 4\).
+
+\item If the observation period changes to 30 minutes (0.5 hours), what is the new parameter? Let \(Y\) be the number of arrivals in 30 minutes. Show that \(Y \sim \Pois(\lambda' = 2)\) and compute \(P(Y = 1)\).
+\end{enumerate}
+
+\subsection*{Problem 8: Poisson Approximation to Binomial}
+
+When \(n\) is large and \(p\) is small such that \(np = \lambda\) is moderate, \(\Binom(n, p) \approx \Pois(\lambda)\).
+
+A factory produces 1000 items per day, and each has a 0.003 probability of being defective. Let \(X\) be the number of defective items.
+
+\begin{enumerate}[label=(\alph*)]
+\item Exactly, \(X \sim \Binom(n = 1000, p = 0.003)\). Write the binomial formula for \(P(X = k)\) (don't compute yet).
+
+\item Calculate \(\lambda = np = 1000 \times 0.003 = 3\). Use the Poisson approximation \(X \approx \Pois(\lambda = 3)\) to compute:
+\[
+P(X = 2) \approx \frac{e^{-3} \cdot 3^2}{2!}
+\]
+
+\item Compare the Poisson approximation with the exact binomial calculation:
+\[
+P(X = 2) = \binom{1000}{2}(0.003)^2(0.997)^{998}
+\]
+(Use the approximation \((0.997)^{998} \approx e^{-3}\) and \(\binom{1000}{2} = 499500\) to simplify.)
+
+\item Compute \(P(X \geq 5)\) using the Poisson approximation:
+\[
+P(X \geq 5) = 1 - P(X \leq 4) = 1 - \sum_{k=0}^{4} \frac{e^{-3} \cdot 3^k}{k!}
+\]
+\end{enumerate}
+
+\subsection*{Problem 9: Sum of Independent Poisson Variables}
+
+The reproductive property of Poisson: If \(X \sim \Pois(\lambda_1)\) and \(Y \sim \Pois(\lambda_2)\) are independent, then \(X + Y \sim \Pois(\lambda_1 + \lambda_2)\).
+
+A call center has two phone lines. Line 1 receives calls at rate \(\lambda_1 = 3\) per hour, and Line 2 at rate \(\lambda_2 = 5\) per hour.
+
+\begin{enumerate}[label=(\alph*)]
+\item Let \(X\) and \(Y\) be the number of calls on Lines 1 and 2 in one hour, respectively. Write the distributions: \(X \sim \Pois(3)\), \(Y \sim \Pois(5)\).
+
+\item Let \(Z = X + Y\) be the total number of calls. State the distribution of \(Z\) and compute \(P(Z = 6)\) using:
+\[
+Z \sim \Pois(\lambda_1 + \lambda_2 = 8)
+\]
+\[
+P(Z = 6) = \frac{e^{-8} \cdot 8^6}{6!}
+\]
+
+\item Verify the reproductive property by computing \(P(Z = 6)\) directly from the convolution formula:
+\[
+P(Z = 6) = \sum_{k=0}^{6} P(X = k)P(Y = 6-k) = \sum_{k=0}^{6} \frac{e^{-3} \cdot 3^k}{k!} \cdot \frac{e^{-5} \cdot 5^{6-k}}{(6-k)!}
+\]
+Show that this simplifies to the Poisson(8) formula.
+
+\item Calculate the expected total number of calls \(\mathbb{E}[Z]\) and variance \(\Var(Z)\) using:
+\[
+\mathbb{E}[Z] = \mathbb{E}[X] + \mathbb{E}[Y], \quad \Var(Z) = \Var(X) + \Var(Y)
+\]
+(assuming independence).
+\end{enumerate}
+
+% ============================================================
+% GAUSSIAN (NORMAL) DISTRIBUTION PROBLEMS
+% ============================================================
+
+\section{Gaussian (Normal) Distribution}
+
+\subsection*{Problem 10: Standard Normal Calculations and Transformations}
+
+Let \(Z \sim \mathcal{N}(0, 1)\) be a standard normal random variable.
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the probability density function (PDF):
+\[
+f_Z(z) = \frac{1}{\sqrt{2\pi}}e^{-z^2/2}
+\]
+Calculate \(f_Z(0)\), \(f_Z(1)\), and \(f_Z(-1)\). Verify the symmetry property: \(f_Z(-z) = f_Z(z)\).
+
+\item Using the standard normal table (\(\Phi(z) = P(Z \leq z)\)), compute:
+\begin{itemize}
+\item \(P(Z \leq 1.96)\)
+\item \(P(Z > 1.5)\)
+\item \(P(-1 \leq Z \leq 2)\)
+\item \(P(|Z| > 2)\) (two-tailed probability)
+\end{itemize}
+
+\item Find the critical values (z-scores):
+\begin{itemize}
+\item \(z_{\alpha/2}\) such that \(P(Z > z_{\alpha/2}) = 0.025\) (for 95\% confidence)
+\item \(z_{\alpha}\) such that \(P(Z > z_{\alpha}) = 0.05\) (for 90\% confidence, one-tailed)
+\end{itemize}
+
+\item Let \(X \sim \mathcal{N}(\mu = 50, \sigma^2 = 16)\). Transform \(X\) to standard normal using:
+\[
+Z = \frac{X - \mu}{\sigma}
+\]
+Calculate \(P(X > 58)\) by converting to a \(Z\)-score and using the standard normal table.
+\end{enumerate}
+
+\subsection*{Problem 11: Normal Distribution Properties and Calculations}
+
+IQ scores are normally distributed with mean \(\mu = 100\) and standard deviation \(\sigma = 15\). Let \(X\) denote an individual's IQ score.
+
+\begin{enumerate}[label=(\alph*)]
+\item Write the PDF of \(X \sim \mathcal{N}(100, 15^2)\):
+\[
+f_X(x) = \frac{1}{15\sqrt{2\pi}}\exp\left(-\frac{(x-100)^2}{2(15)^2}\right)
+\]
+
+\item Calculate the probability that a randomly selected person has an IQ between 85 and 115 (within one standard deviation of the mean):
+\[
+P(85 \leq X \leq 115) = P\left(\frac{85-100}{15} \leq Z \leq \frac{115-100}{15}\right) = P(-1 \leq Z \leq 1)
+\]
+
+\item Find the 90th percentile of IQ scores: the value \(x_{0.90}\) such that \(P(X \leq x_{0.90}) = 0.90\). Use:
+\[
+x_{0.90} = \mu + z_{0.90} \sigma
+\]
+where \(z_{0.90} = 1.282\) (from standard normal table).
+
+\item A "genius" is defined as having IQ above 130. What proportion of the population qualifies? Calculate:
+\[
+P(X > 130) = P\left(Z > \frac{130-100}{15}\right)
+\]
+If 10,000 people are tested, how many are expected to have IQ above 130?
+\end{enumerate}
+
+\subsection*{Problem 12: Linear Combinations and Central Limit Theorem}
+
+Let \(X_1, X_2, \ldots, X_n\) be independent random variables with \(X_i \sim \mathcal{N}(\mu_i, \sigma_i^2)\).
+
+\begin{enumerate}[label=(\alph*)]
+\item Show that any linear combination is also normal:
+\[
+Y = a_1 X_1 + a_2 X_2 + \cdots + a_n X_n \sim \mathcal{N}\left(\sum_{i=1}^{n} a_i\mu_i, \sum_{i=1}^{n} a_i^2\sigma_i^2\right)
+\]
+Verify this for \(n = 2\): If \(X \sim \mathcal{N}(3, 4)\) and \(Y \sim \mathcal{N}(5, 9)\) are independent, find the distribution of \(Z = 2X + 3Y\).
+
+\item The sample mean \(\bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i\) where \(X_i \sim \mathcal{N}(\mu, \sigma^2)\) i.i.d. Show that:
+\[
+\bar{X} \sim \mathcal{N}\left(\mu, \frac{\sigma^2}{n}\right)
+\]
+For \(\mu = 50\), \(\sigma = 10\), and \(n = 25\), compute \(P(\bar{X} > 52)\).
+
+\item State the Central Limit Theorem: If \(X_1, \ldots, X_n\) are i.i.d. with mean \(\mu\) and variance \(\sigma^2\) (from any distribution), then for large \(n\):
+\[
+\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)
+\]
+Explain why this is crucial for statistical inference.
+
+\item An exponential random variable has mean \(\mu = 5\) and variance \(\sigma^2 = 25\). If we take a sample of \(n = 100\) observations and compute the sample mean \(\bar{X}\), approximate:
+\[
+P(4.5 \leq \bar{X} \leq 5.5)
+\]
+using the CLT (even though the original distribution is not normal).
+\end{enumerate}
+
+\end{document}

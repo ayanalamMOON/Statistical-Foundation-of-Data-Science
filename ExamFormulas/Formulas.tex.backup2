@@ -1,0 +1,2060 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,theorems,skins}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning, calc}
+\usepackage[utf8]{inputenc}
+\usepackage[
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    pdfpagemode=UseOutlines,
+    pdftitle={Statistical Foundation - Exam Formula Sheet},
+    pdfauthor={CSU1658},
+    pdfsubject={Statistical Foundation of Data Science},
+    pdfkeywords={statistics, formulas, data science, exam}
+]{hyperref}
+
+\definecolor{formulabox}{RGB}{230,240,255}
+\definecolor{importantbox}{RGB}{255,240,240}
+\definecolor{examplebox}{RGB}{240,255,240}
+
+\newtcolorbox{formula}[1]{
+    colback=formulabox,
+    colframe=blue!75!black,
+    title=#1,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{important}[1]{
+    colback=importantbox,
+    colframe=red!75!black,
+    title=\textbf{#1} (HIGH PRIORITY),
+    fonttitle=\bfseries,
+    breakable
+}
+
+\newtcolorbox{example}{
+    colback=examplebox,
+    colframe=green!75!black,
+    title=Quick Reference,
+    fonttitle=\bfseries,
+    breakable
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Statistical Foundation - Exam Formulas}
+\rhead{CSU1658}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{\textbf{EXAM FORMULA SHEET}\\
+\large Statistical Foundation of Data Science\\
+Quick Reference Guide}
+\author{CSU1658}
+\date{December 2025}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+% DESCRIPTIVE STATISTICS
+% ============================================================
+
+\section{Descriptive Statistics}
+
+\begin{important}{Mean (Average) - HIGH PROBABILITY}
+\textbf{Population Mean:}
+\[\mu = \frac{1}{N}\sum_{i=1}^{N} x_{i} = \frac{x_1 + x_2 + \cdots + x_N}{N}\]
+
+\textbf{Sample Mean:}
+\[\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_{i} = \frac{x_1 + x_2 + \cdots + x_n}{n}\]
+
+\textbf{Weighted Mean:}
+\[\bar{x}_w = \frac{\sum_{i=1}^{n} w_i x_{i}}{\sum_{i=1}^{n} w_i}\]
+
+\textbf{When to use:} Most common measure of central tendency. Use when data is symmetric and has no extreme outliers.
+\end{important}
+
+\begin{formula}{Median - MEDIUM PROBABILITY}
+\textbf{Ordered dataset:} Sort data in ascending order
+
+\textbf{For odd n:}
+\[\text{Median} = x_{\left(\frac{n+1}{2}\right)}\]
+
+\textbf{For even n:}
+\[\text{Median} = \frac{x_{\left(\frac{n}{2}\right)} + x_{\left(\frac{n}{2}+1\right)}}{2}\]
+
+\textbf{When to use:} Better than mean for skewed distributions or data with outliers. Not affected by extreme values.
+\end{formula}
+
+\begin{formula}{Mode - LOW PROBABILITY}
+\textbf{Definition:} The value that appears most frequently in the dataset.
+
+\textbf{Properties:}
+- Unimodal: One mode
+- Bimodal: Two modes
+- Multimodal: Multiple modes
+- No mode: All values appear with same frequency
+
+\textbf{When to use:} Categorical data, finding most common category.
+\end{formula}
+
+\begin{important}{Variance - HIGH PROBABILITY}
+\textbf{Population Variance:}
+\[\sigma^2 = \frac{1}{N}\sum_{i=1}^{N}(x_{i} - \mu)^2\]
+
+\textbf{Sample Variance (Unbiased):}
+\[s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_{i} - \bar{x})^2\]
+
+\textbf{Computational Formula:}
+\[s^2 = \frac{\sum x_{i}^2 - \frac{(\sum x_{i})^2}{n}}{n-1}\]
+
+\textbf{Interpretation:} Average squared deviation from mean. Measures spread/dispersion.
+\end{important}
+
+\begin{important}{Standard Deviation - HIGH PROBABILITY}
+\textbf{Population SD:}
+\[\sigma = \sqrt{\sigma^2} = \sqrt{\frac{1}{N}\sum_{i=1}^{N}(x_{i} - \mu)^2}\]
+
+\textbf{Sample SD:}
+\[s = \sqrt{s^2} = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(x_{i} - \bar{x})^2}\]
+
+\textbf{Coefficient of Variation (relative SD):}
+\[CV = \frac{s}{\bar{x}} \times 100\%\]
+
+\textbf{Interpretation:} Average distance from mean (same units as data). Smaller SD = less spread.
+\end{important}
+
+\begin{formula}{Frequency and Cumulative Frequency}
+\textbf{Frequency:} Count of occurrences of each value
+\[f_i = \text{count of } x_{i}\]
+
+\textbf{Relative Frequency:}
+\[RF_i = \frac{f_i}{n}\]
+
+\textbf{Cumulative Frequency:}
+\[CF_i = \sum_{j=1}^{i} f_j\]
+
+\textbf{Cumulative Relative Frequency:}
+\[CRF_i = \frac{CF_i}{n}\]
+\end{formula}
+
+\begin{formula}{Range IQR and Percentiles}
+\textbf{Range:}
+\[\text{Range} = x_{\max} - x_{\min}\]
+
+\textbf{Percentiles:} Value below which P\% of data falls
+\[P_k = \text{value at position } \frac{k(n+1)}{100}\]
+
+\textbf{Quartiles:}
+- Q$_1$ (25th percentile): 1st quartile
+- Q$_2$ (50th percentile): Median
+- Q$_3$ (75th percentile): 3rd quartile
+
+\textbf{Interquartile Range (IQR):}
+\[IQR = Q_3 - Q_1\]
+
+\textbf{Outlier Detection with IQR:}
+- Lower fence: Q$_1$ - 1.5$\times$IQR
+- Upper fence: Q$_3$ + 1.5$\times$IQR
+- Outliers: Values outside fences
+\end{formula}
+
+\begin{formula}{Skewness and Kurtosis}
+\textbf{Skewness (Fisher's moment coefficient):}
+\[g_1 = \frac{n}{(n-1)(n-2)}\sum_{i=1}^{n}\left(\frac{x_{i} - \bar{x}}{s}\right)^3\]
+
+\textbf{Interpretation:}
+- g$_1$ = 0: Symmetric distribution
+- g$_1$ > 0: Right-skewed (positive skew)
+- g$_1$ < 0: Left-skewed (negative skew)
+
+\textbf{Kurtosis (excess kurtosis):}
+\[g_2 = \left[\frac{n(n+1)}{(n-1)(n-2)(n-3)}\sum_{i=1}^{n}\left(\frac{x_{i} - \bar{x}}{s}\right)^4\right] - \frac{3(n-1)^2}{(n-2)(n-3)}\]
+
+\textbf{Interpretation:}
+- g$_2$ = 0: Mesokurtic (normal)
+- g$_2$ > 0: Leptokurtic (heavy tails)
+- g$_2$ < 0: Platykurtic (light tails)
+\end{formula}
+
+\begin{important}{Covariance and Correlation - VERY HIGH PROBABILITY}
+\textbf{Covariance:}
+\[\text{Cov}(X,Y) = \frac{1}{n-1}\sum_{i=1}^{n}(x_{i} - \bar{x})(y_{i} - \bar{y})\]
+
+\textbf{Pearson Correlation Coefficient:}
+\[r = \frac{\text{Cov}(X,Y)}{s_X s_Y} = \frac{\sum(x_{i} - \bar{x})(y_{i} - \bar{y})}{\sqrt{\sum(x_{i} - \bar{x})^2 \sum(y_{i} - \bar{y})^2}}\]
+
+\textbf{Properties:}
+- Range: -1 $\leq$ r $\leq$ 1
+- r = 1: Perfect positive correlation
+- r = -1: Perfect negative correlation
+- r = 0: No linear correlation
+
+\textbf{Coefficient of Determination:}
+\[R^2 = r^2\]
+Proportion of variance in Y explained by X.
+
+\textbf{Spearman Rank Correlation:}
+\[r_s = 1 - \frac{6\sum $d_{i}$^2}{n(n^2-1)}\]
+where $d_{i}$ = rank difference for observation i.
+
+\textbf{When to use:}
+- Pearson: Linear relationships, normally distributed
+- Spearman: Monotonic relationships, ordinal data, non-normal
+\end{important}
+
+\begin{example}
+\textbf{Quick Tips:}
+- Mean is sensitive to outliers; Median is robust
+- SD measures spread; larger SD = more variability
+- Always use n-1 for sample variance (Bessel's correction)
+- Variance units are squared; SD has same units as data
+- IQR detects outliers: beyond Q$_1$-1.5$\times$IQR or Q$_3$+1.5$\times$IQR
+- Correlation measures linear association, not causation
+\end{example}
+
+% ============================================================
+% PROBABILITY DISTRIBUTIONS
+% ============================================================
+
+\section{Probability Distributions}
+
+\subsection{PMF and PDF}
+
+\begin{important}{Probability Mass Function (PMF) - Discrete - HIGH PROBABILITY}
+\textbf{Definition:} For discrete random variable X
+\[P(X = x) = p(x)\]
+
+\textbf{Properties:}
+\begin{align*}
+0 &\leq p(x) \leq 1 \text{ for all } x \\
+\sum_{\text{all } x} p(x) &= 1
+\end{align*}
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = \sum_{\text{all } x} x \cdot p(x)\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2 = \sum x^2 p(x) - \mu^2\]
+\end{important}
+
+\begin{important}{Probability Density Function (PDF) - Continuous - HIGH PROBABILITY}
+\textbf{Definition:} For continuous random variable X
+\[f(x) \geq 0 \text{ for all } x\]
+
+\textbf{Normalization:}
+\[\int_{-\infty}^{\infty} f(x)\,dx = 1\]
+
+\textbf{Probability:}
+\[P(a \leq X \leq b) = \int_a^b f(x)\,dx\]
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = \int_{-\infty}^{\infty} x \cdot f(x)\,dx\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = \int_{-\infty}^{\infty} (x-\mu)^2 f(x)\,dx\]
+\end{important}
+
+\subsection{Bernoulli Distribution}
+
+\begin{formula}{Bernoulli - MEDIUM PROBABILITY}
+\textbf{PMF:} Single trial with success probability p
+\[P(X = x) = \begin{cases}
+p & \text{if } x = 1 \\
+1-p & \text{if } x = 0
+\end{cases}\]
+
+Or: \(P(X=x) = p^x(1-p)^{1-x}\) for x $\in$ {0,1}
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = p\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = p(1-p)\]
+
+\textbf{When to use:} Single yes/no trial, coin flip, binary outcome.
+\end{formula}
+
+\subsection{Binomial Distribution}
+
+\begin{important}{Binomial Distribution - HIGH PROBABILITY}
+\textbf{PMF:} n independent trials, probability p of success
+\[P(X = k) = \binom{n}{k}p^k(1-p)^{n-k}\]
+
+where \(\binom{n}{k} = \frac{n!}{k!(n-k)!}\)
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = np\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = np(1-p)\]
+
+\textbf{Standard Deviation:}
+\[\sigma = \sqrt{np(1-p)}\]
+
+\textbf{When to use:} Fixed number of independent trials, each with same success probability. Count of successes.
+\end{important}
+
+\subsection{Poisson Distribution}
+
+\begin{important}{Poisson Distribution - HIGH PROBABILITY}
+\textbf{PMF:} Events occurring at rate $\lambda$ per unit time
+\[P(X = k) = \frac{e^{-\lambda}\lambda^k}{k!}, \quad k = 0,1,2,\ldots\]
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = \lambda\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = \lambda\]
+
+\textbf{Standard Deviation:}
+\[\sigma = \sqrt{\lambda}\]
+
+\textbf{When to use:} Rare events, arrivals per unit time, events in fixed interval.
+
+\textbf{Poisson Approximation to Binomial:} When n large, p small, np = $\lambda$ moderate.
+\end{important}
+
+\begin{formula}{Central Limit Theorem (CLT) - MEDIUM PROBABILITY}
+\textbf{Statement:} For large n, the sampling distribution of the sample mean approaches normal distribution.
+
+\[\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)\]
+
+\textbf{Standardized form:}
+\[Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1)\]
+
+\textbf{Requirements:}
+- Sample size n $\geq$ 30 (rule of thumb)
+- Independent observations
+- Identically distributed
+
+\textbf{Applications:} Hypothesis testing, confidence intervals, approximations
+\end{formula}
+
+\begin{formula}{Law of Large Numbers (LLN)}
+\textbf{Weak LLN:} As n → $\infty$, sample mean converges in probability to population mean.
+
+\[\lim_{n \to \infty} P(|\bar{X}_n - \mu| > \epsilon) = 0\]
+
+\textbf{Practical meaning:} Larger samples give better estimates.
+\end{formula}
+
+\subsection{Exponential Distribution}
+
+\begin{formula}{Exponential Distribution - LOW PROBABILITY}
+\textbf{PDF:} For rate parameter $\lambda$ > 0
+\[f(x) = \lambda e^{-\lambda x}, \quad x \geq 0\]
+
+\textbf{CDF:}
+\[F(x) = 1 - e^{-\lambda x}\]
+
+\textbf{Expected Value:}
+\[\mathbb{E}[X] = \frac{1}{\lambda}\]
+
+\textbf{Variance:}
+\[\text{Var}(X) = \frac{1}{\lambda^2}\]
+
+\textbf{Memoryless Property:}
+\[P(X > s + t | X > s) = P(X > t)\]
+
+\textbf{When to use:} Time between events, waiting times, lifetimes
+\end{formula}
+
+\begin{important}{Normal Distribution - VERY HIGH PROBABILITY}
+\textbf{PDF:} X $\sim$ N($\mu$, $\sigma$²)
+\[f(x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)\]
+
+\textbf{Standard Normal:} Z $\sim$ N(0,1)
+\[f(z) = \frac{1}{\sqrt{2\pi}}e^{-z^2/2}\]
+
+\textbf{Standardization (Z-score):}
+\[Z = \frac{X - \mu}{\sigma}\]
+
+\textbf{Properties:}
+- Mean = Median = Mode = $\mu$
+- 68\% within $\mu$ ± $\sigma$
+- 95\% within $\mu$ ± 1.96$\sigma$
+- 99.7\% within $\mu$ ± 3$\sigma$ (Empirical Rule)
+
+\textbf{Linear Transformation:} If X $\sim$ N($\mu$, $\sigma$²), then
+\[aX + b \sim N(a\mu + b, a^2\sigma^2)\]
+
+\textbf{Sum of Normals:} If X $\sim$ N($\mu$$_1$, $\sigma$$_1$²) and Y $\sim$ N($\mu$$_2$, $\sigma$$_2$²) independent, then
+\[X + Y \sim N(\mu_1 + \mu_2, \sigma_1^2 + \sigma_2^2)\]
+\end{important}
+
+\begin{example}
+\textbf{Distribution Selection Guide:}
+- Binary outcome → Bernoulli
+- Count of successes in n trials → Binomial
+- Rare events/arrivals → Poisson
+- Continuous, symmetric → Normal/Gaussian
+\end{example}
+
+\newpage
+
+% ============================================================
+% HYPOTHESIS TESTING
+% ============================================================
+
+\section{Hypothesis Testing}
+
+\begin{important}{Hypothesis Testing Framework - VERY HIGH PROBABILITY}
+\textbf{Step 1: State Hypotheses}
+\begin{align*}
+H_0&: \text{Null hypothesis (no effect, equality)} \\
+H_1 \text{ or } H_a&: \text{Alternative hypothesis}
+\end{align*}
+
+\textbf{Types of Tests:}
+- Two-tailed: H$_1$: $\mu$ $\neq$ $\mu$$_0$
+- Right-tailed: H$_1$: $\mu$ > $\mu$$_0$
+- Left-tailed: H$_1$: $\mu$ < $\mu$$_0$
+
+\textbf{Step 2: Choose Significance Level}
+\[\alpha = 0.05 \text{ (common), or } 0.01, 0.10\]
+
+\textbf{Step 3: Calculate Test Statistic}
+
+\textbf{Step 4: Find P-value or Critical Value}
+
+\textbf{Step 5: Decision}
+- If p-value < $\alpha$: Reject H$_0$
+- If p-value $\geq$ $\alpha$: Fail to reject H$_0$
+\end{important}
+
+\begin{important}{Z-Test (Known $\sigma$) - HIGH PROBABILITY}
+\textbf{Test Statistic:}
+\[Z = \frac{\bar{x} - \mu_0}{\sigma/\sqrt{n}}\]
+
+\textbf{Critical Values:}
+- Two-tailed ($\alpha$=0.05): ±1.96
+- One-tailed ($\alpha$=0.05): ±1.645
+- Two-tailed ($\alpha$=0.01): ±2.576
+
+\textbf{When to use:} Known population $\sigma$, large sample (n $\geq$ 30), or normal population.
+\end{important}
+
+\begin{important}{T-Test (Unknown $\sigma$) - HIGH PROBABILITY}
+\textbf{Test Statistic:}
+\[t = \frac{\bar{x} - \mu_0}{s/\sqrt{n}}\]
+
+\textbf{Degrees of Freedom:} df = n - 1
+
+\textbf{When to use:} Unknown $\sigma$, small sample, approximately normal data.
+
+\textbf{Two-Sample T-Test (Equal Variances):}
+\[t = \frac{\bar{x}_1 - \bar{x}_2}{s_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}\]
+
+where pooled SD: \(s_p = \sqrt{\frac{(n_1-1)s_1^2 + (n_2-1)s_2^2}{n_1+n_2-2}}\)
+
+df = n$_1$ + n$_2$ - 2
+\end{important}
+
+\begin{formula}{Type I and Type II Errors}
+\begin{center}
+\begin{tabular}{c|cc}
+ & H$_0$ True & H$_0$ False \\
+\hline
+Reject H$_0$ & Type I Error ($\alpha$) & Correct (Power) \\
+Fail to Reject H$_0$ & Correct (1-$\alpha$) & Type II Error ($\beta$) \\
+\end{tabular}
+\end{center}
+
+\textbf{Type I Error:} False positive, $\alpha$ = P(Reject H$_0$ | H$_0$ true)
+
+\textbf{Type II Error:} False negative, $\beta$ = P(Fail to reject H$_0$ | H$_0$ false)
+
+\textbf{Power:} 1 - $\beta$ = P(Reject H$_0$ | H$_0$ false)
+\end{formula}
+
+\begin{formula}{Confidence Intervals}
+\textbf{For Mean (known $\sigma$):}
+\[\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\]
+
+\textbf{For Mean (unknown $\sigma$):}
+\[\bar{x} \pm t_{\alpha/2,df}\frac{s}{\sqrt{n}}\]
+
+\textbf{Common values:}
+- 90\% CI: z = 1.645
+- 95\% CI: z = 1.96
+- 99\% CI: z = 2.576
+\end{formula}
+
+\begin{example}
+\textbf{Quick Decision Rules:}
+- p-value < 0.05 → Reject H$_0$ (significant result)
+- |Z| > 1.96 → Reject H$_0$ at 5\% level (two-tailed)
+- Confidence interval not containing H$_0$ value → Reject H$_0$
+\end{example}
+
+\begin{important}{Chi-Square Test - HIGH PROBABILITY}
+\textbf{Goodness of Fit Test:}
+\[\chi^2 = \sum_{i=1}^{k}\frac{(O_i - E_{i})^2}{E_i}\]
+
+where:
+- $O_{i}$ = observed frequency
+- $E_{i}$ = expected frequency
+- k = number of categories
+
+df = k - 1
+
+\textbf{Test of Independence (Contingency Table):}
+\[\chi^2 = \sum_{i=1}^{r}\sum_{j=1}^{c}\frac{(O_{ij} - E_{ij})^2}{E_{ij}}\]
+
+\textbf{Expected Frequency:}
+\[E_{ij} = \frac{(\text{Row}_i \text{ Total}) \times (\text{Col}_j \text{ Total})}{\text{Grand Total}}\]
+
+df = (r-1)(c-1)
+
+\textbf{Assumption:} All expected frequencies $\geq$ 5
+
+\textbf{Effect Size - Cramér's V:}
+\[V = \sqrt{\frac{\chi^2}{n \times \min(r-1, c-1)}}\]
+
+Interpretation: 0.1 (small), 0.3 (medium), 0.5 (large)
+\end{important}
+
+\begin{formula}{ANOVA (Analysis of Variance) - MEDIUM PROBABILITY}
+\textbf{One-Way ANOVA F-statistic:}
+\[F = \frac{MSB}{MSW} = \frac{SSB/(k-1)}{SSW/(N-k)}\]
+
+where:
+- k = number of groups
+- N = total sample size
+- SSB = Sum of Squares Between groups
+- SSW = Sum of Squares Within groups
+
+\textbf{Sum of Squares:}
+\[SST = \sum_{i=1}^{k}\sum_{j=1}^{n_i}(x_{ij} - \bar{x})^2\]
+
+\[SSB = \sum_{i=1}^{k}n_i(\bar{x}_i - \bar{x})^2\]
+
+\[SSW = \sum_{i=1}^{k}\sum_{j=1}^{n_i}(x_{ij} - \bar{x}_i)^2\]
+
+\textbf{Relationship:} SST = SSB + SSW
+
+\textbf{Degrees of Freedom:}
+- df(Between) = k - 1
+- df(Within) = N - k
+- df(Total) = N - 1
+
+\textbf{Hypothesis:}
+- H$_0$: $\mu$$_1$ = $\mu$$_2$ = ... = $\mu$$_k$
+- H$_1$: At least one mean differs
+
+\textbf{Effect Size - Eta-squared:}
+\[\eta^2 = \frac{SSB}{SST}\]
+\end{formula}
+
+\begin{formula}{Paired T-Test - MEDIUM PROBABILITY}
+\textbf{For paired/dependent samples:}
+\[t = \frac{\bar{d}}{s_d/\sqrt{n}}\]
+
+where:
+- $d_{i}$ = x_{i1} - x_{i2} (difference for pair i)
+- \(\bar{d}\) = mean of differences
+- $s_{d}$ = standard deviation of differences
+- df = n - 1
+
+\textbf{When to use:} Before-after measurements, matched pairs
+\end{formula}
+
+\begin{formula}{Bootstrap and Resampling - LOW PROBABILITY}
+\textbf{Bootstrap Method:}
+1. Draw n samples with replacement from original data
+2. Calculate statistic of interest (mean, median, etc.)
+3. Repeat B times (typically B = 1000-10000)
+4. Use distribution of bootstrap statistics for inference
+
+\textbf{Bootstrap Confidence Interval (Percentile method):}
+\[CI = [$\theta$_{\alpha/2}^*, $\theta$_{1-\alpha/2}^*]\]
+
+where $\theta$* are bootstrap estimates.
+
+\textbf{When to use:} Unknown distribution, small samples, complex statistics
+\end{formula}
+
+\begin{formula}{Cross-Validation}
+\textbf{K-Fold Cross-Validation:}
+1. Split data into K folds
+2. Train on K-1 folds, test on remaining fold
+3. Repeat K times
+4. Average performance metrics
+
+\textbf{Cross-Validation Error:}
+\[CV_{(K)} = \frac{1}{K}\sum_{i=1}^{K} \text{Error}_i\]
+
+\textbf{Leave-One-Out CV (LOOCV):} K = n (special case)
+
+\textbf{When to use:} Model selection, hyperparameter tuning, avoiding overfitting
+\end{formula}
+
+\begin{important}{Min-Max Normalization - HIGH PROBABILITY}
+\textbf{Formula:} Scales data to [0, 1] range
+\[x_{\text{norm}} = \frac{x - x_{\min}}{x_{\max} - x_{\min}}\]
+
+\textbf{General range [a, b]:}
+\[x_{\text{norm}} = a + \frac{(x - x_{\min})(b - a)}{x_{\max} - x_{\min}}\]
+
+\textbf{When to use:} Neural networks, image processing, distance-based algorithms (KNN, K-Means).
+
+\textbf{Pros:} Preserves relationships, bounded range.
+
+\textbf{Cons:} Sensitive to outliers.
+\end{important}
+
+\begin{important}{Z-Score Normalization (Standardization) - HIGH PROBABILITY}
+\textbf{Formula:}
+\[z = \frac{x - \mu}{\sigma} = \frac{x - \bar{x}}{s}\]
+
+\textbf{Properties:}
+- Mean = 0
+- Standard deviation = 1
+- Unbounded range
+
+\textbf{When to use:} When data should have mean 0 and SD 1, linear regression, PCA, algorithms assuming normal distribution.
+
+\textbf{Pros:} Not bounded, handles outliers better than min-max.
+
+\textbf{Cons:} Doesn't preserve exact relationships.
+\end{important}
+
+\begin{formula}{One-Hot Encoding - MEDIUM PROBABILITY}
+\textbf{For categorical variable with k categories:}
+
+Create k binary columns, each representing one category.
+
+\textbf{Example:} Color $\in$ \{Red, Green, Blue\}
+
+\begin{center}
+\begin{tabular}{c|ccc}
+Original & Red & Green & Blue \\
+\hline
+Red & 1 & 0 & 0 \\
+Green & 0 & 1 & 0 \\
+Blue & 0 & 0 & 1 \\
+\end{tabular}
+\end{center}
+
+\textbf{Formula:}
+\[x_{i}^{(j)} = \begin{cases}
+1 & \text{if category } = j \\
+0 & \text{otherwise}
+\end{cases}\]
+
+\textbf{When to use:} Nominal categorical variables with no ordering.
+
+\textbf{Note:} For linear models, use k-1 columns to avoid multicollinearity (dummy variable trap).
+\end{formula}
+
+\begin{formula}{Label Encoding}
+\textbf{For ordinal categorical variables:}
+
+Assign integers 0, 1, 2, ... to categories based on order.
+
+\textbf{Example:} Size $\in$ \{Small, Medium, Large\}
+- Small → 0
+- Medium → 1
+- Large → 2
+
+\textbf{When to use:} Ordinal data with natural ordering, tree-based models.
+\end{formula}
+
+\begin{formula}{Robust Scaling - MEDIUM PROBABILITY}
+\textbf{Formula:} Uses median and IQR to be robust to outliers
+\[x_{\text{scaled}} = \frac{x - \text{Median}(x)}{IQR}\]
+
+where IQR = Q$_3$ - Q$_1$
+
+\textbf{When to use:} Data with outliers, non-normal distributions
+
+\textbf{Advantages:} Not affected by extreme values, preserves shape
+\end{formula}
+
+\begin{formula}{Log Transformation}
+\textbf{For skewed data:}
+\[x_{\text{transformed}} = \log(x)\]
+
+or for values close to zero:
+\[x_{\text{transformed}} = \log(x + 1)\]
+
+\textbf{Box-Cox Transformation:}
+\[x^{(\lambda)} = \begin{cases}
+\frac{x^{\lambda} - 1}{\lambda} & \text{if } \lambda \neq 0 \\
+\log(x) & \text{if } \lambda = 0
+\end{cases}\]
+
+\textbf{When to use:} Highly skewed data, making data more normal, stabilizing variance
+\end{formula}
+
+\textbf{Least Squares Estimates:}
+\[\beta_1 = \frac{\sum_{i=1}^{n}(x_{i} - \bar{x})(y_{i} - \bar{y})}{\sum_{i=1}^{n}(x_{i} - \bar{x})^2} = \frac{S_{xy}}{S_{xx}}\]
+
+\[\beta_0 = \bar{y} - \beta_1\bar{x}\]
+
+\textbf{Alternative formula for slope:}
+\[\beta_1 = r \cdot \frac{s_y}{s_x}\]
+
+where r is correlation coefficient.
+
+\textbf{Prediction:}
+\[\hat{y} = \beta_0 + \beta_1 x\]
+\end{important}
+
+\begin{important}{Multiple Linear Regression - HIGH PROBABILITY}
+\textbf{Model:}
+\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_p x_p + \epsilon\]
+
+\textbf{Matrix Form:}
+\[\mathbf{y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\epsilon}\]
+
+\textbf{OLS Solution:}
+\[\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}\]
+
+\textbf{Prediction:}
+\[\hat{\mathbf{y}} = \mathbf{X}\hat{\boldsymbol{\beta}}\]
+\end{important}
+
+\begin{important}{Regression Metrics - VERY HIGH PROBABILITY}
+\textbf{Residuals:}
+\[e_i = y_{i} - \hat{y}_i\]
+
+\textbf{Sum of Squared Errors (SSE):}
+\[SSE = \sum_{i=1}^{n}(y_{i} - \hat{y}_i)^2 = \sum_{i=1}^{n}e_i^2\]
+
+\textbf{Total Sum of Squares (SST):}
+\[SST = \sum_{i=1}^{n}(y_{i} - \bar{y})^2\]
+
+\textbf{Regression Sum of Squares (SSR):}
+\[SSR = \sum_{i=1}^{n}(\hat{y}_i - \bar{y})^2\]
+
+\textbf{Relationship:} SST = SSR + SSE
+
+\textbf{R-squared (Coefficient of Determination):}
+\[R^2 = \frac{SSR}{SST} = 1 - \frac{SSE}{SST}\]
+
+Interpretation: Proportion of variance in y explained by x.
+
+\textbf{Adjusted R-squared:}
+\[R^2_{\text{adj}} = 1 - \frac{SSE/(n-p-1)}{SST/(n-1)}\]
+
+Penalizes adding unnecessary predictors.
+
+\textbf{Mean Squared Error (MSE):}
+\[MSE = \frac{1}{n}\sum_{i=1}^{n}(y_{i} - \hat{y}_i)^2 = \frac{SSE}{n}\]
+
+\textbf{Root Mean Squared Error (RMSE):}
+\[RMSE = \sqrt{MSE} = \sqrt{\frac{SSE}{n}}\]
+
+\textbf{Mean Absolute Error (MAE):}
+\[MAE = \frac{1}{n}\sum_{i=1}^{n}|y_{i} - \hat{y}_i|\]
+\end{important}
+
+\subsection{Logistic Regression}
+
+\begin{important}{Logistic Regression - HIGH PROBABILITY}
+\textbf{Model:} For binary outcome (0 or 1)
+\[P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p)}}\]
+
+\textbf{Logit (Log-Odds):}
+\[\log\left(\frac{p}{1-p}\right) = \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p\]
+
+\textbf{Odds:}
+\[\text{Odds} = \frac{p}{1-p} = e^{\beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p}\]
+
+\textbf{Sigmoid Function:}
+\[\sigma(z) = \frac{1}{1 + e^{-z}}\]
+
+\textbf{Decision Rule:}
+\[\hat{y} = \begin{cases}
+1 & \text{if } P(Y=1|X) \geq 0.5 \\
+0 & \text{if } P(Y=1|X) < 0.5
+\end{cases}\]
+
+\textbf{When to use:} Binary classification problems.
+\end{important}
+
+\subsection{Polynomial Regression}
+
+\begin{formula}{Polynomial Regression - MEDIUM PROBABILITY}
+\textbf{Degree 2 (Quadratic):}
+\[y = \beta_0 + \beta_1 x + \beta_2 x^2 + \epsilon\]
+
+\textbf{Degree p:}
+\[y = \beta_0 + \beta_1 x + \beta_2 x^2 + \cdots + \beta_p x^p + \epsilon\]
+
+\textbf{Note:} Still linear in parameters $\beta$, so use OLS.
+
+\textbf{When to use:} Non-linear relationships, curved patterns in data.
+
+\textbf{Warning:} High degrees can cause overfitting.
+\end{formula}
+
+\subsection{Ridge Regression (L2 Regularization)}
+
+\begin{important}{Ridge Regression - MEDIUM PROBABILITY}
+\textbf{Objective:} Minimize
+\[SSE + \lambda\sum_{j=1}^{p}\beta_j^2\]
+
+\textbf{Solution:}
+\[\hat{\boldsymbol{\beta}}_{\text{ridge}} = (\mathbf{X}^T\mathbf{X} + \lambda\mathbf{I})^{-1}\mathbf{X}^T\mathbf{y}\]
+
+where $\lambda$ $\geq$ 0 is regularization parameter.
+
+\textbf{Effect:}
+- $\lambda$ = 0: Ordinary least squares
+- $\lambda$ > 0: Shrinks coefficients toward zero
+- $\lambda$ → $\infty$: All coefficients → 0
+
+\textbf{When to use:} Multicollinearity, many predictors, prevent overfitting.
+
+\textbf{Note:} Standardize features before applying ridge regression.
+\end{important}
+
+\begin{formula}{LASSO Regression (L1 Regularization)}
+\textbf{Objective:} Minimize
+\[SSE + \lambda\sum_{j=1}^{p}|\beta_j|\]
+
+\textbf{Effect:} Can shrink some coefficients exactly to zero (feature selection).
+
+\textbf{Comparison:}
+- Ridge: Shrinks but keeps all features
+- LASSO: Can eliminate features (sparse solutions)
+
+\textbf{Elastic Net:} Combines L1 and L2
+\[SSE + \lambda_1\sum|\beta_j| + \lambda_2\sum\beta_j^2\]
+\end{formula}
+
+\begin{formula}{Logistic Regression Cost Function}
+\textbf{Log-Likelihood (Cost Function):}
+\[L(\beta) = -\sum_{i=1}^{n}\left[y_{i}\log(p_i) + (1-y_{i})\log(1-p_i)\right]\]
+
+where \(p_i = \frac{1}{1 + e^{-(\beta_0 + \beta_1 x_{i})}}\)
+
+\textbf{Optimization:} Use gradient descent or Newton-Raphson
+
+\textbf{Odds Ratio:} For one unit increase in x
+\[OR = e^{\beta_1}\]
+
+Interpretation: Multiplicative change in odds
+\end{formula}
+
+\begin{important}{Residual Analysis - MEDIUM PROBABILITY}
+\textbf{Residual:}
+\[e_i = y_{i} - \hat{y}_i\]
+
+\textbf{Standardized Residual:}
+\[r_i = \frac{e_i}{s\sqrt{1 - h_{ii}}}\]
+
+where h_{ii} is leverage (diagonal of hat matrix)
+
+\textbf{Cook's Distance (influence):}
+\[D_i = \frac{r_i^2}{p}\frac{h_{ii}}{1-h_{ii}}\]
+
+\textbf{Rules of thumb:}
+- |r_i| > 2: Potential outlier
+- D_i > 4/n: Influential point
+
+\textbf{Durbin-Watson Test (autocorrelation):}
+\[DW = \frac{\sum_{i=2}^{n}(e_i - e_{i-1})^2}{\sum_{i=1}^{n}e_i^2}\]
+
+Range: 0 $\leq$ DW $\leq$ 4
+- DW $\approx$ 2: No autocorrelation
+- DW < 2: Positive autocorrelation
+- DW > 2: Negative autocorrelation
+\end{important}
+
+% ============================================================
+% DECISION TREES
+% ============================================================
+
+\section{Decision Trees}
+
+\begin{important}{Entropy - HIGH PROBABILITY}
+\textbf{Definition:} Measure of impurity/disorder
+\[H(S) = -\sum_{i=1}^{c} p_i \log_2(p_i)\]
+
+where:
+- c = number of classes
+- p_i = proportion of class i in set S
+
+\textbf{Properties:}
+- H = 0: Pure (all same class)
+- H = 1: Maximum impurity (binary, 50-50 split)
+- Higher entropy = more disorder
+
+\textbf{For binary classification:}
+\[H = -p\log_2(p) - (1-p)\log_2(1-p)\]
+\end{important}
+
+\begin{important}{Information Gain - HIGH PROBABILITY}
+\textbf{Formula:}
+\[IG(S, A) = H(S) - \sum_{v \in \text{Values}(A)} \frac{|S_v|}{|S|} H(S_v)\]
+
+where:
+- S = parent set
+- A = attribute/feature
+- S_v = subset of S where attribute A has value v
+
+\textbf{Interpretation:} Reduction in entropy after split on attribute A.
+
+\textbf{Decision Rule:} Choose attribute with maximum information gain.
+\end{important}
+
+\begin{important}{Gini Index (Gini Impurity) - HIGH PROBABILITY}
+\textbf{Formula:}
+\[Gini(S) = 1 - \sum_{i=1}^{c} p_i^2\]
+
+\textbf{For binary classification:}
+\[Gini = 1 - p^2 - (1-p)^2 = 2p(1-p)\]
+
+\textbf{Properties:}
+- Gini = 0: Pure (all same class)
+- Gini = 0.5: Maximum impurity (binary, 50-50 split)
+- Lower Gini = less impurity
+
+\textbf{Gini Gain:}
+\[GiniGain(S, A) = Gini(S) - \sum_{v} \frac{|S_v|}{|S|} Gini(S_v)\]
+
+\textbf{Note:} CART (Classification and Regression Trees) uses Gini Index.
+\end{important}
+
+\begin{example}
+\textbf{Entropy vs Gini:}
+- Both measure impurity
+- Entropy: Logarithmic, ranges [0, 1] for binary
+- Gini: Quadratic, ranges [0, 0.5] for binary
+- Gini is faster to compute (no logarithms)
+- Results usually similar in practice
+\end{example}
+
+\begin{formula}{Decision Tree Pruning}
+\textbf{Cost-Complexity Pruning ($\alpha$ parameter):}
+\[\text{Cost} = \text{Error}(T) + \alpha \times |T|\]
+
+where:
+- Error(T) = misclassification error of tree T
+- |T| = number of terminal nodes
+- $\alpha$ = complexity parameter
+
+\textbf{Goal:} Find subtree that minimizes cost
+
+\textbf{Methods:}
+- Reduced Error Pruning
+- Cost-Complexity Pruning (weakest link)
+- Pessimistic Error Pruning
+
+\textbf{When to prune:} Prevent overfitting, improve generalization
+\end{formula}
+
+\begin{formula}{Random Forest}
+\textbf{Ensemble Method:} Combines multiple decision trees
+
+\textbf{Algorithm:}
+1. Create B bootstrap samples
+2. Build tree on each sample
+3. For each split, consider m random features (m < p)
+4. Aggregate predictions (majority vote or average)
+
+\textbf{Out-of-Bag (OOB) Error:}
+\[\text{OOB Error} = \frac{1}{n}\sum_{i=1}^{n}I(y_{i} \neq \hat{y}_i^{OOB})\]
+
+\textbf{Feature Importance:}
+Based on decrease in impurity when feature is used for splitting
+
+\textbf{Typical values:} m = √p (classification), m = p/3 (regression)
+\end{formula}
+
+% ============================================================
+% CONFUSION MATRIX AND METRICS
+% ============================================================
+
+\section{Confusion Matrix and Classification Metrics}
+
+\begin{important}{Confusion Matrix - VERY HIGH PROBABILITY}
+\textbf{For Binary Classification:}
+
+\begin{center}
+\begin{tabular}{cc|cc}
+& & \multicolumn{2}{c}{Predicted} \\
+& & Positive & Negative \\
+\hline
+\multirow{2}{*}{Actual} & Positive & TP & FN \\
+& Negative & FP & TN \\
+\end{tabular}
+\end{center}
+
+where:
+- TP = True Positives (correctly predicted positive)
+- TN = True Negatives (correctly predicted negative)
+- FP = False Positives (Type I error)
+- FN = False Negatives (Type II error)
+\end{important}
+
+\begin{important}{Classification Metrics - VERY HIGH PROBABILITY}
+\textbf{Accuracy:}
+\[Accuracy = \frac{TP + TN}{TP + TN + FP + FN}\]
+
+\textbf{Precision (Positive Predictive Value):}
+\[Precision = \frac{TP}{TP + FP}\]
+
+Interpretation: Of all predicted positives, what fraction are actually positive?
+
+\textbf{Recall (Sensitivity, True Positive Rate):}
+\[Recall = \frac{TP}{TP + FN}\]
+
+Interpretation: Of all actual positives, what fraction did we predict?
+
+\textbf{Specificity (True Negative Rate):}
+\[Specificity = \frac{TN}{TN + FP}\]
+
+\textbf{False Positive Rate:}
+\[FPR = \frac{FP}{FP + TN} = 1 - Specificity\]
+
+\textbf{F1-Score (Harmonic Mean of Precision and Recall):}
+\[F1 = 2 \cdot \frac{Precision \times Recall}{Precision + Recall} = \frac{2TP}{2TP + FP + FN}\]
+
+\textbf{F-beta Score:}
+\[F_\beta = (1 + \beta^2) \cdot \frac{Precision \times Recall}{\beta^2 \cdot Precision + Recall}\]
+
+- $\beta$ > 1: Emphasizes recall
+- $\beta$ < 1: Emphasizes precision
+\end{important}
+
+\begin{example}
+\textbf{Metric Selection Guide:}
+- Balanced classes → Accuracy
+- Imbalanced classes → F1-Score, Precision/Recall
+- Cost of FP high (spam detection) → Precision
+- Cost of FN high (disease screening) → Recall
+- Trade-off between FP and FN → F1-Score
+\end{example}
+
+\begin{formula}{ROC Curve and AUC - MEDIUM PROBABILITY}
+\textbf{Receiver Operating Characteristic (ROC):}
+
+Plot of True Positive Rate vs False Positive Rate at different thresholds.
+
+\textbf{TPR (Sensitivity):}
+\[TPR = \frac{TP}{TP + FN}\]
+
+\textbf{FPR:}
+\[FPR = \frac{FP}{FP + TN}\]
+
+\textbf{Area Under Curve (AUC):}
+- AUC = 1.0: Perfect classifier
+- AUC = 0.5: Random classifier
+- AUC > 0.7: Generally acceptable
+- AUC > 0.8: Good model
+- AUC > 0.9: Excellent model
+
+\textbf{When to use:} Comparing classifier performance, threshold selection
+\end{formula}
+
+\begin{formula}{Matthews Correlation Coefficient (MCC)}
+\textbf{For imbalanced datasets:}
+\[MCC = \frac{TP \times TN - FP \times FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}\]
+
+\textbf{Range:} -1 $\leq$ MCC $\leq$ 1
+- MCC = 1: Perfect prediction
+- MCC = 0: Random prediction
+- MCC = -1: Total disagreement
+
+\textbf{Advantage:} Balanced measure even for imbalanced classes
+\end{formula}
+
+\begin{formula}{Cohen's Kappa - LOW PROBABILITY}
+\textbf{Agreement measure:}
+\[\kappa = \frac{p_o - p_e}{1 - p_e}\]
+
+where:
+- p_o = observed agreement
+- p_e = expected agreement by chance
+
+\textbf{Interpretation:}
+- κ < 0: No agreement
+- 0.01-0.20: Slight agreement
+- 0.21-0.40: Fair agreement
+- 0.41-0.60: Moderate agreement
+- 0.61-0.80: Substantial agreement
+- 0.81-1.00: Almost perfect agreement
+\end{formula}
+
+% ============================================================
+% NAIVE BAYES
+% ============================================================
+
+\section{Naive Bayes Classifier}
+
+\begin{important}{Bayes' Theorem - VERY HIGH PROBABILITY}
+\textbf{Formula:}
+\[P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}\]
+
+\textbf{For Classification:}
+\[P(C_k|X) = \frac{P(X|C_k) \cdot P(C_k)}{P(X)}\]
+
+where:
+- C_k = class k
+- X = feature vector
+- P(C_k) = prior probability of class k
+- P(X|C_k) = likelihood
+- P(C_k|X) = posterior probability
+\end{important}
+
+\begin{important}{Naive Bayes Classification - HIGH PROBABILITY}
+\textbf{Assumption:} Features are conditionally independent given class.
+
+\[P(C_k|x_1, x_2, \ldots, x_n) \propto P(C_k) \prod_{i=1}^{n} P(x_{i}|C_k)\]
+
+\textbf{Decision Rule:} Assign to class with maximum posterior probability
+\[\hat{y} = \arg\max_{k} P(C_k) \prod_{i=1}^{n} P(x_{i}|C_k)\]
+
+\textbf{Log Form (to avoid underflow):}
+\[\hat{y} = \arg\max_{k} \left[\log P(C_k) + \sum_{i=1}^{n} \log P(x_{i}|C_k)\right]\]
+\end{important}
+
+\begin{formula}{Naive Bayes for Continuous Features (Gaussian)}
+\textbf{Likelihood:} Assume features follow normal distribution
+\[P(x_{i}|C_k) = \frac{1}{\sqrt{2\pi\sigma_{k,i}^2}} \exp\left(-\frac{(x_{i} - \mu_{k,i})^2}{2\sigma_{k,i}^2}\right)\]
+
+where $\mu$_{k,i} and $\sigma$_{k,i} are mean and SD of feature i in class k.
+\end{formula}
+
+\begin{formula}{Naive Bayes for Discrete Features (Multinomial)}
+\textbf{Likelihood:}
+\[P(x_{i}|C_k) = \frac{\text{count}(x_{i}, C_k) + \alpha}{\text{count}(C_k) + \alpha \cdot |V|}\]
+
+where:
+- $\alpha$ = smoothing parameter (Laplace smoothing, typically $\alpha$ = 1)
+- |V| = vocabulary size (number of unique values)
+
+\textbf{Laplace Smoothing:} Prevents zero probabilities
+
+\textbf{Add-k Smoothing:} Generalization with $\alpha$ = k
+\end{formula}
+
+\begin{formula}{Naive Bayes Model Selection}
+\textbf{Gaussian Naive Bayes:}
+- Continuous features
+- Assumes normal distribution per class
+
+\textbf{Multinomial Naive Bayes:}
+- Discrete count data
+- Text classification (word counts)
+
+\textbf{Bernoulli Naive Bayes:}
+- Binary features (present/absent)
+- Document classification (word presence)
+
+\textbf{Advantages:}
+- Fast training and prediction
+- Works well with small datasets
+- Handles high-dimensional data
+- Probabilistic output
+
+\textbf{Disadvantages:}
+- Independence assumption rarely holds
+- Can't capture feature interactions
+\end{formula}
+
+% ============================================================
+% K-NEAREST NEIGHBORS (KNN)
+% ============================================================
+
+\section{K-Nearest Neighbors (KNN)}
+
+\begin{important}{KNN Algorithm - HIGH PROBABILITY}
+\textbf{Steps:}
+1. Choose number of neighbors k
+2. Calculate distance to all training points
+3. Select k nearest neighbors
+4. For classification: Majority vote
+5. For regression: Average of k neighbors
+
+\textbf{Classification:}
+\[\hat{y} = \text{mode}\{y_1, y_2, \ldots, y_k\}\]
+
+\textbf{Regression:}
+\[\hat{y} = \frac{1}{k}\sum_{i=1}^{k} y_{i}\]
+\end{important}
+
+\begin{important}{Distance Metrics - HIGH PROBABILITY}
+\textbf{Euclidean Distance (L2):}
+\[d(x, x') = \sqrt{\sum_{i=1}^{n}(x_{i} - x'_i)^2}\]
+
+\textbf{Manhattan Distance (L1):}
+\[d(x, x') = \sum_{i=1}^{n}|x_{i} - x'_i|\]
+
+\textbf{Minkowski Distance (generalized):}
+\[d(x, x') = \left(\sum_{i=1}^{n}|x_{i} - x'_i|^p\right)^{1/p}\]
+
+- p = 1: Manhattan
+- p = 2: Euclidean
+- p → $\infty$: Chebyshev (max difference)
+
+\textbf{Cosine Similarity:}
+\[\text{similarity} = \frac{\mathbf{x} \cdot \mathbf{x}'}{\|\mathbf{x}\| \|\mathbf{x}'\|} = \frac{\sum x_{i} x'_i}{\sqrt{\sum x_{i}^2}\sqrt{\sum x_{i}'^2}}\]
+
+Cosine Distance: d = 1 - similarity
+\end{important}
+
+\begin{formula}{Weighted KNN}
+\textbf{Weights inversely proportional to distance:}
+\[w_i = \frac{1}{d_i}\]
+
+\textbf{Weighted Average:}
+\[\hat{y} = \frac{\sum_{i=1}^{k} w_i y_{i}}{\sum_{i=1}^{k} w_i}\]
+
+\textbf{When to use:} Give more importance to closer neighbors.
+\end{formula}
+
+\begin{example}
+\textbf{Choosing k:}
+- k too small: Overfitting, sensitive to noise
+- k too large: Underfitting, over-smoothing
+- Rule of thumb: k = √n (n = training size)
+- Always use odd k for binary classification (avoid ties)
+- Use cross-validation to find optimal k
+\end{example}
+
+\begin{formula}{KNN for Imbalanced Data}
+\textbf{Weighted Voting:}
+
+Give more weight to closer neighbors and adjust for class imbalance.
+
+\textbf{Weight:}
+\[w_i = \frac{1}{d_i} \times \frac{n}{n_c}\]
+
+where:
+- $d_{i}$ = distance to neighbor i
+- n = total samples
+- n_c = samples in class c
+
+\textbf{Distance-Weighted KNN:} Closer neighbors have more influence
+
+\textbf{Class-Balanced KNN:} Adjusts for class distribution
+\end{formula}
+
+\begin{formula}{Curse of Dimensionality}
+\textbf{Problem:} As dimensions increase, distance becomes less meaningful.
+
+\textbf{Effect on KNN:}
+- All points become roughly equidistant
+- Nearest neighbors aren't truly "near"
+- Performance degrades
+
+\textbf{Solutions:}
+- Dimensionality reduction (PCA, feature selection)
+- Feature engineering
+- Use appropriate distance metrics
+- Increase sample size exponentially with dimensions
+
+\textbf{Rule of thumb:} Keep dimensions p << n (number of samples)
+\end{formula}
+
+% ============================================================
+% K-MEANS CLUSTERING
+% ============================================================
+
+\section{K-Means Clustering}
+
+\begin{important}{K-Means Algorithm - HIGH PROBABILITY}
+\textbf{Objective:} Minimize within-cluster sum of squares (WCSS)
+\[J = \sum_{i=1}^{k}\sum_{x \in C_i} \|x - \mu_i\|^2\]
+
+where:
+- k = number of clusters
+- C_i = cluster i
+- $\mu$_i = centroid of cluster i
+
+\textbf{Algorithm Steps:}
+1. Initialize k centroids randomly
+2. \textbf{Assignment step:} Assign each point to nearest centroid
+   \[C_i = \{x : \|x - \mu_i\| \leq \|x - \mu_j\| \text{ for all } j\}\]
+3. \textbf{Update step:} Recalculate centroids
+   \[\mu_i = \frac{1}{|C_i|}\sum_{x \in C_i} x\]
+4. Repeat steps 2-3 until convergence
+\end{important}
+
+\begin{important}{Within-Cluster Sum of Squares (WCSS) - HIGH PROBABILITY}
+\textbf{Formula:}
+\[WCSS = \sum_{i=1}^{k}\sum_{x \in C_i} \|x - \mu_i\|^2\]
+
+\textbf{Inertia:} Another name for WCSS.
+
+\textbf{Elbow Method:} Plot WCSS vs k, choose k at "elbow" where rate of decrease slows.
+\end{important}
+
+\begin{formula}{Silhouette Score - MEDIUM PROBABILITY}
+\textbf{For point i:}
+\[s(i) = \frac{b(i) - a(i)}{\max\{a(i), b(i)\}}\]
+
+where:
+- a(i) = average distance to points in same cluster
+- b(i) = average distance to points in nearest other cluster
+
+\textbf{Range:} -1 $\leq$ s(i) $\leq$ 1
+- s(i) $\approx$ 1: Well clustered
+- s(i) $\approx$ 0: On cluster boundary
+- s(i) < 0: Wrong cluster
+
+\textbf{Overall Silhouette Score:}
+\[s = \frac{1}{n}\sum_{i=1}^{n} s(i)\]
+\end{formula}
+
+\begin{example}
+\textbf{K-Means Tips:}
+- Sensitive to initial centroids (use k-means++)
+- Assumes spherical clusters of similar size
+- Requires pre-specifying k
+- Scale/normalize features before clustering
+- Run multiple times with different initializations
+\end{example}
+
+\begin{formula}{K-Means++ Initialization}
+\textbf{Algorithm:} Better initialization than random
+
+1. Choose first centroid randomly
+2. For each data point, compute distance D(x) to nearest centroid
+3. Choose next centroid with probability $\propto$ D(x)²
+4. Repeat until k centroids chosen
+
+\textbf{Advantage:} Faster convergence, better final clusters
+\end{formula}
+
+\begin{formula}{Hierarchical Clustering}
+\textbf{Linkage Methods:}
+
+\textbf{Single Linkage:}
+\[d(A, B) = \min_{a \in A, b \in B} d(a, b)\]
+
+\textbf{Complete Linkage:}
+\[d(A, B) = \max_{a \in A, b \in B} d(a, b)\]
+
+\textbf{Average Linkage:}
+\[d(A, B) = \frac{1}{|A||B|}\sum_{a \in A}\sum_{b \in B} d(a, b)\]
+
+\textbf{Ward's Method:} Minimizes within-cluster variance
+\[d(A, B) = \frac{|A||B|}{|A|+|B|} \|\mu_A - \mu_B\|^2\]
+
+\textbf{Dendrogram:} Tree diagram showing cluster hierarchy
+
+\textbf{When to use:} Unknown number of clusters, visualizing relationships
+\end{formula}
+
+\begin{formula}{Gap Statistic for Choosing k}
+\textbf{Formula:}
+\[Gap(k) = E[\log(W_{k})] - \log(W_{k})\]
+
+where:
+- W_{k} = within-cluster sum of squares for k clusters
+- E[log(W_{k})] = expected value under null reference distribution
+
+\textbf{Optimal k:} Choose smallest k where
+\[Gap(k) \geq Gap(k+1) - s_{k+1}\]
+
+where s_{k+1} is standard deviation.
+
+\textbf{Interpretation:} Compares clustering to random data
+\end{formula}
+
+% ============================================================
+% PRINCIPAL COMPONENT ANALYSIS (PCA)
+% ============================================================
+
+\section{Principal Component Analysis (PCA)}
+
+\begin{important}{PCA Overview - MEDIUM PROBABILITY}
+\textbf{Goal:} Reduce dimensionality by finding directions of maximum variance.
+
+\textbf{Steps:}
+1. Standardize the data (mean 0, variance 1)
+2. Compute covariance matrix
+3. Calculate eigenvalues and eigenvectors
+4. Sort eigenvectors by eigenvalues (descending)
+5. Select top k eigenvectors (principal components)
+6. Transform data to new space
+\end{important}
+
+\begin{important}{Covariance Matrix - HIGH PROBABILITY}
+\textbf{For standardized data X (n $\times$ p):}
+\[\mathbf{C} = \frac{1}{n-1}\mathbf{X}^T\mathbf{X}\]
+
+\textbf{Element (i,j):}
+\[C_{ij} = \frac{1}{n-1}\sum_{k=1}^{n}(x_{ki} - \bar{x}_i)(x_{kj} - \bar{x}_j)\]
+
+\textbf{Diagonal:} Variances of features
+
+\textbf{Off-diagonal:} Covariances between features
+\end{important}
+
+\begin{important}{Eigenvalues and Eigenvectors - MEDIUM PROBABILITY}
+\textbf{Eigenvalue equation:}
+\[\mathbf{C}\mathbf{v} = \lambda\mathbf{v}\]
+
+where:
+- C = covariance matrix
+- v = eigenvector (principal component direction)
+- $\lambda$ = eigenvalue (variance along that direction)
+
+\textbf{Properties:}
+- Each eigenvalue corresponds to one principal component
+- Larger eigenvalue = more variance explained
+- Eigenvectors are orthogonal (perpendicular)
+\end{important}
+
+\begin{important}{Variance Explained - HIGH PROBABILITY}
+\textbf{Total Variance:}
+\[\text{Total Var} = \sum_{i=1}^{p} \lambda_i\]
+
+\textbf{Variance Explained by PC i:}
+\[\text{Var}_i = \frac{\lambda_i}{\sum_{j=1}^{p} \lambda_j}\]
+
+\textbf{Cumulative Variance:}
+\[\text{Cumulative Var}_k = \frac{\sum_{i=1}^{k} \lambda_i}{\sum_{j=1}^{p} \lambda_j}\]
+
+\textbf{Rule of thumb:} Keep components explaining 80-95\% of variance.
+\end{important}
+
+\begin{formula}{PCA Transformation}
+\textbf{Transform data to PC space:}
+\[\mathbf{Z} = \mathbf{X}\mathbf{W}\]
+
+where:
+- X = original data (n $\times$ p)
+- W = matrix of k eigenvectors (p $\times$ k)
+- Z = transformed data (n $\times$ k)
+
+\textbf{Reconstruction (approximate):}
+\[\mathbf{X}_{\text{approx}} = \mathbf{Z}\mathbf{W}^T\]
+\end{formula}
+
+\begin{example}
+\textbf{PCA Use Cases:}
+- Dimensionality reduction (visualization, speed)
+- Feature extraction
+- Noise filtering
+- Removing multicollinearity
+- Data compression
+
+\textbf{Note:} PCA is sensitive to scaling - always standardize first!
+\end{example}
+
+\begin{formula}{PCA Reconstruction Error}
+\textbf{Mean Squared Reconstruction Error:}
+\[\text{MSE} = \frac{1}{n}\|\mathbf{X} - \mathbf{X}_{\text{approx}}\|^2_F\]
+
+where \(\|\cdot\|_F\) is Frobenius norm.
+
+\textbf{Relation to Eigenvalues:}
+\[\text{MSE} = \sum_{i=k+1}^{p} \lambda_i\]
+
+\textbf{Interpretation:} Sum of discarded eigenvalues
+\end{formula}
+
+\begin{important}{Kernel PCA - LOW PROBABILITY}
+\textbf{For non-linear relationships:}
+
+Apply kernel trick to capture non-linear structure.
+
+\textbf{Common Kernels:}
+
+\textbf{RBF (Gaussian):}
+\[K(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right)\]
+
+\textbf{Polynomial:}
+\[K(x, y) = (x^T y + c)^d\]
+
+\textbf{Sigmoid:}
+\[K(x, y) = \tanh(\alpha x^T y + c)\]
+
+\textbf{When to use:} Data with non-linear relationships, complex manifolds
+\end{important}
+
+\begin{formula}{t-SNE (t-Distributed Stochastic Neighbor Embedding)}
+\textbf{Purpose:} Non-linear dimensionality reduction for visualization
+
+\textbf{High-dimensional similarity:}
+\[p_{j|i} = \frac{\exp(-\|x_{i} - x_j\|^2 / 2\sigma_i^2)}{\sum_{k \neq i}\exp(-\|x_{i} - x_k\|^2 / 2\sigma_i^2)}\]
+
+\textbf{Low-dimensional similarity (t-distribution):}
+\[q_{ij} = \frac{(1 + \|y_{i} - y_j\|^2)^{-1}}{\sum_{k \neq l}(1 + \|y_k - y_l\|^2)^{-1}}\]
+
+\textbf{Cost Function (KL divergence):}
+\[C = \sum_i KL(P_i \| Q_i) = \sum_i \sum_j p_{ij}\log\frac{p_{ij}}{q_{ij}}\]
+
+\textbf{When to use:} Visualizing high-dimensional data (2D/3D plots)
+
+\textbf{Note:} Primarily for visualization, not for dimensionality reduction in modeling
+\end{formula}
+
+% ============================================================
+% MARKOV CHAINS
+% ============================================================
+
+\section{Markov Chains}
+
+\begin{important}{Markov Chain Basics - MEDIUM PROBABILITY}
+\textbf{Definition:} Stochastic process where future state depends only on current state (memoryless).
+
+\textbf{Markov Property:}
+\[P(X_{n+1} = j | X_n = i, X_{n-1}, \ldots, X_0) = P(X_{n+1} = j | X_n = i)\]
+
+\textbf{Transition Probability:}
+\[P_{ij} = P(X_{n+1} = j | X_n = i)\]
+\end{important}
+
+\begin{important}{Transition Matrix - HIGH PROBABILITY}
+\textbf{Matrix P:}
+\[\mathbf{P} = \begin{pmatrix}
+P_{11} & P_{12} & \cdots & P_{1n} \\
+P_{21} & P_{22} & \cdots & P_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+P_{n1} & P_{n2} & \cdots & P_{nn}
+\end{pmatrix}\]
+
+\textbf{Properties:}
+- Row sums = 1: \(\sum_{j=1}^{n} P_{ij} = 1\)
+- All entries $\geq$ 0
+
+\textbf{n-step Transition Probability:}
+\[P^{(n)}_{ij} = (\mathbf{P}^n)_{ij}\]
+
+\textbf{State Distribution after n steps:}
+\[\boldsymbol{\pi}_n = \boldsymbol{\pi}_0 \mathbf{P}^n\]
+\end{important}
+
+\begin{important}{Stationary Distribution - MEDIUM PROBABILITY}
+\textbf{Definition:} Distribution $\pi$ that doesn't change under transition
+\[\boldsymbol{\pi} = \boldsymbol{\pi}\mathbf{P}\]
+
+\textbf{Or equivalently:}
+\[\boldsymbol{\pi}^T\mathbf{P} = \boldsymbol{\pi}^T\]
+
+\textbf{With constraint:}
+\[\sum_{i=1}^{n} \pi_i = 1\]
+
+\textbf{Interpretation:} Long-run equilibrium probabilities.
+
+\textbf{Note:} For ergodic chains, stationary distribution is unique and \(\lim_{n \to \infty} \mathbf{P}^n\) converges to $\pi$.
+
+\textbf{Computing Stationary Distribution:}
+Solve: (P^T - I)$\pi$ = 0 subject to $\Sigma$$\pi$_i = 1
+\end{important}
+
+\begin{formula}{Markov Chain Properties}
+\textbf{Irreducibility:} Can reach any state from any other state
+
+\textbf{Aperiodicity:} gcd of return times = 1
+
+\textbf{Ergodicity:} Irreducible + aperiodic
+- Guarantees unique stationary distribution
+- Time-average = ensemble average
+
+\textbf{Detailed Balance:}
+\[\pi_i P_{ij} = \pi_j P_{ji}\]
+
+If satisfied, $\pi$ is stationary distribution (reversible chain)
+
+\textbf{Mean Recurrence Time:}
+\[\mu_i = \frac{1}{\pi_i}\]
+
+Average time to return to state i
+\end{formula}
+
+\begin{formula}{PageRank Algorithm}
+\textbf{Application of Markov Chains:} Google's PageRank
+
+\textbf{Formula:}
+\[PR(A) = (1-d) + d\sum_{i=1}^{n}\frac{PR(T_{i})}{C(T_{i})}\]
+
+where:
+- d = damping factor (typically 0.85)
+- T_{i} = pages linking to A
+- C(T_{i}) = number of outbound links from T_{i}
+
+\textbf{Matrix Form:}
+\[\mathbf{PR} = (1-d)\mathbf{e} + d\mathbf{M}\mathbf{PR}\]
+
+\textbf{Interpretation:} Stationary distribution of random web surfer
+\end{formula}
+
+% ============================================================
+% MONTE CARLO METHODS
+% ============================================================
+
+\section{Monte Carlo Methods}
+
+\begin{formula}{Monte Carlo Integration - LOW PROBABILITY}
+\textbf{Estimate integral:}
+\[\int_a^b f(x)\,dx \approx \frac{b-a}{n}\sum_{i=1}^{n} f(x_{i})\]
+
+where x_{i} are random samples from uniform distribution on [a, b].
+
+\textbf{Expected Value:}
+\[\mathbb{E}[g(X)] \approx \frac{1}{n}\sum_{i=1}^{n} g(x_{i})\]
+
+where x_{i} are samples from distribution of X.
+\end{formula}
+
+\begin{formula}{Monte Carlo Simulation - MEDIUM PROBABILITY}
+\textbf{Steps:}
+1. Define probability distributions for inputs
+2. Generate random samples from distributions
+3. Run deterministic computation for each sample
+4. Aggregate results (mean, variance, percentiles)
+
+\textbf{Law of Large Numbers:} As n → $\infty$, sample mean converges to true mean.
+
+\textbf{Standard Error:}
+\[SE = \frac{s}{\sqrt{n}}\]
+
+where s is sample standard deviation.
+
+\textbf{Confidence Interval:}
+\[\bar{x} \pm 1.96 \cdot \frac{s}{\sqrt{n}}\]
+
+\textbf{Sample Size for Desired Accuracy:}
+\[n = \left(\frac{z_{\alpha/2} \cdot s}{\epsilon}\right)^2\]
+
+where $\varepsilon$ is desired margin of error.
+\end{formula}
+
+\begin{formula}{Importance Sampling}
+\textbf{For rare events:} Sample from importance distribution
+
+\textbf{Estimator:}
+\[\hat{\theta} = \frac{1}{n}\sum_{i=1}^{n}\frac{f(x_{i})}{g(x_{i})}h(x_{i})\]
+
+where:
+- f(x) = target distribution
+- g(x) = importance distribution (easier to sample)
+- h(x) = function of interest
+
+\textbf{Variance Reduction:} Can significantly reduce MC variance
+
+\textbf{When to use:} Rare events, tail probabilities, difficult distributions
+\end{formula}
+
+\begin{formula}{Markov Chain Monte Carlo (MCMC)}
+\textbf{Purpose:} Sample from complex distributions
+
+\textbf{Metropolis-Hastings Algorithm:}
+1. Start with x$_0$
+2. Propose x* from q(x*|x_{t-1})
+3. Compute acceptance probability:
+\[\alpha = \min\left(1, \frac{p(x^*)q(x_{t-1}|x^*)}{p(x_{t-1})q(x^*|x_{t-1})}\right)\]
+4. Accept x* with probability $\alpha$, otherwise keep x_{t-1}
+5. Repeat
+
+\textbf{Gibbs Sampling:} Special case where proposals always accepted
+
+\textbf{When to use:} Bayesian inference, complex posteriors
+\end{formula}
+
+% ============================================================
+% DETERMINISTIC MODELS
+% ============================================================
+
+\section{Deterministic Models}
+
+\begin{formula}{Deterministic vs Stochastic}
+\textbf{Deterministic Model:}
+- No randomness
+- Same input always gives same output
+- Described by equations
+
+\textbf{Examples:}
+- Linear equations: y = mx + b
+- Differential equations: dy/dt = f(t, y)
+- Physical laws: F = ma
+
+\textbf{Stochastic Model:}
+- Includes randomness
+- Same input can give different outputs
+- Uses probability distributions
+
+\textbf{Examples:}
+- Monte Carlo simulations
+- Markov chains
+- Random walk
+\end{formula}
+
+\begin{formula}{Common Deterministic Models}
+\textbf{Linear Growth:}
+\[y(t) = y_{0} + rt\]
+
+\textbf{Exponential Growth:}
+\[y(t) = y_{0} e^{rt}\]
+
+\textbf{Logistic Growth:}
+\[y(t) = \frac{K}{1 + \left(\frac{K-y_{0}}{y_{0}}\right)e^{-rt}}\]
+
+where:
+- y_{0} = initial value
+- r = growth rate
+- K = carrying capacity (for logistic)
+\end{formula}
+
+\subsection{Common Deterministic Models}
+\textbf{Linear Growth:}
+\[y(t) = y_{0} + rt\]
+
+\textbf{Exponential Growth:}
+\[y(t) = y_{0} e^{rt}\]
+
+\textbf{Logistic Growth:}
+\[y(t) = \frac{K}{1 + \left(\frac{K-y_{0}}{y_{0}}\right)e^{-rt}}\]
+
+where:
+- y_{0} = initial value
+- r = growth rate
+- K = carrying capacity (for logistic)
+\end{formula}
+
+% ============================================================
+% BIAS-VARIANCE TRADEOFF
+% ============================================================
+
+\section{Bias-Variance Tradeoff}
+
+\begin{important}{Bias-Variance Decomposition - MEDIUM PROBABILITY}
+\textbf{Expected Prediction Error:}
+\[\mathbb{E}[(y - \hat{f}(x))^2] = \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}\]
+
+\textbf{Bias:}
+\[\text{Bias}[\hat{f}(x)] = \mathbb{E}[\hat{f}(x)] - f(x)\]
+
+Measures how far off average predictions are from true value.
+
+\textbf{Variance:}
+\[\text{Var}[\hat{f}(x)] = \mathbb{E}[(\hat{f}(x) - \mathbb{E}[\hat{f}(x)])^2]\]
+
+Measures variability of predictions across different training sets.
+
+\textbf{Tradeoff:}
+- High bias, low variance: Underfitting (too simple)
+- Low bias, high variance: Overfitting (too complex)
+- Goal: Find balance that minimizes total error
+\end{important}
+
+\begin{example}
+\textbf{Model Complexity:}
+- Simple models: High bias, low variance (linear regression)
+- Complex models: Low bias, high variance (high-degree polynomial)
+- Ensemble methods: Balance both (random forest, boosting)
+
+\textbf{Regularization:} Increases bias, decreases variance
+\end{example}
+
+% ============================================================
+% FEATURE SELECTION
+% ============================================================
+
+\section{Feature Selection and Engineering}
+
+\begin{formula}{Filter Methods}
+\textbf{Correlation with Target:}
+Select features with highest |correlation| with target variable.
+
+\textbf{Chi-Square Test:}
+For categorical features, test independence with target.
+
+\textbf{Mutual Information:}
+\[I(X;Y) = \sum_{x,y} p(x,y)\log\frac{p(x,y)}{p(x)p(y)}\]
+
+Measures dependency between features and target.
+
+\textbf{Variance Threshold:}
+Remove features with low variance (nearly constant).
+\end{formula}
+
+\begin{formula}{Wrapper Methods}
+\textbf{Forward Selection:}
+1. Start with no features
+2. Add feature that improves model most
+3. Repeat until no improvement
+
+\textbf{Backward Elimination:}
+1. Start with all features
+2. Remove feature that hurts least
+3. Repeat until further removal hurts
+
+\textbf{Recursive Feature Elimination (RFE):}
+Train model, rank features by importance, remove least important, repeat.
+
+\textbf{When to use:} Better performance than filters, but computationally expensive.
+\end{formula}
+
+\begin{formula}{Embedded Methods}
+\textbf{LASSO:} L1 penalty automatically selects features (sets coefficients to zero)
+
+\textbf{Ridge:} L2 penalty shrinks but doesn't eliminate features
+
+\textbf{Elastic Net:} Combination of L1 and L2
+
+\textbf{Tree-Based Feature Importance:}
+Based on information gain or impurity decrease.
+
+\textbf{Advantage:} Feature selection during model training.
+\end{formula}
+
+% ============================================================
+% ENSEMBLE METHODS
+% ============================================================
+
+\section{Ensemble Methods}
+
+\begin{important}{Bagging (Bootstrap Aggregating) - MEDIUM PROBABILITY}
+\textbf{Algorithm:}
+1. Create B bootstrap samples (sampling with replacement)
+2. Train model on each sample
+3. Aggregate predictions (average or vote)
+
+\textbf{Purpose:} Reduce variance, prevent overfitting
+
+\textbf{Examples:} Random Forest, Bagged Decision Trees
+
+\textbf{Prediction:}
+\[\hat{y} = \frac{1}{B}\sum_{b=1}^{B}\hat{f}_b(x)\]
+
+\textbf{When to use:} High-variance models (decision trees, neural networks)
+\end{important}
+
+\begin{important}{Boosting - MEDIUM PROBABILITY}
+\textbf{Idea:} Sequentially train models, each correcting previous errors
+
+\textbf{AdaBoost Weight Update:}
+\[w_i^{(t+1)} = w_i^{(t)} \exp(\alpha_t \mathbb{I}(y_{i} \neq \hat{y}_i))\]
+
+where:
+\[\alpha_t = \frac{1}{2}\log\frac{1 - \\varepsilon_{t}}{\\varepsilon_{t}}\]
+$\varepsilon$_t = weighted error rate
+
+\textbf{Gradient Boosting:}
+Fit new model to residuals (negative gradient) of previous model.
+
+\textbf{Purpose:} Reduce bias, improve accuracy
+
+\textbf{Examples:} AdaBoost, XGBoost, LightGBM, CatBoost
+
+\textbf{When to use:} Need high accuracy, can handle complex patterns
+\end{important}
+
+\begin{formula}{Stacking (Stacked Generalization)}
+\textbf{Two-Level Approach:}
+
+\textbf{Level 0 (Base Models):}
+Train multiple diverse models on training data.
+
+\textbf{Level 1 (Meta-Model):}
+Train on predictions from base models.
+
+\textbf{Prediction:}
+\[\hat{y} = g(f_1(x), f_2(x), \ldots, f_M(x))\]
+
+where g is meta-model, f_i are base models.
+
+\textbf{When to use:} Combining different model types for best performance.
+\end{formula}
+
+% ============================================================
+% TIME SERIES BASICS
+% ============================================================
+
+\section{Time Series Analysis (Brief)}
+
+\begin{formula}{Moving Average (MA)}
+\textbf{Simple Moving Average:}
+\[MA_t = \frac{1}{k}\sum_{i=0}^{k-1}y_{t-i}\]
+
+\textbf{Weighted Moving Average:}
+\[WMA_t = \sum_{i=0}^{k-1}w_i y_{t-i}\]
+
+\textbf{Exponential Smoothing:}
+\[S_t = \alpha y_{t} + (1-\alpha)S_{t-1}\]
+
+where 0 < $\alpha$ < 1 is smoothing parameter.
+
+\textbf{When to use:} Smoothing data, forecasting, trend detection.
+\end{formula}
+
+\begin{formula}{Autocorrelation}
+\textbf{Autocorrelation Function (ACF):}
+\[\rho_k = \frac{\text{Cov}(y_{t}, y_{t-k})}{\text{Var}(y_{t})}\]
+
+Correlation between series and itself at lag k.
+
+\textbf{Partial Autocorrelation (PACF):}
+Correlation between y_{t} and y_{t-k} after removing effect of intermediate lags.
+
+\textbf{When to use:} Identifying AR/MA orders, checking randomness.
+\end{formula}
+
+% ============================================================
+% QUICK REFERENCE TABLES
+% ============================================================
+
+\section{Quick Reference Tables}
+
+\subsection{Distribution Properties}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Distribution} & \textbf{E[X]} & \textbf{Var(X)} & \textbf{Use Case} \\
+\hline
+Bernoulli(p) & p & p(1-p) & Single trial \\
+Binomial(n,p) & np & np(1-p) & n trials \\
+Poisson($\lambda$) & $\lambda$ & $\lambda$ & Rare events \\
+Normal($\mu$,$\sigma$²) & $\mu$ & $\sigma$² & Continuous, symmetric \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Test Selection Guide}
+
+\begin{center}
+\begin{tabular}{|p{5cm}|p{8cm}|}
+\hline
+\textbf{Scenario} & \textbf{Test} \\
+\hline
+One sample, known $\sigma$ & Z-test \\
+One sample, unknown $\sigma$ & t-test \\
+Two samples, independent & Two-sample t-test \\
+Two samples, paired & Paired t-test \\
+Proportions & Z-test for proportions \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Common Z-scores}
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Confidence Level} & \textbf{$\alpha$} & \textbf{Z-score} \\
+\hline
+90\% & 0.10 & 1.645 \\
+95\% & 0.05 & 1.96 \\
+99\% & 0.01 & 2.576 \\
+99.9\% & 0.001 & 3.291 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Effect Size Interpretations}
+
+\begin{center}
+\small
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Measure} & \textbf{Small} & \textbf{Medium} & \textbf{Large} \\
+\hline
+Cohen's d & 0.2 & 0.5 & 0.8 \\
+Pearson r & 0.1 & 0.3 & 0.5 \\
+R² & 0.01 & 0.09 & 0.25 \\
+Cramér's V & 0.1 & 0.3 & 0.5 \\
+Eta-squared ($\eta$²) & 0.01 & 0.06 & 0.14 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Distance Metrics Comparison}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{6cm}|p{5cm}|}
+\hline
+\textbf{Distance} & \textbf{Formula} & \textbf{Use Case} \\
+\hline
+Euclidean & $\sqrt{\sum(x_{i} - y_{i})^2}$ & General purpose, KNN \\
+Manhattan & $\sum|x_{i} - y_{i}|$ & Grid-like paths, robust \\
+Cosine & $1 - \frac{x \cdot y}{\|x\|\|y\|}$ & Text, high dimensions \\
+Minkowski (p=3) & $(\sum|x_{i} - y_{i}|^p)^{1/p}$ & Generalization \\
+Hamming & Count of differences & Binary/categorical \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Model Complexity and Regularization}
+
+\begin{center}
+\small
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Bias} & \textbf{Variance} & \textbf{Sparsity} \\
+\hline
+OLS & Low & High & No \\
+Ridge (L2) & Medium & Medium & No \\
+LASSO (L1) & Medium & Medium & Yes \\
+Elastic Net & Medium & Medium & Yes \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Evaluation Metrics by Task}
+
+\begin{center}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Task} & \textbf{Recommended Metrics} \\
+\hline
+Regression & RMSE, MAE, R², Adjusted R² \\
+Binary Classification & Accuracy, Precision, Recall, F1, AUC-ROC \\
+Multi-class Classification & Accuracy, Macro/Micro F1, Confusion Matrix \\
+Imbalanced Classification & F1-Score, Precision-Recall AUC, MCC \\
+Clustering & Silhouette Score, Davies-Bouldin Index, WCSS \\
+Ranking & NDCG, MAP, MRR \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Algorithm Comparison}
+
+\begin{center}
+\small
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{Algorithm} & \textbf{Type} & \textbf{Pros} & \textbf{Cons} \\
+\hline
+KNN & Supervised & Simple, no training & Slow prediction, memory \\
+K-Means & Unsupervised & Fast, scalable & Need k, spherical clusters \\
+Naive Bayes & Supervised & Fast, works with small data & Independence assumption \\
+Decision Tree & Supervised & Interpretable & Overfitting \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+\begin{center}
+\textbf{\large --- END OF FORMULA SHEET ---}
+
+\textit{Good luck on your exam!}
+\end{center}
+
+\end{document}
